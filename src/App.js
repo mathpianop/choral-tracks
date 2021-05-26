@@ -1,29 +1,60 @@
 import './App.css';
-import alto from "./tracks/sherburne-alto.m4a"
-import tenor from "./tracks/sherburne-tenor.m4a"
+import { Howl } from "howler";
 
 function App() {
-  const altoAudio = new Audio(alto);
-  const tenorAudio = new Audio(tenor);
+  const sopranoHowl = new Howl({
+    src: [
+      "./tracks/sherburne/soprano.m4a",
+      "./tracks/sherburne/soprano.wav"
+    ]
+  })
+
+  const altoHowl = new Howl({
+    src: [
+      "./tracks/sherburne/alto.m4a",
+      "./tracks/sherburne/alto.wav"
+    ]
+  })
+
+  const tenorHowl = new Howl({
+    src: [
+      "./tracks/sherburne/tenor.m4a",
+      "./tracks/sherburne/tenor.wav"
+    ]
+  })
+
+  const bassHowl = new Howl({
+    src: [
+      "./tracks/sherburne/bass.m4a",
+      "./tracks/sherburne/bass.wav"
+    ]
+  })
+
+
+  const howls = {
+    soprano: sopranoHowl,
+    alto: altoHowl,
+    tenor: tenorHowl,
+    bass: bassHowl
+  }
   
   const playTracks = function() {   
-    tenorAudio.play();
-    altoAudio.play();
+    Object.values(howls).forEach(howl => howl.play());
   }
 
-  const emphasizeTenor = function() {
-    console.log("Tenor!");
-    altoAudio.volume = .2;
+  const emphasize = function(e) {
+    Object.values(howls).forEach(howl => howl.volume(.1));
+    howls[e.target.classList[0]].volume(1);
   }
 
   return (
     <div className="App">
   
       <button onClick={playTracks}>Play</button>
-      <button className="S">S</button>
-      <button className="A">A</button>
-      <button className="T" onClick={emphasizeTenor}>T</button>
-      <button className="B">B</button>
+      <button className="soprano" onClick={emphasize}>S</button>
+      <button className="alto" onClick={emphasize}>A</button>
+      <button className="tenor" onClick={emphasize}>T</button>
+      <button className="bass" onClick={emphasize}>B</button>
     </div>
   );
 }

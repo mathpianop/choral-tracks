@@ -13,12 +13,12 @@ function ProgressMeter(props) {
     setProgressWidth(newProgress);
   }
 
-
     useEffect(() => {
       const computedWidth = (
         window.getComputedStyle(meterRef.current).getPropertyValue("width")
       )
-      setWidth(computedWidth);
+      //Get rid of "px" and convert to Integer
+      setWidth(parseInt(computedWidth.slice(0, 3)));
     // eslint-disable-next-line
     }, [])
 

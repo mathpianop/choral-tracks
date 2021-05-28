@@ -1,0 +1,10 @@
+.ProgressMeter {
+  height: 50px;
+  width: 600px;
+  background-color: blueviolet;
+}
+
+.progress-bar {
+  height: 50px;
+  background-color: brown;
+}

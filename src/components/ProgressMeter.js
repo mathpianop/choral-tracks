@@ -5,20 +5,28 @@ function ProgressMeter(props) {
   
   
   const [progressWidth, setProgressWidth] = useState(0);
-  const [width, setWidth] = useState(0);
+  const [meterWidth, setMeterWidth] = useState(0);
   let meterRef = createRef();
 
   const updateProgress = function() {
-    const newProgress = (props.timestamp / props.duration) * width;
+    // Set new width of progress bar based on fraction of track completed
+    const newProgress = (props.timestamp / props.duration) * meterWidth;
     setProgressWidth(newProgress);
   }
 
+  const handleSeek = function(e) {
+    //Seek track to new timestamp based on click position within the meter
+    const newTimestamp = (e.clientX / meterWidth) * props.duration;
+    props.seekTrack(newTimestamp);
+  }
+
     useEffect(() => {
+      //Get the actual width of the progressMeter
       const computedWidth = (
         window.getComputedStyle(meterRef.current).getPropertyValue("width")
       )
       //Get rid of "px" and convert to Integer
-      setWidth(parseInt(computedWidth.slice(0, 3)));
+      setMeterWidth(parseInt(computedWidth.slice(0, 3)));
     // eslint-disable-next-line
     }, [])
 
@@ -27,7 +35,7 @@ function ProgressMeter(props) {
 
   
   return (
-    <div className="ProgressMeter" ref={meterRef}>
+    <div className="ProgressMeter" ref={meterRef} onClick={handleSeek}>
       <div className="progress-bar" style={{width: progressWidth}}></div>
     </div>
   )

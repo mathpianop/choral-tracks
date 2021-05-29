@@ -23,16 +23,7 @@ function Song(props) {
     });
   }
 
-  useEffect(() => {
-    
-    props.parts.forEach(part => {
-      //Load audio for each part
-      dataRef.current[part] = getData(`./tracks/${props.title}/${part}.mp3`)
-      //Create a gain (volume) node for each part
-      gainNodesRef.current[part] = ctxRef.current.createGain();
-    });
-  // eslint-disable-next-line
-  }, [])
+  
 
   const playData = function(part) {
     dataRef.current[part].then(decodedData => {
@@ -43,17 +34,16 @@ function Song(props) {
       // Wire up the data
       source.buffer = decodedData;
       // Connect the source node to the gain node (which controls the volume)
-      console.log(gainNodesRef);
       source.connect(gainNodesRef.current[part]);
       // Connect the gain node to the destination (e.g., speakers) and start the audio
       gainNodesRef.current[part].connect(ctxRef.current.destination);
       source.start(0, timestamp)
+      console.log(duration);
     })
   }
 
 
   const playTrack = function() {
-    console.log(timestamp);
     props.parts.forEach(part => {
       playData(part);
     });
@@ -69,7 +59,6 @@ function Song(props) {
   }
 
    const emphasizePart = function(emphasizedPart) {
-     console.log(`Emphasizing ${emphasizedPart}`)
     props.parts.forEach(part => {
       if (part === emphasizedPart) {
         //Set part to be emphasized at full volume
@@ -99,15 +88,6 @@ function Song(props) {
 
   
 
-
-  // const applyToAudios = function(audioProperty, param) {
-  //   if (!(param === undefined)) {
-  //     props.parts.forEach(part => getRef(part).current[audioProperty] = param);
-  //   } else {
-  //     props.parts.forEach(part => getRef(part).current[audioProperty]())
-  //   }
-  // }
-
   // const handleLoad = (e) => setDuration(e.target.duration);
   // const handleTimeUpdate = (e) => setTimestamp(e.target.currentTime);
   // const playTrack = () => applyToAudios("play");
@@ -130,7 +110,18 @@ function Song(props) {
 
   // const resetParts = () => applyToAudios("volume", 0);
 
- 
+  useEffect(() => {
+    //Execute on ComponentDidMount
+    props.parts.forEach(part => {
+      //Load audio for each part
+      dataRef.current[part] = getData(`./tracks/${props.title}/${part}.mp3`)
+      //Create a gain (volume) node for each part
+      gainNodesRef.current[part] = ctxRef.current.createGain();
+    });
+    //Once loaded, select the first part arbitrarily and set the duration
+    Object.values(dataRef.current)[0].then(buffer => setDuration(buffer.duration));
+  // eslint-disable-next-line
+  }, [])
 
   return (
     <div className="Song">

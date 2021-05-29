@@ -7,13 +7,13 @@ function Song(props) {
   //Set duration to an arbitrarily long amount of time until song loads
   const [duration, setDuration] = useState(10000);
   const [timestamp, setTimestamp] = useState(0);
+  const [playing, setPlaying] = useState(false);
   const ctxRef = useRef(new (window.AudioContext || window.webkitAudioContext)())
   let sourceNodesRef = useRef({});
   let dataRef = useRef({});
   let gainNodesRef = useRef({});
   let timestampUpdater = useRef();
   let startCtxTimeRef = useRef(0);
-  let stopTimeRef = useRef(0);
 
   const getData = function(url) {
     const myRequest = new Request(url);
@@ -41,16 +41,9 @@ function Song(props) {
       // Connect the gain node to the destination (e.g., speakers) and start the audio
       gainNodesRef.current[part].connect(ctxRef.current.destination);
       source.start(0, timestamp)
+      console.log("Played Timestamp:", timestamp);
     })
   }
-
-  const pauseTrack = function() {
-    props.parts.forEach(part => {
-      sourceNodesRef.current[part].stop();
-    });
-    clearInterval(timestampUpdater.current);
-  }
-
 
   const playTrack = function() {
     props.parts.forEach(part => {
@@ -61,7 +54,6 @@ function Song(props) {
     startCtxTimeRef.current = ctxRef.current.currentTime
     //Record the starting timestamp
     const startTimeStamp = timestamp;
-
     timestampUpdater.current = setInterval(() => {
       //Every 250ms, compare the current Audio Context time
       //to the starting Audio Context time and increase the timestamp by that much
@@ -70,11 +62,27 @@ function Song(props) {
       );
       setTimestamp(timeElapsedSincePlayBegan + startTimeStamp);
     }, 250);
+    //Indicate that play has begun
+    setPlaying(true);
+  }
+
+  const pauseTrack = function() {
+    props.parts.forEach(part => {
+      sourceNodesRef.current[part].stop();
+    });
+    clearInterval(timestampUpdater.current);
+    //Indicate that playing has stopped
+    setPlaying(false);
   }
 
   const stopTrack = function() {
     pauseTrack();
-    setTimestamp(0);
+    setTimestamp(0); 
+  }
+
+  const seekTrack = function(newTimestamp) {
+    pauseTrack();
+    setTimestamp(newTimestamp);
   }
 
    const emphasizePart = function(emphasizedPart) {
@@ -105,30 +113,6 @@ function Song(props) {
     props.parts.forEach(part => gainNodesRef.current[part].gain.value = 1);
   }
 
-  
-
-  // const handleLoad = (e) => setDuration(e.target.duration);
-  // const handleTimeUpdate = (e) => setTimestamp(e.target.currentTime);
-  // const playTrack = () => applyToAudios("play");
-  // const pauseTrack = () => applyToAudios("pause");
-  // const seekTrack = (timestamp) => {
-  //   //Pause the audios, seek to the new spot, then resume after waiting 250ms
-  //   // to make sure parts remain synchronous
-  //   applyToAudios("pause");
-  //   applyToAudios("currentTime", timestamp);
-  //   setTimeout(() => applyToAudios("play"), 4000);
-  // }
-  // const stopTrack = () => {
-  //   seekTrack(0);
-  //   pauseTrack();
-    
-  // };
-  
- 
-  
-
-  // const resetParts = () => applyToAudios("volume", 0);
-
   useEffect(() => {
     //Execute on ComponentDidMount
     props.parts.forEach(part => {
@@ -148,7 +132,7 @@ function Song(props) {
         playTrack={playTrack}
         stopTrack={stopTrack}
         pauseTrack={pauseTrack}
-        // seekTrack={seekTrack}
+        seekTrack={seekTrack}
         timestamp={timestamp}
         duration={duration}
       />

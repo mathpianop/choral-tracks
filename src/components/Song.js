@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useDynamicRefs from 'use-dynamic-refs';
 import PreferenceBtn from "./PreferenceBtn.js";
 import Controls from "./Controls.js";
@@ -9,6 +9,13 @@ function Song(props) {
   const [duration, setDuration] = useState(10000);
   const [timestamp, setTimestamp] = useState(0);
   const [getRef, setRef] =  useDynamicRefs();
+
+  
+
+  useEffect(() => {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const buffer = audioCtx.createBuffer(1, 22050, 44100);
+  }, [])
 
   const applyToAudios = function(audioProperty, param) {
     if (!(param === undefined)) {
@@ -22,10 +29,17 @@ function Song(props) {
   const handleTimeUpdate = (e) => setTimestamp(e.target.currentTime);
   const playTrack = () => applyToAudios("play");
   const pauseTrack = () => applyToAudios("pause");
-  const seekTrack = (timestamp) => applyToAudios("currentTime", timestamp);
+  const seekTrack = (timestamp) => {
+    //Pause the audios, seek to the new spot, then resume after waiting 250ms
+    // to make sure parts remain synchronous
+    applyToAudios("pause");
+    applyToAudios("currentTime", timestamp);
+    setTimeout(() => applyToAudios("play"), 4000);
+  }
   const stopTrack = () => {
-    pauseTrack();
     seekTrack(0);
+    pauseTrack();
+    
   };
   
   const emphasizePart = function(part) {
@@ -42,6 +56,8 @@ function Song(props) {
     getRef(part).current.volume = 1;
   }
 
+  const resetParts = () => applyToAudios("volume", 0);
+
  
 
   return (
@@ -50,6 +66,7 @@ function Song(props) {
         if (index === 0) {
           return (
             <audio 
+              controls
               key={`${props.title}-${part}`}
               ref={setRef(part)}
               //Arbitrarily choose first audio to set duration when loaded
@@ -61,6 +78,7 @@ function Song(props) {
         } else {
           return (
             <audio 
+              controls
               key={`${props.title}-${part}`}
               ref={setRef(part)}
               onTimeUpdate={handleTimeUpdate}>
@@ -77,7 +95,7 @@ function Song(props) {
         timestamp={timestamp}
         duration={duration}
       />
-
+      <button onClick={resetParts}>Reset Parts</button>
       {props.parts.map(part => {
         return(
           <PreferenceBtn 
@@ -92,7 +110,7 @@ function Song(props) {
         return (
           <PreferenceBtn 
             key={`isolate-${part}`}
-            part={"soprano"} 
+            part={part} 
             role="isolate" 
             handler={isolatePart}
           />

@@ -11,6 +11,9 @@ function Song(props) {
   let sourceNodesRef = useRef({});
   let dataRef = useRef({});
   let gainNodesRef = useRef({});
+  let timestampUpdater = useRef();
+  let startCtxTimeRef = useRef(0);
+  let stopTimeRef = useRef(0);
 
   const getData = function(url) {
     const myRequest = new Request(url);
@@ -38,8 +41,14 @@ function Song(props) {
       // Connect the gain node to the destination (e.g., speakers) and start the audio
       gainNodesRef.current[part].connect(ctxRef.current.destination);
       source.start(0, timestamp)
-      console.log(duration);
     })
+  }
+
+  const pauseTrack = function() {
+    props.parts.forEach(part => {
+      sourceNodesRef.current[part].stop();
+    });
+    clearInterval(timestampUpdater.current);
   }
 
 
@@ -47,15 +56,25 @@ function Song(props) {
     props.parts.forEach(part => {
       playData(part);
     });
+
+    //Record the start time according to the Audio Context
+    startCtxTimeRef.current = ctxRef.current.currentTime
+    //Record the starting timestamp
+    const startTimeStamp = timestamp;
+
+    timestampUpdater.current = setInterval(() => {
+      //Every 250ms, compare the current Audio Context time
+      //to the starting Audio Context time and increase the timestamp by that much
+      const timeElapsedSincePlayBegan = (
+        ctxRef.current.currentTime - startCtxTimeRef.current
+      );
+      setTimestamp(timeElapsedSincePlayBegan + startTimeStamp);
+    }, 250);
   }
 
-  
-
-
-  const pauseTrack = function() {
-    props.parts.forEach(part => {
-      sourceNodesRef.current[part].stop();
-    })
+  const stopTrack = function() {
+    pauseTrack();
+    setTimestamp(0);
   }
 
    const emphasizePart = function(emphasizedPart) {
@@ -127,7 +146,7 @@ function Song(props) {
     <div className="Song">
       <Controls
         playTrack={playTrack}
-        // stopTrack={stopTrack}
+        stopTrack={stopTrack}
         pauseTrack={pauseTrack}
         // seekTrack={seekTrack}
         timestamp={timestamp}

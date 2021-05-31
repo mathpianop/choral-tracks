@@ -1,5 +1,7 @@
+//
+
 import { useState, useEffect, useRef } from "react";
-import PreferenceBtn from "./PreferenceBtn.js";
+import Preferences from "././Preferences.js"
 import Controls from "./Controls.js";
 
 
@@ -9,6 +11,11 @@ function Song(props) {
   const [timestamp, setTimestamp] = useState(0);
   const [playing, setPlaying] = useState(false);
   const ctxRef = useRef(new (window.AudioContext || window.webkitAudioContext)())
+  let audioRef = useRef({
+    data: {},
+    gainNodes: {},
+    sourceNodes: {}
+  });
   let sourceNodesRef = useRef({});
   let dataRef = useRef({});
   let gainNodesRef = useRef({});
@@ -17,9 +24,11 @@ function Song(props) {
 
   const getData = function(url) {
     const myRequest = new Request(url);
-    return fetch(myRequest).then(response => {
+    return fetch(myRequest)
+    .then(response => {
       return response.arrayBuffer();
-    }).then(buffer => {
+    })
+    .then(buffer => {
         return ctxRef.current.decodeAudioData(buffer, decodedData => {
         return decodedData;
       });
@@ -152,7 +161,13 @@ function Song(props) {
         duration={duration}
         playing={playing}
       />
-      <button onClick={resetParts}>Reset Parts</button>
+      <Preferences 
+        parts={props.parts}
+        emphasizePart={emphasizePart}
+        isolatePart={isolatePart}
+        resetParts={resetParts} 
+      />
+      {/* <button onClick={resetParts}>Reset Parts</button>
       {props.parts.map(part => {
         return(
           <PreferenceBtn 
@@ -172,7 +187,7 @@ function Song(props) {
             handler={isolatePart}
           />
         )
-      })}
+      })} */}
     </div>
   )
 }

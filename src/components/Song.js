@@ -26,8 +26,6 @@ function Song(props) {
     });
   }
 
-  
-
   const playData = function(part) {
     dataRef.current[part].then(decodedData => {
       // Create source node
@@ -41,11 +39,15 @@ function Song(props) {
       // Connect the gain node to the destination (e.g., speakers) and start the audio
       gainNodesRef.current[part].connect(ctxRef.current.destination);
       source.start(0, timestamp)
-      console.log("Played Timestamp:", timestamp);
+      source.onended = () => clearInterval(timestampUpdater.current);
     })
   }
 
   const playTrack = function() {
+    if (playing) {
+      return
+    }
+
     props.parts.forEach(part => {
       playData(part);
     });
@@ -54,17 +56,26 @@ function Song(props) {
     startCtxTimeRef.current = ctxRef.current.currentTime
     //Record the starting timestamp
     const startTimeStamp = timestamp;
+    //Every 250ms, compare the current Audio Context time
+    //to the starting Audio Context time and increase the timestamp by that much
     timestampUpdater.current = setInterval(() => {
-      //Every 250ms, compare the current Audio Context time
-      //to the starting Audio Context time and increase the timestamp by that much
-      const timeElapsedSincePlayBegan = (
-        ctxRef.current.currentTime - startCtxTimeRef.current
+      const newTimestamp = (
+        (ctxRef.current.currentTime - startCtxTimeRef.current) + startTimeStamp
       );
-      setTimestamp(timeElapsedSincePlayBegan + startTimeStamp);
+      //If the timestamp gets within 300ms of the end of the track,
+      //stop the track and reset the timestamp to 0
+      if ((duration - newTimestamp) < .3) {
+        pauseTrack();
+        setTimestamp(0);
+      } else {
+        setTimestamp(newTimestamp);
+      }
     }, 250);
     //Indicate that play has begun
     setPlaying(true);
   }
+
+
 
   const pauseTrack = function() {
     props.parts.forEach(part => {
@@ -75,15 +86,19 @@ function Song(props) {
     setPlaying(false);
   }
 
-  const stopTrack = function() {
+  const resetTrack = function() {
     pauseTrack();
     setTimestamp(0); 
   }
 
   const seekTrack = function(newTimestamp) {
-    pauseTrack();
+    if (playing) {
+      pauseTrack();
+    }
     setTimestamp(newTimestamp);
   }
+
+  
 
    const emphasizePart = function(emphasizedPart) {
     props.parts.forEach(part => {
@@ -130,11 +145,12 @@ function Song(props) {
     <div className="Song">
       <Controls
         playTrack={playTrack}
-        stopTrack={stopTrack}
+        resetTrack={resetTrack}
         pauseTrack={pauseTrack}
         seekTrack={seekTrack}
         timestamp={timestamp}
         duration={duration}
+        playing={playing}
       />
       <button onClick={resetParts}>Reset Parts</button>
       {props.parts.map(part => {

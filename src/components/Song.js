@@ -138,23 +138,27 @@ function Song(props) {
 
   useEffect(() => {
     console.log("Called");
-    
-    const updater = setInterval(() => {
-      
-      const timeElapsedSinceLastUpdate = (
-        ctxRef.current.ctx.currentTime - ctxRef.current.time
-      );
-      ctxRef.current.time = ctxRef.current.ctx.currentTime;
-      //If the timestamp gets within 300ms of the end of the track,
-      //stop the track and reset the timestamp to 0
-      if ((duration - timestamp) < .3) {
-        pauseTrack();
-        setTimestamp(0);
-      } else {
-        setTimestamp(t => t + timeElapsedSinceLastUpdate);
-      }
-    }, 250);
 
+    if (playing) {
+      var updater = setInterval(() => {
+      
+        const timeElapsedSinceLastUpdate = (
+          ctxRef.current.ctx.currentTime - ctxRef.current.time
+        );
+        ctxRef.current.time = ctxRef.current.ctx.currentTime;
+        //If the timestamp gets within 300ms of the end of the track,
+        //stop the track and reset the timestamp to 0
+        if ((duration - timestamp) < .3) {
+          pauseTrack();
+          setTimestamp(0);
+        } else {
+          setTimestamp(t => t + timeElapsedSinceLastUpdate);
+        }
+      }, 250);
+      console.log(updater);
+    }
+    
+    
     return clearInterval(updater);
     // eslint-disable-next-line
   }, [playing])

@@ -90,12 +90,14 @@ function Song(props) {
 
 
   const pauseTrack = function() {
-    props.parts.forEach(part => {
-      audioRef.current.sourceNodes[part].stop();
-    });
-    clearInterval(timestampUpdater.current);
-    //Indicate that playing has stopped
-    setPlaying(false);
+    if (playing) {
+      props.parts.forEach(part => {
+        audioRef.current.sourceNodes[part].stop();
+      });
+      clearInterval(timestampUpdater.current);
+      //Indicate that playing has stopped
+      setPlaying(false);
+    }
   }
 
   const resetTrack = function() {
@@ -104,9 +106,7 @@ function Song(props) {
   }
 
   const seekTrack = function(newTimestamp) {
-    if (playing) {
-      pauseTrack();
-    }
+    pauseTrack();
     setTimestamp(newTimestamp);
   }
 
@@ -140,8 +140,8 @@ function Song(props) {
     props.parts.forEach(part => audioRef.current.gainNodes[part].gain.value = 1);
   }
 
+  //Execute on ComponentDidMount
   useEffect(() => {
-    //Execute on ComponentDidMount
     props.parts.forEach(part => {
       //Load audio for each part
       audioRef.current.data[part] = getData(`./tracks/${props.title}/${part}.mp3`)
@@ -152,6 +152,8 @@ function Song(props) {
     Object.values(audioRef.current.data)[0].then(buffer => setDuration(buffer.duration));
   // eslint-disable-next-line
   }, [])
+
+
 
   return (
     <div className="Song">

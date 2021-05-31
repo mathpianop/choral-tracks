@@ -5,16 +5,29 @@ import ResetIcon from "@material-ui/icons/ReplayRounded";
 import "../style/Controls.css";
 
 function Controls(props) {
+  const handleKeyUp = function(e) {
+    if (e.keyCode === 32) {
+      props.pauseTrack();
+    }
+  }
+
   const playOrPauseBtn = function() {
     if (props.playing) {
       return (
-      <button className="control-btn" onClick={props.pauseTrack}>
+      <button 
+        className="control-btn" 
+        onClick={props.pauseTrack}
+        onKeyUp={handleKeyUp}
+      >
         <PauseIcon />
       </button>
       )
     } else {
       return (
-      <button className="control-btn" onClick={props.playTrack}>
+      <button 
+        className="control-btn" 
+        onClick={props.playTrack}
+      >
         <PlayIcon />
       </button>
       )

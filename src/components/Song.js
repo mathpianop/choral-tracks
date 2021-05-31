@@ -19,6 +19,7 @@ function Song(props) {
     ctx: new (window.AudioContext || window.webkitAudioContext)(),
     startTime: 0
   })
+ 
 
   const capitalize = function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -51,7 +52,6 @@ function Song(props) {
       // Connect the gain node to the destination (e.g., speakers) and start the audio
       audioRef.current.gainNodes[part].connect(ctxRef.current.ctx.destination);
       source.start(0, timestamp)
-      source.onended = () => clearInterval(timestampUpdater.current);
     })
   }
 
@@ -66,23 +66,7 @@ function Song(props) {
 
     //Record the start time according to the Audio Context
     ctxRef.current.startTime = ctxRef.current.ctx.currentTime
-    //Record the starting timestamp
-    const startTimeStamp = timestamp;
-    //Every 250ms, compare the current Audio Context time
-    //to the starting Audio Context time and increase the timestamp by that much
-    timestampUpdater.current = setInterval(() => {
-      const newTimestamp = (
-        (ctxRef.current.ctx.currentTime - ctxRef.current.startTime) + startTimeStamp
-      );
-      //If the timestamp gets within 300ms of the end of the track,
-      //stop the track and reset the timestamp to 0
-      if ((duration - newTimestamp) < .3) {
-        pauseTrack();
-        setTimestamp(0);
-      } else {
-        setTimestamp(newTimestamp);
-      }
-    }, 250);
+    
     //Indicate that play has begun
     setPlaying(true);
   }
@@ -94,7 +78,6 @@ function Song(props) {
       props.parts.forEach(part => {
         audioRef.current.sourceNodes[part].stop();
       });
-      clearInterval(timestampUpdater.current);
       //Indicate that playing has stopped
       setPlaying(false);
     }
@@ -153,7 +136,28 @@ function Song(props) {
   // eslint-disable-next-line
   }, [])
 
+  useEffect(() => {
+    console.log("Called");
+    
+    const updater = setInterval(() => {
+      
+      const timeElapsedSinceLastUpdate = (
+        ctxRef.current.ctx.currentTime - ctxRef.current.time
+      );
+      ctxRef.current.time = ctxRef.current.ctx.currentTime;
+      //If the timestamp gets within 300ms of the end of the track,
+      //stop the track and reset the timestamp to 0
+      if ((duration - timestamp) < .3) {
+        pauseTrack();
+        setTimestamp(0);
+      } else {
+        setTimestamp(t => t + timeElapsedSinceLastUpdate);
+      }
+    }, 250);
 
+    return clearInterval(updater);
+    // eslint-disable-next-line
+  }, [playing])
 
   return (
     <div className="Song">

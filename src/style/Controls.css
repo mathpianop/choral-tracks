@@ -1,0 +1,19 @@
+.Controls {
+  display: flex;
+  align-items: center;
+  width: 600px;
+  background-color: rgb(90, 87, 87);
+  border-radius: 5px;
+}
+
+.progress-meter-container {
+  flex: 1;
+  padding: 10px;
+}
+
+
+.control-btn {
+  color: #fff;
+  background: none;
+  border: none;
+}

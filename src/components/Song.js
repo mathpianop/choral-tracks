@@ -1,8 +1,7 @@
-//
-
 import { useState, useEffect, useRef } from "react";
 import Preferences from "././Preferences.js"
 import Controls from "./Controls.js";
+import "../style/Song.css";
 
 
 function Song(props) {
@@ -20,6 +19,10 @@ function Song(props) {
     ctx: new (window.AudioContext || window.webkitAudioContext)(),
     startTime: 0
   })
+
+  const capitalize = function(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 
 
   const getData = function(url) {
@@ -152,6 +155,7 @@ function Song(props) {
 
   return (
     <div className="Song">
+      <h2 className="song-title">{capitalize(props.title)}</h2>
       <Controls
         playTrack={playTrack}
         resetTrack={resetTrack}

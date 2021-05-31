@@ -15,8 +15,10 @@ function ProgressMeter(props) {
   }
 
   const handleSeek = function(e) {
+    const rect = e.target.getBoundingClientRect();
+    const clickPosition = e.clientX - rect.x;
     //Seek track to new timestamp based on click position within the meter
-    const newTimestamp = (e.clientX / meterWidth) * props.duration;
+    const newTimestamp = (clickPosition / meterWidth) * props.duration;
     props.seekTrack(newTimestamp);
   }
 
@@ -30,6 +32,7 @@ function ProgressMeter(props) {
     // eslint-disable-next-line
     }, [])
 
+    //Update position of progress bar every time the timestamp updates
     // eslint-disable-next-line
     useEffect(updateProgress, [props.timestamp])
 

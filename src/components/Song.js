@@ -9,6 +9,7 @@ function Song(props) {
   const [duration, setDuration] = useState(10000);
   const [timestamp, setTimestamp] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [seekingWhilePlaying, setSeekingWhilePlaying] = useState(false);
   let timestampUpdater = useRef();
   let audioRef = useRef({
     data: {},
@@ -17,7 +18,7 @@ function Song(props) {
   });
   const ctxRef = useRef({
     ctx: new (window.AudioContext || window.webkitAudioContext)(),
-    startTime: 0
+    time: 0
   })
  
 
@@ -91,7 +92,17 @@ function Song(props) {
   const seekTrack = function(newTimestamp) {
     pauseTrack();
     setTimestamp(newTimestamp);
+    setSeekingWhilePlaying(true);
   }
+
+  useEffect(() => {
+    if (seekingWhilePlaying) {
+      playTrack();
+      setSeekingWhilePlaying(false);
+    }
+   }, [seekingWhilePlaying]);
+
+
 
   
 
@@ -137,15 +148,19 @@ function Song(props) {
   }, [])
 
   useEffect(() => {
-    console.log("Called");
+    console.log("useEffect called");
+    console.log(`playing: ${playing}`);
 
     if (playing) {
       var updater = setInterval(() => {
+        console.log("setInterval callback called")
       
+        
         const timeElapsedSinceLastUpdate = (
           ctxRef.current.ctx.currentTime - ctxRef.current.time
         );
         ctxRef.current.time = ctxRef.current.ctx.currentTime;
+        console.log(timeElapsedSinceLastUpdate);
         //If the timestamp gets within 300ms of the end of the track,
         //stop the track and reset the timestamp to 0
         if ((duration - timestamp) < .3) {
@@ -158,8 +173,7 @@ function Song(props) {
       console.log(updater);
     }
     
-    
-    return clearInterval(updater);
+    return () => {clearInterval(updater); console.log("Cleared");};
     // eslint-disable-next-line
   }, [playing])
 

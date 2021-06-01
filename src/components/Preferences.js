@@ -4,35 +4,42 @@ import "../style/Preferences.css";
 function Preferences(props) {
   
   return (
-    <div className="PreferenceBtns">  
-      <div className="emphasize-btns">
+    <div 
+      className="Preferences" 
+      style={{gridTemplateColumns: `repeat (${props.parts.length}, auto)`}}
+    >  
+      
         <span>Emphasize</span>
         {props.parts.map(part => {
           return (
             <PreferenceBtn 
               key={`emphasize-${part}`}
               part={part}
+              initial={props.initials[part]}
               role="emphasize" 
               handler={props.emphasizePart}
             />
           )
         })}
-      </div>
-      <div className="isolate-btns">
+   
         <span>Isolate</span>
         {props.parts.map(part => {
           return (
             <PreferenceBtn 
               key={`isolate-${part}`}
               part={part}
+              initial={props.initials[part]}
               role="isolate" 
               handler={props.isolatePart}
             />
           )
         })}
-      </div>
-      <div className="reset-btn-container">
-        <button className="PreferenceBtn full-choir" onClick={props.resetParts}>
+      
+      <div 
+        className="full-choir-container" 
+        style={{gridColumn: `2 / ${props.parts.length + 2}`}}
+      >
+        <button className="PreferenceBtn full-choir" onClick={props.fullChoir}>
             Full Choir
         </button>
       </div>

@@ -24,7 +24,12 @@ function Song(props) {
  
 
   const capitalize = function(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    const substrings = string.split("-");
+    //Capitalize Substrings
+    const capitalizedSubstrings = substrings.map(substring => {
+      return substring.charAt(0).toUpperCase() + substring.slice(1);
+    })
+    return capitalizedSubstrings.join(" ");
   }
 
 
@@ -129,7 +134,7 @@ function Song(props) {
     })
   }
 
-  const resetParts = function() {
+  const fullChoir = function() {
     props.parts.forEach(part => audioRef.current.gainNodes[part].gain.value = 1);
   }
 
@@ -195,9 +200,10 @@ function Song(props) {
       />
       <Preferences 
         parts={props.parts}
+        initials={props.initials}
         emphasizePart={emphasizePart}
         isolatePart={isolatePart}
-        resetParts={resetParts} 
+        fullChoir={fullChoir} 
       />
     </div>
   )

@@ -1,3 +1,15 @@
+.Preferences {
+  display: inline-grid;
+  grid-gap: 10px;
+  align-items: center;
+  justify-items: center;
+  margin-top: 10px;
+}
+
 .full-choir {
-  width: auto;
+  width: 100%;
+}
+
+.full-choir-container {
+  justify-self: stretch;
 }

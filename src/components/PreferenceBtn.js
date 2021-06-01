@@ -1,9 +1,6 @@
 import "../style/PreferenceBtn.css";
 
 function PreferenceBtn(props) {
-  const initial = function(string) {
-    return string.charAt(0).toUpperCase() 
-  }
 
   const selectedClassName = function() {
     return (props.selected ? "selected" : "")
@@ -16,7 +13,7 @@ function PreferenceBtn(props) {
 
   return (
     <button className={`PreferenceBtn ${selectedClassName()}`} onClick={handleClick}>
-      {initial(props.part)}
+      {props.initial}
     </button>
   )
 }

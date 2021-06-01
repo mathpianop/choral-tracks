@@ -61,14 +61,9 @@ function Song(props) {
     if (playing) {
       return
     }
-
     props.parts.forEach(part => {
       playData(part);
     });
-
-    //Record the start time according to the Audio Context
-    ctxRef.current.startTime = ctxRef.current.ctx.currentTime
-    
     //Indicate that play has begun
     setPlaying(true);
   }
@@ -109,9 +104,6 @@ function Song(props) {
     //eslint-disable-next-line
    }, [seekingWhilePlaying]);
 
-
-
-  
 
    const emphasizePart = function(emphasizedPart) {
     props.parts.forEach(part => {
@@ -181,11 +173,10 @@ function Song(props) {
 
   //Execute when the timestamp updates
   useEffect(() => {
-    //If the timestamp gets within 300ms of the end of the track,
+    //If the timestamp exceeds duration of the track,
     //stop the track and reset the timestamp to 0
-    if ((duration - timestamp) < .3) {
-      pauseTrack();
-      setTimestamp(0);
+    if (timestamp > duration) {
+      resetTrack();
     }
     // eslint-disable-next-line
   }, [timestamp])

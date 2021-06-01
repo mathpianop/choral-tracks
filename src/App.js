@@ -1,6 +1,5 @@
 import "./App.css";
-import Song from "./components/Song.js"
-import Tester from "./components/Tester.js";
+import Song from "./components/Song.js";
 function App() {
   return (
     <div className="App">
@@ -14,7 +13,6 @@ function App() {
           bass: "B"
         }}
       />
-      {/* <Tester /> */}
     </div>
   );
 }

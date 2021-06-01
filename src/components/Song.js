@@ -10,7 +10,6 @@ function Song(props) {
   const [timestamp, setTimestamp] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [seekingWhilePlaying, setSeekingWhilePlaying] = useState(false);
-  let timestampUpdater = useRef();
   let audioRef = useRef({
     data: {},
     gainNodes: {},
@@ -20,6 +19,8 @@ function Song(props) {
     ctx: new (window.AudioContext || window.webkitAudioContext)(),
     time: 0
   })
+
+  const updaterRef = useRef();
  
 
   const capitalize = function(string) {
@@ -90,16 +91,22 @@ function Song(props) {
   }
 
   const seekTrack = function(newTimestamp) {
+    if (playing) {
+      setSeekingWhilePlaying(true);
+    }
     pauseTrack();
     setTimestamp(newTimestamp);
-    setSeekingWhilePlaying(true);
+    //Allow useEffect to restart
   }
 
+  //Execute when seekingWhilePlaying state changes
   useEffect(() => {
     if (seekingWhilePlaying) {
+      //Restart the track after seek
       playTrack();
       setSeekingWhilePlaying(false);
     }
+    //eslint-disable-next-line
    }, [seekingWhilePlaying]);
 
 
@@ -134,6 +141,17 @@ function Song(props) {
     props.parts.forEach(part => audioRef.current.gainNodes[part].gain.value = 1);
   }
 
+  const createUpdaterInterval = function() {
+    return setInterval(() => {
+      const timeElapsedSinceLastUpdate = (
+        ctxRef.current.ctx.currentTime - ctxRef.current.previousTime
+      );
+      //Bring the time property up to date with the currentTime
+      ctxRef.current.previousTime = ctxRef.current.ctx.currentTime;
+      setTimestamp(t => t + timeElapsedSinceLastUpdate);
+    }, 250);
+  }
+
   //Execute on ComponentDidMount
   useEffect(() => {
     props.parts.forEach(part => {
@@ -147,35 +165,30 @@ function Song(props) {
   // eslint-disable-next-line
   }, [])
 
+  //Execute when playing state changes
   useEffect(() => {
-    console.log("useEffect called");
-    console.log(`playing: ${playing}`);
-
     if (playing) {
-      var updater = setInterval(() => {
-        console.log("setInterval callback called")
-      
-        
-        const timeElapsedSinceLastUpdate = (
-          ctxRef.current.ctx.currentTime - ctxRef.current.time
-        );
-        ctxRef.current.time = ctxRef.current.ctx.currentTime;
-        console.log(timeElapsedSinceLastUpdate);
-        //If the timestamp gets within 300ms of the end of the track,
-        //stop the track and reset the timestamp to 0
-        if ((duration - timestamp) < .3) {
-          pauseTrack();
-          setTimestamp(0);
-        } else {
-          setTimestamp(t => t + timeElapsedSinceLastUpdate);
-        }
-      }, 250);
-      console.log(updater);
+      //Before the updater Interval starts, bring the time up to date with the
+      //Audio Context's currentTime
+      ctxRef.current.previousTime = ctxRef.current.ctx.currentTime;
+      updaterRef.current = createUpdaterInterval();
+    } else {
+      clearInterval(updaterRef.current);
     }
-    
-    return () => {clearInterval(updater); console.log("Cleared");};
+    return () => clearInterval(updaterRef.current);
     // eslint-disable-next-line
   }, [playing])
+
+  //Execute when the timestamp updates
+  useEffect(() => {
+    //If the timestamp gets within 300ms of the end of the track,
+    //stop the track and reset the timestamp to 0
+    if ((duration - timestamp) < .3) {
+      pauseTrack();
+      setTimestamp(0);
+    }
+    // eslint-disable-next-line
+  }, [timestamp])
 
   return (
     <div className="Song">

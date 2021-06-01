@@ -1,7 +1,22 @@
+import { useState } from "react";
 import PreferenceBtn from "./PreferenceBtn.js";
 import "../style/Preferences.css";
 
 function Preferences(props) {
+  const [selectedPreference, setSelectedPreference] = useState({
+    role: "full-choir",
+    part: null
+  });
+  
+  const isSelected = function(role, part) {
+    if (selectedPreference.role === "full-choir" && role === "full-choir") {
+      return true
+    } else if (selectedPreference.role === role && selectedPreference.part === part) {
+      return true
+    } else {
+      return false
+    }
+  }
   
   return (
     <div 
@@ -15,9 +30,11 @@ function Preferences(props) {
             <PreferenceBtn 
               key={`emphasize-${part}`}
               part={part}
-              initial={props.initials[part]}
+              content={props.initials[part]}
               role="emphasize" 
               handler={props.emphasizePart}
+              selected={isSelected("emphasize", part)}
+              setSelectedPreference={setSelectedPreference}
             />
           )
         })}
@@ -28,21 +45,28 @@ function Preferences(props) {
             <PreferenceBtn 
               key={`isolate-${part}`}
               part={part}
-              initial={props.initials[part]}
+              content={props.initials[part]}
               role="isolate" 
               handler={props.isolatePart}
+              selected={isSelected("isolate", part)}
+              setSelectedPreference={setSelectedPreference}
             />
           )
         })}
-      
-      <div 
-        className="full-choir-container" 
-        style={{gridColumn: `2 / ${props.parts.length + 2}`}}
-      >
-        <button className="PreferenceBtn full-choir" onClick={props.fullChoir}>
-            Full Choir
-        </button>
-      </div>
+
+        <div 
+          className="full-choir-container"
+          style={{gridColumn: `2 / ${props.parts.length + 2}`}}
+        >
+          <PreferenceBtn 
+            onClick={props.fullChoir}
+            selected={isSelected("full-choir")}
+            role={"full-choir"}
+            content="Full Choir"
+            handler={props.fullChoir}
+            setSelectedPreference={setSelectedPreference}
+          />
+        </div>
     </div>
   )
 }

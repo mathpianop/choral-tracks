@@ -8,9 +8,14 @@
   color: #000;
   border: none;
   border-radius: 5px;
-  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 50%);
+  box-shadow: 0 3px 4px 0 rgb(0 0 0 / 50%);
+}
+
+.full-choir {
+  width: 100%;
 }
 
 .selected {
   box-shadow: none;
+  border: 2px solid rgb(90, 87, 87);
 }

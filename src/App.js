@@ -13,6 +13,16 @@ function App() {
           bass: "B"
         }}
       />
+      <Song 
+        title="sherburne" 
+        parts={["soprano", "alto", "tenor", "bass"]}
+        initials={{
+          soprano: "S",
+          alto: "A",
+          tenor: "T",
+          bass: "B"
+        }}
+      />
     </div>
   );
 }

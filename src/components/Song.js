@@ -1,6 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import LoadingMask from "react-loadingmask";
-import "react-loadingmask/dist/react-loadingmask.css";
 import Preferences from "././Preferences.js"
 import Controls from "./Controls.js";
 import "../style/Song.css";
@@ -11,13 +9,11 @@ function Song(props) {
   const [duration, setDuration] = useState(10000);
   const [timestamp, setTimestamp] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [seekingWhilePlaying, setSeekingWhilePlaying] = useState(false);
   let audioRef = useRef({
     data: {},
     gainNodes: {},
-    sourceNodes: {},
-    loaded: {}
+    sourceNodes: {}
   });
   const ctxRef = useRef({
     ctx: new (window.AudioContext || window.webkitAudioContext)(),
@@ -37,26 +33,17 @@ function Song(props) {
   }
 
 
-  const getData = function(part) {
-    const myRequest = new Request(`./tracks/${props.title}/${part}.mp3`);
+  const getData = function(url) {
+    const myRequest = new Request(url);
     return fetch(myRequest)
     .then(response => {
       return response.arrayBuffer();
     })
     .then(buffer => {
         return ctxRef.current.ctx.decodeAudioData(buffer, decodedData => {
-          audioRef.current.loaded[part] = true
-          console.log(part, "loaded")
-          if (allLoaded()) {setLoading(false)}
-          return decodedData;
+        return decodedData;
       });
     });
-  }
-
-  const allLoaded = function() {
-    //Check if all the parts have been recorded as loaded
-    console.log(Object.values(audioRef.current.loaded))
-    return (Object.values(audioRef.current.loaded).length === props.parts.length)
   }
 
   const playData = function(part) {
@@ -166,7 +153,7 @@ function Song(props) {
   useEffect(() => {
     props.parts.forEach(part => {
       //Load audio for each part
-      audioRef.current.data[part] = getData(part)
+      audioRef.current.data[part] = getData(`./tracks/${props.title}/${part}.mp3`)
       //Create a gain (volume) node for each part
       audioRef.current.gainNodes[part] = ctxRef.current.ctx.createGain();
     });
@@ -200,28 +187,25 @@ function Song(props) {
   }, [timestamp])
 
   return (
-      <div className="Song">
-        <h2 className="song-title">{capitalize(props.title)}</h2>
-        <LoadingMask loading={loading}>
-          <Controls
-            playTrack={playTrack}
-            resetTrack={resetTrack}
-            pauseTrack={pauseTrack}
-            seekTrack={seekTrack}
-            timestamp={timestamp}
-            duration={duration}
-            playing={playing}
-          />
-          </LoadingMask>
-          <Preferences 
-            parts={props.parts}
-            initials={props.initials}
-            emphasizePart={emphasizePart}
-            isolatePart={isolatePart}
-            fullChoir={fullChoir} 
-          />
-        
-      </div>
+    <div className="Song">
+      <h2 className="song-title">{capitalize(props.title)}</h2>
+      <Controls
+        playTrack={playTrack}
+        resetTrack={resetTrack}
+        pauseTrack={pauseTrack}
+        seekTrack={seekTrack}
+        timestamp={timestamp}
+        duration={duration}
+        playing={playing}
+      />
+      <Preferences 
+        parts={props.parts}
+        initials={props.initials}
+        emphasizePart={emphasizePart}
+        isolatePart={isolatePart}
+        fullChoir={fullChoir} 
+      />
+    </div>
   )
 }
 

@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   width: 600px;
+  height: 40px;
   background-color: rgb(90, 87, 87);
   border-radius: 5px;
 }

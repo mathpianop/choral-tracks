@@ -55,7 +55,6 @@ function Song(props) {
 
   const allLoaded = function() {
     //Check if all the parts have been recorded as loaded
-    console.log(Object.values(audioRef.current.loaded))
     return (Object.values(audioRef.current.loaded).length === props.parts.length)
   }
 
@@ -199,9 +198,18 @@ function Song(props) {
     // eslint-disable-next-line
   }, [timestamp])
 
+  const loadingMessage = function() {
+    if (loading) {
+      return "Loading song (this might take a bit)"
+    } else {
+      return ""
+    }
+  }
+
   return (
       <div className="Song">
         <h2 className="song-title">{capitalize(props.title)}</h2>
+        <span className="loading-message">{loadingMessage()}</span>
         <LoadingMask loading={loading}>
           <Controls
             playTrack={playTrack}
@@ -212,7 +220,7 @@ function Song(props) {
             duration={duration}
             playing={playing}
           />
-          </LoadingMask>
+          
           <Preferences 
             parts={props.parts}
             initials={props.initials}
@@ -220,6 +228,7 @@ function Song(props) {
             isolatePart={isolatePart}
             fullChoir={fullChoir} 
           />
+          </LoadingMask>
         
       </div>
   )

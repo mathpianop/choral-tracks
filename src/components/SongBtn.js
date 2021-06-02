@@ -1,3 +1,5 @@
+import "../style/SongBtn.css";
+
 function SongBtn(props) {
 
   const capitalize = function(string) {

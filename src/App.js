@@ -45,13 +45,21 @@ function App() {
   return (
     <div className="App">
       <h1>Holy Transfiguration Choir</h1>
-      <p id="overview">
-        Welcome to the HT choral resources!
-        Hopefully, there will be a lot more to come, but for right now,
-        check out the song players below. If you click on one of the titles,
-        you can play the song with options to hear your part by itself ("isolate"),
-        or with the other parts softer ("emphasize").
-      </p>
+      <section id="overview">
+        <p >
+          Welcome to the HT choral resources!
+          Hopefully, there will be a lot more to come, but for right now,
+          check out the song player below. If you click on one of the titles,
+          you can play the song with options to hear your part by itself ("isolate"),
+          or with the other parts softer ("emphasize").
+        </p>
+        <p id="disclaimer">
+          NB: &ensp; This player ain't gonna work on a mobile device. &nbsp;
+          Also, you may find that you get the best experience using headphones,
+          especially when selecting "emphasize".
+        </p>
+      </section>
+      
       {songs.map(song => {
         return songContent(song);
       })}

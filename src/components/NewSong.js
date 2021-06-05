@@ -13,7 +13,13 @@ function NewSong() {
     }
   }
 
+  const apiUrl = "http://localhost:3000/api"
+  const [title, setTitle] = useState("");
   const [parts, setParts] = useState([part()]);
+
+  const handleChange = function(e) {
+    setTitle(e.target.value);
+  }
 
   const addPart = function() {
     //Create a new part object and add it to the parts array
@@ -22,7 +28,6 @@ function NewSong() {
   }
 
   const removePart = function(index) {
-    // Remove the part's uniqid from the partKeys array
     const oldParts = parts;
     oldParts.splice(index, 1);
     setParts([...oldParts]);
@@ -33,8 +38,40 @@ function NewSong() {
     oldParts[index][property] = newValue;
     setParts([...oldParts]);
   }
+
+  const handleSubmit = function(e) {
+    e.preventDefault();
+      axios({
+        method: "post",
+        url: `${apiUrl}/songs`, 
+        data: {title: title},
+       
+      })
+      .then(response => {
+        const songId = response.data.id;
+        parts.forEach(part => {
+          const formData = new FormData();
+          Object.entries(part).forEach(entry => {
+            formData.append(entry[0], entry[1])
+          })
+          axios.post(`${apiUrl}/songs/${songId}/parts`)
+          .then(response => console.log(response))
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+      
+
+      
+      
+      
+      
+  }
   return (
-    <form className="NewSong">
+    <form className="NewSong" onSubmit={handleSubmit}>
+      <label>Song Title</label>
+      <input type="text" name="title" value={title} onChange={handleChange}/>
       {parts.map((part, index) => {
         return (
           <NewPart

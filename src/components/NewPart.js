@@ -7,13 +7,33 @@ function NewPart(props) {
     props.updatePart(props.index, e.target.name, e.target.value);
   }
 
+  const handleFileUpload = function(e) {
+    props.updatePart(props.index, "recording", e.target.files[0])
+  }
+
   return (
     <div className="NewPart">
       <label>Name</label>
-      <input type="text" name="name" value={props.name} onChange={handleChange}/>
+      <input 
+        type="text" 
+        name="name" 
+        value={props.name} 
+        onChange={handleChange}
+      />
       <label>Initial</label>
-      <input type="text" name="initial" value={props.initial} onChange={handleChange}/>
-      <input type="file" name="recording" value={props.recording} onChange={handleChange}/>
+      <input 
+        type="text" 
+        name="initial" 
+        value={props.initial} 
+        onChange={handleChange}
+      />
+      <input 
+        type="file" 
+        accept="audio/*"
+        name="recording" 
+        value={props.recording} 
+        onChange={handleFileUpload}
+      />
       <button type="button" onClick={handleClick}>Remove Part</button>
     </div>
   )

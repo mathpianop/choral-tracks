@@ -25,20 +25,10 @@ function Song(props) {
   })
 
   const updaterRef = useRef();
- 
-
-  const capitalize = function(string) {
-    const substrings = string.split("-");
-    //Capitalize Substrings
-    const capitalizedSubstrings = substrings.map(substring => {
-      return substring.charAt(0).toUpperCase() + substring.slice(1);
-    })
-    return capitalizedSubstrings.join(" ");
-  }
 
 
   const getData = function(part) {
-    const myRequest = new Request(`./tracks/${props.title}/${part}.mp3`);
+    const myRequest = new Request(`./tracks/${props.location}/${part}.mp3`);
     return fetch(myRequest)
     .then(response => {
       return response.arrayBuffer();
@@ -50,12 +40,11 @@ function Song(props) {
           if (allLoaded()) {setLoading(false)}
           return decodedData;
       });
-    });
+    })
   }
 
   const allLoaded = function() {
     //Check if all the parts have been recorded as loaded
-    console.log(Object.values(audioRef.current.loaded))
     return (Object.values(audioRef.current.loaded).length === props.parts.length)
   }
 
@@ -130,7 +119,7 @@ function Song(props) {
         audioRef.current.gainNodes[part].gain.value = 1
       } else {
         //Set the rest of the parts at a low volume
-        audioRef.current.gainNodes[part].gain.value = .2;
+        audioRef.current.gainNodes[part].gain.value = .1;
       }
     })
   }
@@ -160,6 +149,14 @@ function Song(props) {
       ctxRef.current.previousTime = ctxRef.current.ctx.currentTime;
       setTimestamp(t => t + timeElapsedSinceLastUpdate);
     }, 250);
+  }
+
+  const getCapitalizedPartsString = function() {
+    const capitalizedArray = props.parts.map(part => {
+      return part.charAt(0) + part.slice(1);
+    })
+    return capitalizedArray.join(", ")
+   
   }
 
   //Execute on ComponentDidMount
@@ -199,9 +196,18 @@ function Song(props) {
     // eslint-disable-next-line
   }, [timestamp])
 
+  const loadingMessage = function() {
+    if (loading) {
+      return "Loading song (this might take a bit)"
+    } else {
+      return ""
+    }
+  }
+
   return (
       <div className="Song">
-        <h2 className="song-title">{capitalize(props.title)}</h2>
+        <h2 className="song-title">{props.title}</h2>
+        <span className="loading-message">{loadingMessage()}</span>
         <LoadingMask loading={loading}>
           <Controls
             playTrack={playTrack}
@@ -212,7 +218,9 @@ function Song(props) {
             duration={duration}
             playing={playing}
           />
-          </LoadingMask>
+          <span className="parts">
+            {`Parts: ${getCapitalizedPartsString()}`}
+          </span>
           <Preferences 
             parts={props.parts}
             initials={props.initials}
@@ -220,6 +228,7 @@ function Song(props) {
             isolatePart={isolatePart}
             fullChoir={fullChoir} 
           />
+          </LoadingMask>
         
       </div>
   )

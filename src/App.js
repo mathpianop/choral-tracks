@@ -40,6 +40,17 @@ function App() {
         bass: "B"
       },
       id: 1
+    },
+    {location: "ascension-megalonarion",
+    title: "Ascension Megalonarion",
+    parts: ["soprano", "alto", "tenor", "bass"],
+    initials: {
+      soprano: "S",
+      alto: "A",
+      tenor: "T",
+      bass: "B"
+      },
+    id: 2 
     }
   ]
   return (

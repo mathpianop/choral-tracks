@@ -47,18 +47,21 @@ function NewSong() {
         data: {title: title}
       })
       .then(response => {
-        const songId = response.data.id;
+        
         parts.forEach(part => {
-          const partData = {};
+          const partData = new FormData();
           ["name", "initial", "recording"].forEach(property => {
-            partData[property] = part[property];
+            partData.append(property, part[property])
           })
+          partData.append("song_id", response.data.id);
+
           axios({
             method: "post",
-            url: `${apiUrl}/songs/${songId}/parts`,
-            data: {part: partData}
+            url: `${apiUrl}/parts`,
+            data: partData
           })
           .then(response => console.log(response))
+          .catch(err => console.log(err))
         })
       })
       .catch(err => {

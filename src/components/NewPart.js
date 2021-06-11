@@ -1,4 +1,5 @@
 function NewPart(props) {
+
   const handleClick = function() {
     props.removePart(props.index)
   }
@@ -7,8 +8,10 @@ function NewPart(props) {
     props.updatePart(props.index, e.target.name, e.target.value);
   }
 
+  
+
   const handleFileUpload = function(e) {
-    props.updatePart(props.index, "recording", e.target.files[0])
+    props.updatePart(props.index, e.target.name, e.target.files[0]);
   }
 
   return (
@@ -31,7 +34,6 @@ function NewPart(props) {
         type="file" 
         accept="audio/*"
         name="recording" 
-        value={props.recording} 
         onChange={handleFileUpload}
       />
       <button type="button" onClick={handleClick}>Remove Part</button>

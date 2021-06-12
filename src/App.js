@@ -1,21 +1,20 @@
 import "./App.css";
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Song from "./components/Song.js";
 import SongBtn from "./components/SongBtn.js";
+import {apiUrl} from "./apiUrl.js";
 
 function App() {
   //Store id of selected song
   const [selectedSong, setSelectedSong] = useState(null);
-
+  const [songs, setSongs] = useState([])
 
   const songContent = function(song) {
     if (song.id === selectedSong) {
       return (
         <Song 
-        location={song.location}
         title={song.title}
-        parts={song.parts}
-        initials={song.initials}
+        id={song.id}
         key={song.id}
       />
       )
@@ -30,29 +29,21 @@ function App() {
       )
     }
   }
-  const songs = [
-    {location: "it_is_truly_meet_3",
-    title: "It Is Truly Meet #3",
-      parts: ["melody", "tenor", "bass"],
-      initials: {
-        melody: "M",
-        tenor: "T",
-        bass: "B"
-      },
-      id: 1
-    },
-    {location: "ascension-megalonarion",
-    title: "Ascension Megalonarion",
-    parts: ["soprano", "alto", "tenor", "bass"],
-    initials: {
-      soprano: "S",
-      alto: "A",
-      tenor: "T",
-      bass: "B"
-      },
-    id: 2 
-    }
-  ]
+  
+  useEffect(() => {
+    //On ComponentDidMount, fetch the songs index to create the list index
+    fetch(`${apiUrl}/songs`)
+    .then(response => {
+      return response.json()
+    })
+    .then(songsData => {
+      console.log(songsData)
+      setSongs(songsData);
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }, [])
   return (
     <div className="App">
       <h1>Holy Transfiguration Choir</h1>

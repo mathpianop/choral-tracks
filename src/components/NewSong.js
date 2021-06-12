@@ -1,5 +1,6 @@
 import NewPart from "./NewPart.js";
 import { useState } from "react";
+import { apiUrl } from "../apiUrl.js"
 import uniqid from "uniqid";
 import axios from "axios";
 
@@ -13,7 +14,6 @@ function NewSong() {
     }
   }
 
-  const apiUrl = "http://localhost:3000/api"
   const [title, setTitle] = useState("");
   const [parts, setParts] = useState([part()]);
 

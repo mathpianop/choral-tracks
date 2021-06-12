@@ -37,7 +37,6 @@ function App() {
       return response.json()
     })
     .then(songsData => {
-      console.log(songsData)
       setSongs(songsData);
     })
     .catch(err => {

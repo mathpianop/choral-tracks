@@ -13,11 +13,11 @@ function PreferenceBtn(props) {
 
   const handleClick = function() {
     //This calls either emphasizePart or isolatePart
-    props.handler(props.part)
+    props.handler(props.part.name)
     //This applies the "selected" className
     props.setSelectedPreference({
       role: props.role,
-      part: props.part
+      part: props.part.name
     });
   }
 

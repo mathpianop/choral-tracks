@@ -4,6 +4,7 @@ import "react-loadingmask/dist/react-loadingmask.css";
 import Preferences from "././Preferences.js"
 import Controls from "./Controls.js";
 import "../style/Song.css";
+import { apiUrl } from "../apiUrl.js";
 
 
 function Song(props) {
@@ -12,6 +13,7 @@ function Song(props) {
   const [timestamp, setTimestamp] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [parts, setParts] = useState([])
   const [seekingWhilePlaying, setSeekingWhilePlaying] = useState(false);
   let audioRef = useRef({
     data: {},
@@ -28,15 +30,16 @@ function Song(props) {
 
 
   const getData = function(part) {
-    const myRequest = new Request(`./tracks/${props.location}/${part}.mp3`);
+    const myRequest = new Request(part.recording);
     return fetch(myRequest)
     .then(response => {
       return response.arrayBuffer();
     })
     .then(buffer => {
         return ctxRef.current.ctx.decodeAudioData(buffer, decodedData => {
-          audioRef.current.loaded[part] = true
-          console.log(part, "loaded")
+          audioRef.current.loaded[part.name] = true
+          console.log(part.name, "loaded")
+          console.log(audioRef.current.loaded, parts.length);
           if (allLoaded()) {setLoading(false)}
           return decodedData;
       });
@@ -45,21 +48,22 @@ function Song(props) {
 
   const allLoaded = function() {
     //Check if all the parts have been recorded as loaded
-    return (Object.values(audioRef.current.loaded).length === props.parts.length)
+    return (Object.values(audioRef.current.loaded).length === parts.length)
   }
 
   const playData = function(part) {
-    audioRef.current.data[part].then(decodedData => {
+    console.log(audioRef.current);
+    audioRef.current.data[part.name].then(decodedData => {
       // Create source node
       const source = ctxRef.current.ctx.createBufferSource();
       // Store the source in the sourcesRef
-      audioRef.current.sourceNodes[part] = source
+      audioRef.current.sourceNodes[part.name] = source
       // Wire up the data
       source.buffer = decodedData;
       // Connect the source node to the gain node (which controls the volume)
-      source.connect(audioRef.current.gainNodes[part]);
+      source.connect(audioRef.current.gainNodes[part.name]);
       // Connect the gain node to the destination (e.g., speakers) and start the audio
-      audioRef.current.gainNodes[part].connect(ctxRef.current.ctx.destination);
+      audioRef.current.gainNodes[part.name].connect(ctxRef.current.ctx.destination);
       source.start(0, timestamp)
     })
   }
@@ -68,7 +72,7 @@ function Song(props) {
     if (playing) {
       return
     }
-    props.parts.forEach(part => {
+    parts.forEach(part => {
       playData(part);
     });
     //Indicate that play has begun
@@ -79,8 +83,8 @@ function Song(props) {
 
   const pauseTrack = function() {
     if (playing) {
-      props.parts.forEach(part => {
-        audioRef.current.sourceNodes[part].stop();
+      parts.forEach(part => {
+        audioRef.current.sourceNodes[part.name].stop();
       });
       //Indicate that playing has stopped
       setPlaying(false);
@@ -113,31 +117,33 @@ function Song(props) {
 
 
    const emphasizePart = function(emphasizedPart) {
-    props.parts.forEach(part => {
-      if (part === emphasizedPart) {
+    parts.forEach(part => {
+      if (part.name === emphasizedPart) {
         //Set part to be emphasized at full volume
-        audioRef.current.gainNodes[part].gain.value = 1
+        audioRef.current.gainNodes[part.name].gain.value = 1
       } else {
         //Set the rest of the parts at a low volume
-        audioRef.current.gainNodes[part].gain.value = .1;
+        audioRef.current.gainNodes[part.name].gain.value = .1;
       }
     })
   }
 
   const isolatePart = function(isolatedPart) {
-    props.parts.forEach(part => {
-      if (part === isolatedPart) {
+    parts.forEach(part => {
+      if (part.name === isolatedPart) {
         //Set part to be isolated at full volume
-        audioRef.current.gainNodes[part].gain.value = 1
+        audioRef.current.gainNodes[part.name].gain.value = 1
       } else {
         //Mute the rest of the parts
-        audioRef.current.gainNodes[part].gain.value = 0;
+        audioRef.current.gainNodes[part.name].gain.value = 0;
       }
     })
   }
 
   const fullChoir = function() {
-    props.parts.forEach(part => audioRef.current.gainNodes[part].gain.value = 1);
+    parts.forEach(part => {
+      audioRef.current.gainNodes[part.name].gain.value = 1;
+    })
   }
 
   const createUpdaterInterval = function() {
@@ -152,8 +158,9 @@ function Song(props) {
   }
 
   const getCapitalizedPartsString = function() {
-    const capitalizedArray = props.parts.map(part => {
-      return part.charAt(0) + part.slice(1);
+    const capitalizedArray = parts.map(part => {
+      const partName = part.name;
+      return partName.charAt(0) + partName.slice(1);
     })
     return capitalizedArray.join(", ")
    
@@ -161,16 +168,30 @@ function Song(props) {
 
   //Execute on ComponentDidMount
   useEffect(() => {
-    props.parts.forEach(part => {
-      //Load audio for each part
-      audioRef.current.data[part] = getData(part)
-      //Create a gain (volume) node for each part
-      audioRef.current.gainNodes[part] = ctxRef.current.ctx.createGain();
-    });
-    //Once loaded, select the first part arbitrarily and set the duration
-    Object.values(audioRef.current.data)[0].then(buffer => setDuration(buffer.duration));
+    fetch(`${apiUrl}/songs/${props.id}/parts`)
+    .then(response => {
+      return response.json();
+    })
+    .then(partsData => {
+      setParts(partsData);
+    })
   // eslint-disable-next-line
   }, [])
+
+  //Execute once the parts data have loaded
+  useEffect(() => {
+    if (parts.length > 0) {
+      parts.forEach(part => {
+        //Load audio for each part
+        audioRef.current.data[part.name] = getData(part)
+        //Create a gain (volume) node for each part
+        audioRef.current.gainNodes[part.name] = ctxRef.current.ctx.createGain();
+      });
+      //Once loaded, select the first part arbitrarily and set the duration
+      Object.values(audioRef.current.data)[0].then(buffer => setDuration(buffer.duration));
+    }
+  // eslint-disable-next-line
+  }, [parts])
 
   //Execute when playing state changes
   useEffect(() => {
@@ -222,8 +243,7 @@ function Song(props) {
             {`Parts: ${getCapitalizedPartsString()}`}
           </span>
           <Preferences 
-            parts={props.parts}
-            initials={props.initials}
+            parts={parts}
             emphasizePart={emphasizePart}
             isolatePart={isolatePart}
             fullChoir={fullChoir} 

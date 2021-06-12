@@ -50,6 +50,7 @@ function NewSong() {
         
         parts.forEach(part => {
           const partData = new FormData();
+          const songId = response.data.id;
           ["name", "initial", "recording"].forEach(property => {
             partData.append(property, part[property])
           })
@@ -57,7 +58,7 @@ function NewSong() {
 
           axios({
             method: "post",
-            url: `${apiUrl}/parts`,
+            url: `${apiUrl}/songs/${songId}/parts`,
             data: partData
           })
           .then(response => console.log(response))

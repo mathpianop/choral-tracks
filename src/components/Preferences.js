@@ -28,12 +28,12 @@ function Preferences(props) {
         {props.parts.map(part => {
           return (
             <PreferenceBtn 
-              key={`emphasize-${part}`}
-              part={part}
-              content={props.initials[part]}
+              key={`emphasize-${part.name}`}
+              part={part.name}
+              content={part.initial}
               role="emphasize" 
               handler={props.emphasizePart}
-              selected={isSelected("emphasize", part)}
+              selected={isSelected("emphasize", part.name)}
               setSelectedPreference={setSelectedPreference}
             />
           )
@@ -43,12 +43,12 @@ function Preferences(props) {
         {props.parts.map(part => {
           return (
             <PreferenceBtn 
-              key={`isolate-${part}`}
+              key={`isolate-${part.name}`}
               part={part}
-              content={props.initials[part]}
+              content={part.initial}
               role="isolate" 
               handler={props.isolatePart}
-              selected={isSelected("isolate", part)}
+              selected={isSelected("isolate", part.name)}
               setSelectedPreference={setSelectedPreference}
             />
           )

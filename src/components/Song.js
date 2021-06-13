@@ -39,7 +39,6 @@ function Song(props) {
         return ctxRef.current.ctx.decodeAudioData(buffer, decodedData => {
           audioRef.current.loaded[part.name] = true
           console.log(part.name, "loaded")
-          console.log(audioRef.current.loaded, parts.length);
           if (allLoaded()) {setLoading(false)}
           return decodedData;
       });
@@ -52,7 +51,6 @@ function Song(props) {
   }
 
   const playData = function(part) {
-    console.log(audioRef.current);
     audioRef.current.data[part.name].then(decodedData => {
       // Create source node
       const source = ctxRef.current.ctx.createBufferSource();

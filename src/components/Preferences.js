@@ -5,13 +5,13 @@ import "../style/Preferences.css";
 function Preferences(props) {
   const [selectedPreference, setSelectedPreference] = useState({
     role: "full-choir",
-    part: null
+    partName: null
   });
   
-  const isSelected = function(role, part) {
+  const isSelected = function(role, partName) {
     if (selectedPreference.role === "full-choir" && role === "full-choir") {
       return true
-    } else if (selectedPreference.role === role && selectedPreference.part === part) {
+    } else if (selectedPreference.role === role && selectedPreference.partName === partName) {
       return true
     } else {
       return false
@@ -29,7 +29,7 @@ function Preferences(props) {
           return (
             <PreferenceBtn 
               key={`emphasize-${part.name}`}
-              part={part.name}
+              partName={part.name}
               content={part.initial}
               role="emphasize" 
               handler={props.emphasizePart}
@@ -44,7 +44,7 @@ function Preferences(props) {
           return (
             <PreferenceBtn 
               key={`isolate-${part.name}`}
-              part={part}
+              partName={part.name}
               content={part.initial}
               role="isolate" 
               handler={props.isolatePart}

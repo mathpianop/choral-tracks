@@ -38,7 +38,7 @@ function Song(props) {
 
 
   const getData = function(part) {
-    console.log(convertUrlToMp3(part.recording));
+    //Convert extension to .mp3 before fetching from Cloudinary
     const myRequest = new Request(convertUrlToMp3(part.recording));
     return fetch(myRequest)
     .then(response => {

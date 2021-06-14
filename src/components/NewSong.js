@@ -35,46 +35,41 @@ function NewSong() {
 
   const updatePart = function(index, property, newValue) {
     const oldParts = parts;
+    //Select part/property and assign the new value
     oldParts[index][property] = newValue;
     setParts([...oldParts]);
   }
 
+  const postPart = function(part) {
+    //Create a FormData object and append the Part params
+    const partData = new FormData();
+    const songId = response.data.id;
+    ["name", "initial", "recording"].forEach(property => {
+      partData.append(property, part[property])
+    })
+    partData.append("song_id", response.data.id);
+    partData.append("pitch_order", parts.indexOf(part))
+
+    axios({
+      method: "post",
+      url: `${apiUrl}/songs/${songId}/parts`,
+      data: partData
+    })
+    .then(response => console.log(response))
+    .catch(err => console.log(err))
+  }
+
   const handleSubmit = function(e) {
     e.preventDefault();
-      axios({
-        method: "post",
-        url: `${apiUrl}/songs`, 
-        data: {title: title}
-      })
-      .then(response => {
-        
-        parts.forEach(part => {
-          const partData = new FormData();
-          const songId = response.data.id;
-          ["name", "initial", "recording"].forEach(property => {
-            partData.append(property, part[property])
-          })
-          partData.append("song_id", response.data.id);
-          partData.append("pitch_order", parts.indexOf(part))
-
-          axios({
-            method: "post",
-            url: `${apiUrl}/songs/${songId}/parts`,
-            data: partData
-          })
-          .then(response => console.log(response))
-          .catch(err => console.log(err))
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-      
-
-      
-      
-      
-      
+    //POST the new Song
+    axios({
+      method: "post",
+      url: `${apiUrl}/songs`, 
+      data: {title: title}
+    })
+    //After POSTing the Song, POST each of the Song's Parts
+    .then(() => parts.forEach(part => postPart(part)))
+    .catch(err => console.log(err)) 
   }
   return (
     <form className="NewSong" onSubmit={handleSubmit}>

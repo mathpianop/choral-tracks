@@ -1,9 +1,10 @@
-import NewSong from "./components/NewSong.js";
+import SongFactory from "./components/SongFactory.js";
 
 function Admin() {
+  
   return (
     <div className="Admin">
-      <NewSong />
+      <SongFactory />
     </div>
   )
 }

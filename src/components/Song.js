@@ -36,7 +36,6 @@ function Song(props) {
     return splitArray.join(".");
   }
 
-
   const getData = function(part) {
     //Convert extension to .mp3 before fetching from Cloudinary
     const myRequest = new Request(convertUrlToMp3(part.recording));
@@ -86,8 +85,6 @@ function Song(props) {
     setPlaying(true);
   }
 
-
-
   const pauseTrack = function() {
     if (playing) {
       parts.forEach(part => {
@@ -121,7 +118,6 @@ function Song(props) {
     }
     //eslint-disable-next-line
    }, [seekingWhilePlaying]);
-
 
    const emphasizePart = function(emphasizedPart) {
     parts.forEach(part => {

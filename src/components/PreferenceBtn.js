@@ -21,8 +21,6 @@ function PreferenceBtn(props) {
     });
   }
 
-  
-
   return (
     <button className={classList()} onClick={handleClick}>
       {props.content}

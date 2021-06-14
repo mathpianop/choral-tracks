@@ -55,6 +55,7 @@ function NewSong() {
             partData.append(property, part[property])
           })
           partData.append("song_id", response.data.id);
+          partData.append("pitch_order", parts.indexOf(part))
 
           axios({
             method: "post",

@@ -28,9 +28,18 @@ function Song(props) {
 
   const updaterRef = useRef();
 
+  const convertUrlToMp3 = function(url) {
+    const splitArray = url.split(".");
+    //Replace last element of split array (the current extension)
+    //with 'mp3'
+    splitArray.splice((splitArray.length - 1), 1, 'mp3')
+    return splitArray.join(".");
+  }
+
 
   const getData = function(part) {
-    const myRequest = new Request(part.recording);
+    console.log(convertUrlToMp3(part.recording));
+    const myRequest = new Request(convertUrlToMp3(part.recording));
     return fetch(myRequest)
     .then(response => {
       return response.arrayBuffer();

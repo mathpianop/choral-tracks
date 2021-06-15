@@ -6,7 +6,7 @@ function SongFactory() {
   const [factoryMode, setFactoryMode] = useState("idle");
   const [loading, setLoading] = useState({});
 
-   //job status can be: none, assembly, submitting, submitted
+   //job status can be: none, assembly, submitting, submitted, or failed
    const [jobStatus, setJobStatus] = useState("none");
  
 

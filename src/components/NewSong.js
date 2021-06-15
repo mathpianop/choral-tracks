@@ -95,7 +95,10 @@ function NewSong(props) {
         postPart(part, response.data.id)
       })
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      props.setJobStatus("failed");
+      console.log(err)
+    });
     props.setFactoryMode("delivery");
     props.setJobStatus("submitting");
    

@@ -13,9 +13,11 @@ function SubmitProgress(props) {
     })
   }
 
-  const successMessage = function() {
+  const reportMessage = function() {
     if (props.jobStatus === "submitted"){
       return "Song created succesfully!"
+    } else if (props.jobStatus === "failed") {
+      return "Rats! Song creation could not be completed"
     } else {
       return "";
     }
@@ -26,7 +28,7 @@ function SubmitProgress(props) {
       <span>Submitting</span>
       <div className="progress-status">
         {progressStatusContent()}
-        <span className="success-message">{successMessage()}</span>
+        <span className="report-message">{reportMessage()}</span>
       </div>
     </div>
   )

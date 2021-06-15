@@ -14,7 +14,7 @@ function SubmitProgress(props) {
   }
 
   const successMessage = function() {
-    if (Object.values(props.loading).every(Boolean)){
+    if (props.jobStatus === "submitted"){
       return "Song created succesfully!"
     } else {
       return "";

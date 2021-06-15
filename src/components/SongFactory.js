@@ -5,11 +5,14 @@ import { useState, useEffect } from "react";
 function SongFactory() {
   const [factoryMode, setFactoryMode] = useState("idle");
   const [loading, setLoading] = useState({});
-  const [jobInProgress, setJobInProgress] = useState(false);
+
+   //job status can be: none, assembly, submitting, submitted
+   const [jobStatus, setJobStatus] = useState("none");
  
 
   const handleNewSong = function() {
     setFactoryMode("draft");
+    setJobStatus("assembly");
   }
 
   const content = function() {
@@ -19,14 +22,15 @@ function SongFactory() {
           <NewSong
             setFactoryMode={setFactoryMode}
             setLoading={setLoading}
-            setJobInProgress={setJobInProgress}
+            setJobStatus={setJobStatus}
           />
         );
-      case "submitting":
+      case "delivery":
         return (
           <SubmitProgress 
             loading={loading}
-            setJobInProgress={setJobInProgress}
+            setJobStatus={setJobStatus}
+            jobStatus={jobStatus}
           />
         );
       default:
@@ -40,7 +44,7 @@ function SongFactory() {
 
   const button = function() {
     //If a job isn't in progress, show the new song button
-    if (!jobInProgress) {
+    if (jobStatus === "none" || jobStatus === "submitted") {
       return <button onClick={handleNewSong}>New</button>
     }
   }
@@ -48,7 +52,7 @@ function SongFactory() {
   useEffect(() => {
     //If all parts are loading, mark job as finished
     if (Object.values(loading).every(Boolean)) {
-      setJobInProgress(false)
+      setJobStatus("submitted")
     }
     //eslint-disable-next-line
   }, [loading])

@@ -20,7 +20,7 @@ function NewSong(props) {
 
   const closeForm = function() {
     props.setFactoryMode("idle")
-    props.setJobInProgress(false)
+    props.setJobStatus("none")
   }
 
   const handleChange = function(e) {
@@ -96,7 +96,8 @@ function NewSong(props) {
       })
     })
     .catch(err => console.log(err));
-    props.setFactoryMode("submitting");
+    props.setFactoryMode("delivery");
+    props.setJobStatus("submitting");
    
   }
   return (

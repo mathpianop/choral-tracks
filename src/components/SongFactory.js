@@ -4,7 +4,8 @@ import { useState } from "react";
 
 function SongFactory() {
   const [factoryMode, setFactoryMode] = useState("draft");
-  const [progressMessage, setProgressMessage] = useState("");
+  const [loading, setLoading] = useState({});
+
   const handleNewSong = function() {
     setFactoryMode("draft");
   }
@@ -15,13 +16,13 @@ function SongFactory() {
         return (
           <NewSong
             setFactoryMode={setFactoryMode}
-            setProgressMessage={setProgressMessage}
+            setLoading={setLoading}
           />
         );
       case "submitting":
         return (
           <SubmitProgress 
-            progressMessage={progressMessage}
+            loading={loading}
           />
         );
       default:

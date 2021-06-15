@@ -45,7 +45,14 @@ function NewSong(props) {
     setParts([...oldParts]);
   }
 
+  
+
   const postPart = function(part, songId) {
+
+    //Assemble and set loading object
+    const loading = {};
+    parts.forEach(part => (loading[part.name] = false));
+    props.setLoading(loading);
     //Create a FormData object and append the Part params
     const partData = new FormData();
     ["name", "initial", "recording"].forEach(property => {
@@ -54,15 +61,20 @@ function NewSong(props) {
     partData.append("song_id", songId);
     partData.append("pitch_order", parts.indexOf(part))
 
+    //POST the Part
     axios({
       method: "post",
       url: `${apiUrl}/songs/${songId}/parts`,
       data: partData
     })
     .then(response => {
-      console.log(response);
+      console.log(response)
+      //If the part uploads succesfully, update loading object
       if (response.status === 200) {
-        props.setProgressMessage(`${part.name} Loaded`)
+        props.setLoading(loading => {
+          loading[part.name] = true;
+          return {...loading};
+        })
       }
     })
     .catch(err => console.log(err))
@@ -76,12 +88,15 @@ function NewSong(props) {
       url: `${apiUrl}/songs`, 
       data: {title: title}
     })
-    //After POSTing the Song, POST each of the Song's Parts
-    .then((response) => parts.forEach(part => postPart(part, response.data.id)))
-    .then(console.log("Done?"))
+    .then(response => {
+      //After POSTing the Song, POST each of the Song's Parts
+      parts.forEach(part => {
+        postPart(part, response.data.id)
+      })
+    })
     .catch(err => console.log(err));
-
     props.setFactoryMode("submitting");
+   
   }
   return (
     <form className="NewSong" onSubmit={handleSubmit}>

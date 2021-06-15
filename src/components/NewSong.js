@@ -78,16 +78,23 @@ function NewSong(props) {
         })
       }
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      props.setJobStatus("failed");
+      console.log(err)
+    })
   }
 
   const handleSubmit = function(e) {
     e.preventDefault();
     //POST the new Song
+    const songData = new FormData();
+    songData.append("title", title)
+    songData.append("parts_promised", parts.length)
+
     axios({
       method: "post",
       url: `${apiUrl}/songs`, 
-      data: {title: title}
+      data: songData
     })
     .then(response => {
       //After POSTing the Song, POST each of the Song's Parts

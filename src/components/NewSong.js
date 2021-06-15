@@ -20,6 +20,7 @@ function NewSong(props) {
 
   const closeForm = function() {
     props.setFactoryMode("idle")
+    props.setJobInProgress(false)
   }
 
   const handleChange = function(e) {

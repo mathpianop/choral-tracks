@@ -10,9 +10,9 @@ function PartLoadedEntry(props) {
   const className = () => (props.loaded ? "loaded" : "loading");
 
   return (
-    <span className="PartLoadedEntry" className={className()}>
-      {content()}
-    </span>
+    <div className="PartLoadedEntry" >
+      <span className={className()}>{content()}</span>
+    </div>
   )
 }
 

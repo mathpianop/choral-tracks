@@ -12,12 +12,21 @@ function SubmitProgress(props) {
       )
     })
   }
+
+  const successMessage = function() {
+    if (Object.values(props.loading).every(Boolean)){
+      return "Song created succesfully!"
+    } else {
+      return "";
+    }
+  }
     
   return (
     <div className="SubmitProgress">
       <span>Submitting</span>
       <div className="progress-status">
         {progressStatusContent()}
+        <span className="success-message">{successMessage()}</span>
       </div>
     </div>
   )

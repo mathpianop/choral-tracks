@@ -171,6 +171,7 @@ function Song(props) {
 
   //Execute on ComponentDidMount
   useEffect(() => {
+    //GET songs from Rails API
     fetch(`${apiUrl}/songs/${props.id}/parts`)
     .then(response => {
       return response.json();

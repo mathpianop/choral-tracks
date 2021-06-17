@@ -1,4 +1,4 @@
-import Edit from "@material-ui/icons/Edit";
+import EditIcon from "@material-ui/icons/Edit";
 
 function SongInfo(props) {
   const partsContent = function() {
@@ -19,7 +19,7 @@ function SongInfo(props) {
       <span>{`Parts (${props.song["parts_promised"]} promised):`}</span>
       {partsContent()}
       <button type="button" onClick={handleEdit}>
-        <Edit />
+        <EditIcon />
       </button>
     </div>
   )

@@ -1,4 +1,4 @@
-function NewPart(props) {
+function PartFormlet(props) {
 
   const handleClick = function() {
     props.removePart(props.index)
@@ -41,4 +41,4 @@ function NewPart(props) {
   )
 }
 
-export default NewPart
+export default PartFormlet

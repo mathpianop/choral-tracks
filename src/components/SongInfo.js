@@ -1,3 +1,5 @@
+import Edit from "@material-ui/icons/Edit";
+
 function SongInfo(props) {
   const partsContent = function() {
     //If the song has parts, render parts info list
@@ -7,11 +9,18 @@ function SongInfo(props) {
       })
     }
   }
+
+  const handleEdit = function() {
+    props.editSong(props.song)
+  }
   return (
     <div className="SongInfo">
       <span>{props.song.title}</span>
       <span>{`Parts (${props.song["parts_promised"]} promised):`}</span>
       {partsContent()}
+      <button type="button" onClick={handleEdit}>
+        <Edit />
+      </button>
     </div>
   )
 }

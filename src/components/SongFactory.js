@@ -1,26 +1,26 @@
 import NewSong from "./NewSong.js";
 import SubmitProgress from "./SubmitProgress.js"
+import SongInfo from "./SongInfo.js"
 import { useState, useEffect } from "react";
 
-function SongFactory() {
-  const [factoryMode, setFactoryMode] = useState("idle");
+function SongFactory(props) {
+  
   const [loading, setLoading] = useState({});
-
-   //job status can be: none, assembly, submitting, submitted, or failed
-   const [jobStatus, setJobStatus] = useState("none");
+  //job status can be: none, assembly, submitting, submitted, or failed
+  const [jobStatus, setJobStatus] = useState("none");
  
 
   const handleNewSong = function() {
-    setFactoryMode("draft");
+    props.setFactoryMode("draft");
     setJobStatus("assembly");
   }
 
   const content = function() {
-    switch (factoryMode) {
+    switch (props.factoryMode) {
       case "draft":
         return (
           <NewSong
-            setFactoryMode={setFactoryMode}
+            setFactoryMode={props.setFactoryMode}
             setLoading={setLoading}
             setJobStatus={setJobStatus}
           />
@@ -33,6 +33,8 @@ function SongFactory() {
             jobStatus={jobStatus}
           />
         );
+      case "edit":
+        return
       default:
         return (
           <div className="prompt">

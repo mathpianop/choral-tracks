@@ -41,6 +41,7 @@ function Admin() {
         factoryMode={factoryMode}
         setFactoryMode={setFactoryMode}
         editableSong={editableSong}
+        editableParts={parts[editableSong.id.toString()]}
       />
     </div>
   )

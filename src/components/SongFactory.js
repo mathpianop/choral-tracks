@@ -22,7 +22,7 @@ function SongFactory(props) {
             setFactoryMode={props.setFactoryMode}
             setLoading={setLoading}
             setJobStatus={setJobStatus}
-            mode="new"
+            factoryMode="new"
           />
         );
       case "delivery":
@@ -39,7 +39,8 @@ function SongFactory(props) {
             setFactoryMode={props.setFactoryMode}
             setLoading={setLoading}
             setJobStatus={setJobStatus}
-            mode="edit"
+            editableSong={props.editableSong}
+            factoryMode="edit"
           />
         );
       default:

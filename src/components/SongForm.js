@@ -1,4 +1,4 @@
-import NewSongFormlet from "./NewSongFormlet.js"
+import PartFormlet from "./PartFormlet.js"
 import { useState } from "react";
 import { apiUrl } from "../apiUrl.js";
 import uniqid from "uniqid";
@@ -6,22 +6,50 @@ import axios from "axios";
 import CancelIcon from "@material-ui/icons/Close";
 
 function SongForm(props) {
+  
   const newPart = function() {
-    return [{
+    return {
       name: "",
       initial: "",
       recording: "",
+      mode: "new",
       key: uniqid()
-    }]
+    }
   }
+
+  const railsToJs = function(railsPart) {
+     //Take Rails Part object and return the React equivalent
+     return {
+       name: railsPart.name,
+       initial: railsPart.initial,
+       recording: railsPart.recording,
+       mode: "edit",
+       key: uniqid()
+     }
+  }
+   
 
   const initializeParts = function() {
     if (props.factoryMode === "new") {
-      return newPart()
+      return [newPart()];
     } else if (props.factoryMode === "edit") {
-      return props.parts
+      let initialParts = props.editableParts;
+      //Pad initialParts with blank part objects wherever pitch order
+      //does not correspond to a fulfilled parts
+      for (let i = 0; i < props.editableSong.partsPromised; i++) {
+        if (i === initialParts[i]["pitch_order"]) {
+          //if the index corresonds to a pitch order that has been fulfilled,  
+          //replace Rails Part with the React Part
+          initialParts.splice(i, 1, railsToJs(initialParts[i]));      
+        } else {
+          //If not, add a new part at that index
+          initialParts.splice(i, 0, newPart());
+        }
+      }
     }
   }
+
+
   const [parts, setParts] = useState(initializeParts());
   const [title, setTitle] = useState("");
   
@@ -37,7 +65,9 @@ function SongForm(props) {
 
   const addPart = function() {
     //Create a new part object and add it to the parts array
-    setParts(parts => [...parts, newPart()]);
+    const newPart = newPart();
+    setParts(parts => [...parts, newPart]);
+    return newPart
   }
 
   const removePart = function(index) {
@@ -143,12 +173,17 @@ function SongForm(props) {
       </button>
       <label>Song Title</label>
       <input type="text" name="title" value={title} onChange={handleChange}/>
-      <NewSongFormlet 
-        newPart={newPart}
-        updatePart={updatePart}
-        removePart={removePart}
-        parts={parts}
-      />
+      {parts.map((part, index) => {
+        return (
+          <PartFormlet
+            index={index} 
+            key={part.key} 
+            part={part}
+            updatePart={updatePart}
+            removePart={removePart}
+          />
+        )
+    })}
       <button type="button" className="addPart" onClick={addPart}>Add Part</button>
       <input type="submit" />
     </form>

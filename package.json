@@ -28,7 +28,8 @@
     "eject": "react-scripts eject",
     "update-site": "bash update-site.sh",
     "develop": "bash develop.sh",
-    "produce": "bash produce.sh"
+    "produce": "bash produce.sh",
+    "new": "bash new.sh"
   },
   "eslintConfig": {
     "extends": [

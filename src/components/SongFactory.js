@@ -40,6 +40,7 @@ function SongFactory(props) {
             setLoading={setLoading}
             setJobStatus={setJobStatus}
             editableSong={props.editableSong}
+            editableParts={props.editableParts}
             factoryMode="edit"
           />
         );

@@ -9,10 +9,12 @@ function Admin() {
   const [parts, setParts] = useState([]);
   const [factoryMode, setFactoryMode] = useState("idle");
   const [editableSong, setEditableSong] = useState(null);
+  const [editableParts, setEditableParts] = useState(null);
 
   const editSong = function(song) {
-    setEditableSong(song)
-    setFactoryMode("edit")
+    setEditableSong(song);
+    setEditableParts(parts[song.id.toString()]);
+    setFactoryMode("edit");
   }
 
   //Execute on ComponentDidMount
@@ -25,6 +27,7 @@ function Admin() {
     .then(songsAndParts => {
       setSongs(songsAndParts.songs);
       setParts(songsAndParts.parts);
+      console.log(songsAndParts.parts["101"])
     })
   
    // eslint-disable-next-line 
@@ -36,12 +39,13 @@ function Admin() {
         songs={songs}
         parts={parts}
         editSong={editSong}
+        factoryMode={factoryMode}
       />
       <SongFactory 
         factoryMode={factoryMode}
         setFactoryMode={setFactoryMode}
         editableSong={editableSong}
-        editableParts={parts[editableSong.id.toString()]}
+        editableParts={editableParts}
       />
     </div>
   )

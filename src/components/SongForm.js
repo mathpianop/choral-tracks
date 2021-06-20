@@ -6,7 +6,7 @@ import axios from "axios";
 import CancelIcon from "@material-ui/icons/Close";
 
 function SongForm(props) {
-  
+
   const newPart = function() {
     return {
       name: "",
@@ -30,13 +30,15 @@ function SongForm(props) {
    
 
   const initializeParts = function() {
+    console.log("EP", props.editableParts)
     if (props.factoryMode === "new") {
       return [newPart()];
     } else if (props.factoryMode === "edit") {
+      console.log("Called")
       let initialParts = props.editableParts;
       //Pad initialParts with blank part objects wherever pitch order
       //does not correspond to a fulfilled parts
-      for (let i = 0; i < props.editableSong.partsPromised; i++) {
+      for (let i = 0; i < props.editableSong["parts_promised"]; i++) {
         if (i === initialParts[i]["pitch_order"]) {
           //if the index corresonds to a pitch order that has been fulfilled,  
           //replace Rails Part with the React Part
@@ -46,12 +48,16 @@ function SongForm(props) {
           initialParts.splice(i, 0, newPart());
         }
       }
+      return initialParts;
     }
   }
 
+  
+
 
   const [parts, setParts] = useState(initializeParts());
-  const [title, setTitle] = useState("");
+  //If the mode is "edit", set the title initially to existing title
+  const [title, setTitle] = useState(props.editableSong.title || "");
   
 
   const closeForm = function() {
@@ -189,5 +195,6 @@ function SongForm(props) {
     </form>
   )
 }
+
 
 export default SongForm;

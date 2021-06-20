@@ -14,6 +14,7 @@ function CurrentCollection(props) {
             songParts={props.parts[song.id.toString()]}
             editSong={props.editSong}
             key={song.id}
+            factoryMode={props.factoryMode}
           />
         )
       })

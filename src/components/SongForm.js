@@ -13,7 +13,7 @@ function SongForm(props) {
       name: "",
       initial: "",
       recording: "",
-      mode: "not",
+      mode: "new",
       key: uniqid()
     }
   }
@@ -31,17 +31,16 @@ function SongForm(props) {
    
 
   const initializeParts = function() {
-    if (props.factoryMode === "new") {
+    //If the SongForm is for a new song or for one without any fulfilled parts,
+    //return an array with a single newPart
+    if (props.editableParts === undefined) {
       return [newPart()];
-    } else if (props.factoryMode === "edit") {
-      console.log("Called")
+    } else {
       let initialParts = [...props.editableParts];
       //Pad initialParts with blank part objects wherever pitch order
       //does not correspond to a fulfilled parts
       for (let i = 0; i < props.editableSong["parts_promised"]; i++) {
-        console.log(i)
         if (i === initialParts[i]["pitch_order"]) {
-          console.log("Old")
           //if the index corresonds to a pitch order that has been fulfilled,  
           //replace Rails Part with the React Part
           initialParts.splice(i, 1, railsToJs(initialParts[i]));      

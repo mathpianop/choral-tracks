@@ -27,7 +27,6 @@ function Admin() {
     .then(songsAndParts => {
       setSongs(songsAndParts.songs);
       setParts(songsAndParts.parts);
-      console.log(songsAndParts.parts["101"])
     })
   
    // eslint-disable-next-line 
@@ -48,6 +47,7 @@ function Admin() {
         editableParts={editableParts}
       />
     </div>
+    
   )
 }
 

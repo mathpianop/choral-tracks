@@ -8,11 +8,12 @@ import CancelIcon from "@material-ui/icons/Close";
 function SongForm(props) {
 
   const newPart = function() {
+    console.log("NEW")
     return {
       name: "",
       initial: "",
       recording: "",
-      mode: "new",
+      mode: "not",
       key: uniqid()
     }
   }
@@ -30,16 +31,17 @@ function SongForm(props) {
    
 
   const initializeParts = function() {
-    console.log("EP", props.editableParts)
     if (props.factoryMode === "new") {
       return [newPart()];
     } else if (props.factoryMode === "edit") {
       console.log("Called")
-      let initialParts = props.editableParts;
+      let initialParts = [...props.editableParts];
       //Pad initialParts with blank part objects wherever pitch order
       //does not correspond to a fulfilled parts
       for (let i = 0; i < props.editableSong["parts_promised"]; i++) {
+        console.log(i)
         if (i === initialParts[i]["pitch_order"]) {
+          console.log("Old")
           //if the index corresonds to a pitch order that has been fulfilled,  
           //replace Rails Part with the React Part
           initialParts.splice(i, 1, railsToJs(initialParts[i]));      
@@ -55,7 +57,7 @@ function SongForm(props) {
   
 
 
-  const [parts, setParts] = useState(initializeParts());
+  const [parts, setParts] = useState(() => initializeParts());
   //If the mode is "edit", set the title initially to existing title
   const [title, setTitle] = useState(props.editableSong.title || "");
   
@@ -71,8 +73,8 @@ function SongForm(props) {
 
   const addPart = function() {
     //Create a new part object and add it to the parts array
-    const newPart = newPart();
-    setParts(parts => [...parts, newPart]);
+    const additionalPart = newPart();
+    setParts(parts => [...parts, additionalPart]);
     return newPart
   }
 

@@ -5,13 +5,12 @@ import { useState, useEffect } from "react";
 function SongFactory(props) {
   
   const [loading, setLoading] = useState({});
-  //job status can be: none, assembly, submitting, submitted, or failed
-  const [jobStatus, setJobStatus] = useState("none");
+  
  
 
   const handleNewSong = function() {
     props.setFactoryMode("new");
-    setJobStatus("assembly");
+    props.setJobStatus("assembly");
   }
 
   const content = function() {
@@ -21,7 +20,7 @@ function SongFactory(props) {
           <SongForm
             setFactoryMode={props.setFactoryMode}
             setLoading={setLoading}
-            setJobStatus={setJobStatus}
+            setJobStatus={props.setJobStatus}
             factoryMode="new"
           />
         );
@@ -29,8 +28,8 @@ function SongFactory(props) {
         return (
           <SubmitProgress 
             loading={loading}
-            setJobStatus={setJobStatus}
-            jobStatus={jobStatus}
+            setJobStatus={props.setJobStatus}
+            jobStatus={props.jobStatus}
           />
         );
       case "edit":
@@ -38,7 +37,7 @@ function SongFactory(props) {
           <SongForm
             setFactoryMode={props.setFactoryMode}
             setLoading={setLoading}
-            setJobStatus={setJobStatus}
+            setJobStatus={props.setJobStatus}
             editableSong={props.editableSong}
             editableParts={props.editableParts}
             factoryMode="edit"
@@ -55,7 +54,7 @@ function SongFactory(props) {
 
   const button = function() {
     //If a job isn't in progress, show the new song button
-    if (jobStatus === "none" || jobStatus === "submitted") {
+    if (props.jobStatus === "none" || props.jobStatus === "submitted") {
       return <button onClick={handleNewSong}>New</button>
     }
   }
@@ -63,7 +62,7 @@ function SongFactory(props) {
   useEffect(() => {
     //If all parts are loading, mark job as finished
     if (Object.values(loading).every(Boolean)) {
-      setJobStatus("submitted")
+      props.setJobStatus("submitted")
     }
     //eslint-disable-next-line
   }, [loading])

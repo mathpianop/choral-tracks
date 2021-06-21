@@ -16,7 +16,7 @@ function PartFormlet(props) {
 
 
   return (
-    <div className="NewPart">
+    <div className="PartFormlet">
       <label>Name</label>
       <input 
         type="text" 

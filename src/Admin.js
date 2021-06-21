@@ -8,6 +8,8 @@ function Admin() {
   const [songs, setSongs] = useState([]);
   const [parts, setParts] = useState([]);
   const [factoryMode, setFactoryMode] = useState("idle");
+  //job status can be: none, assembly, submitting, submitted, or failed
+  const [jobStatus, setJobStatus] = useState("none");
   const [editableSong, setEditableSong] = useState(null);
   const [editableParts, setEditableParts] = useState(null);
 
@@ -15,6 +17,7 @@ function Admin() {
     setEditableSong(song);
     setEditableParts(parts[song.id.toString()]);
     setFactoryMode("edit");
+    setJobStatus("assembly")
   }
 
   //Execute on ComponentDidMount
@@ -29,7 +32,7 @@ function Admin() {
       setParts(songsAndParts.parts);
     })
   
-   // eslint-disable-next-line 
+  // eslint-disable-next-line 
   }, [])
   
   return (
@@ -41,6 +44,8 @@ function Admin() {
         factoryMode={factoryMode}
       />
       <SongFactory 
+        jobStatus={jobStatus}
+        setJobStatus={setJobStatus}
         factoryMode={factoryMode}
         setFactoryMode={setFactoryMode}
         editableSong={editableSong}

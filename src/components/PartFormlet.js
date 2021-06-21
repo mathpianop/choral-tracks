@@ -1,11 +1,6 @@
-import { useState } from "react";
+import RecordingInput from "./RecordingInput.js"
 
 function PartFormlet(props) {
-
-  const [
-    useUploadedRecording, 
-    setUseUploadedRecording
-  ] = useState(props.part.mode === "edit");
 
   const removePart = function() {
     props.removePart(props.index)
@@ -19,28 +14,6 @@ function PartFormlet(props) {
     props.updatePart(props.index, e.target.name, e.target.files[0]);
   }
 
-  const overrideRecording = function() {
-    setUseUploadedRecording(true);
-  }
-
-  const recordingInput = function() {
-    if (useUploadedRecording) {
-      return (
-        <button type="button" onClick={overrideRecording}>
-          Override Recording
-        </button>
-      )
-    } else {
-      return (
-        <input 
-          type="file" 
-          accept="audio/*"
-          name="recording" 
-          onChange={handleFileUpload}
-        />
-      )
-    }
-  }
 
   return (
     <div className="NewPart">
@@ -58,7 +31,10 @@ function PartFormlet(props) {
         value={props.part.initial} 
         onChange={handleFormChange}
       />
-      {recordingInput()}
+      <RecordingInput
+        mode={props.part.mode}
+        handleFileUpload={handleFileUpload}
+      />
       <button type="button" onClick={removePart}>Remove Part</button>
     </div>
   )

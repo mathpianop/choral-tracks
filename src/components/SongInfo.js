@@ -11,14 +11,18 @@ function SongInfo(props) {
   }
 
   const editButton = function() {
-    if (props.factoryMode === "idle") {
-      return (
-        <button type="button" onClick={handleEdit}>
-          <EditIcon />
-        </button>
-      )
-    } else {
-      return ""
+    //If a job not currently being assembled or executed, display edit button
+    switch (props.jobStatus) {
+      case "submitting":
+      case "destroying":
+      case "assembly":
+        return "";
+      default: 
+        return (
+          <button type="button" onClick={handleEdit}>
+            <EditIcon />
+          </button>
+        )
     }
   }
 

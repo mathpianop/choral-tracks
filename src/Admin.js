@@ -4,11 +4,11 @@ import CurrentCollection from "./components/CurrentCollection.js"
 import { apiUrl } from "./apiUrl.js";
 
 function Admin() {
-
   const [songs, setSongs] = useState([]);
   const [parts, setParts] = useState([]);
   const [factoryMode, setFactoryMode] = useState("idle");
-  //job status can be: none, assembly, submitting, submitted, or failed
+  //jobStatus can be: none, assembly, submitting, submitted,
+  //destroyed, destroying, failedToCreate, or failedToDestroy
   const [jobStatus, setJobStatus] = useState("none");
   const [editableSong, setEditableSong] = useState(null);
   const [editableParts, setEditableParts] = useState(null);
@@ -17,11 +17,10 @@ function Admin() {
     setEditableSong(song);
     setEditableParts(parts[song.id.toString()]);
     setFactoryMode("edit");
-    setJobStatus("assembly")
+    setJobStatus("assembly");
   }
 
-  //Execute on ComponentDidMount
-  useEffect(() => {
+  const loadSongs = function() {
     //fetch songs/parts from Rails API
     fetch(`${apiUrl}/admin-songs`)
     .then(response => {
@@ -31,9 +30,24 @@ function Admin() {
       setSongs(songsAndParts.songs);
       setParts(songsAndParts.parts);
     })
+    .catch(err => console.log(err))
+  }
+
+  //Execute on ComponentDidMount and when the CurrentCollection might changes
+  useEffect(() => {
+    switch (jobStatus) {
+      case "none":
+      case "submitted":
+      case "destroyed":
+      case "failedToCreate": //Even in this case, a Song could be partially created
+         loadSongs();
+        break
+      default:
+        // Don't reload
+    } 
   
   // eslint-disable-next-line 
-  }, [])
+  }, [jobStatus])
   
   return (
     <div className="Admin">
@@ -41,7 +55,7 @@ function Admin() {
         songs={songs}
         parts={parts}
         editSong={editSong}
-        factoryMode={factoryMode}
+        jobStatus={jobStatus}
       />
       <SongFactory 
         jobStatus={jobStatus}

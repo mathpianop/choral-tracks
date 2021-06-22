@@ -1,8 +1,6 @@
 import SongInfo from "./SongInfo.js";
 
-
 function CurrentCollection(props) {
- 
 
   const songsContent = function() {
     //If parts have been loaded and set in state, render SongInfo list
@@ -14,7 +12,7 @@ function CurrentCollection(props) {
             songParts={props.parts[song.id.toString()]}
             editSong={props.editSong}
             key={song.id}
-            factoryMode={props.factoryMode}
+            jobStatus={props.jobStatus}
           />
         )
       })

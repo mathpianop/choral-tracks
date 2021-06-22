@@ -8,7 +8,6 @@ import CancelIcon from "@material-ui/icons/Close";
 function SongForm(props) {
 
   const newPart = function() {
-    console.log("NEW")
     return {
       name: "",
       initial: "",
@@ -21,9 +20,10 @@ function SongForm(props) {
   const railsToJs = function(railsPart) {
      //Take Rails Part object and return the React equivalent
      return {
+       id: railsPart.id,
        name: railsPart.name,
        initial: railsPart.initial,
-       recording: railsPart.recording,
+       recording: "existing",
        mode: "edit",
        key: uniqid()
      }
@@ -53,12 +53,17 @@ function SongForm(props) {
     }
   }
 
+  const initializeTitle = function() {
+    //If we are editing the song, initialize with existing title; 
+    //otherwise intialize with a blank title
+    return (props.factoryMode === "edit" ? props.editableSong.title : "")
+  }
+
   
 
 
   const [parts, setParts] = useState(() => initializeParts());
-  //If the mode is "edit", set the title initially to existing title
-  const [title, setTitle] = useState(props.editableSong.title || "");
+  const [title, setTitle] = useState(() => initializeTitle());
   
 
   const closeForm = function() {
@@ -90,31 +95,74 @@ function SongForm(props) {
     setParts([...oldParts]);
   }
 
-  const sendPart = function(songId, partName, partData, method) {
+  const getIdsOfObsoleteParts = function() {
+    const oldPartIds = Object.values(props.editableParts).map(part => part.id);
+    //Filter out the new parts and get the ids of the parts that are being updated
+    const UpdatingPartIds = parts.filter(part => part.id).map(part => part.id);
+    return oldPartIds.filter(id => !UpdatingPartIds.includes(id));
+  }
+
+  const destroyExistingSong = function() {
+    props.setFactoryMode("destruction");
+    props.setJobStatus("destroying");
     axios({
-      method: method,
-      url: `${apiUrl}/songs/${songId}/parts`,
-      data: partData
+      method: "delete",
+      url: `${apiUrl}/songs/${props.editableSong.id}`
     })
     .then(response => {
-      console.log(response)
+      if (response.status === 200) {
+        props.setJobStatus("destroyed");
+      }
+    })
+    .catch(err => {
+      props.setJobStatus("failedToDestroy");
+      console.log(err)
+    })
+  }
+  
+  const destroyExistingPart = function(songId, partId) {
+    return axios({
+      method: "delete",
+      url: `${apiUrl}/songs/${songId}/parts/${partId}`
+    })
+  }
+
+
+  const sendPart = function(songId, part, partData) {
+
+    let sentPart;
+    if (part.mode === "new") {
+      sentPart = axios({
+        method: "post",
+        url: `${apiUrl}/songs/${songId}/parts`,
+        data: partData
+      })
+    } else if (part.mode === "edit") {
+      sentPart = axios({
+        method: "patch",
+        url: `${apiUrl}/songs/${songId}/parts/${part.id}`,
+        data: partData
+      })
+    }
+
+    sentPart.then(response => {
       //If the part uploads succesfully, update loading object
       if (response.status === 200) {
         props.setLoading(loading => {
-          loading[partName] = true;
+          loading[part.name] = true;
           return {...loading};
         })
       }
     })
     .catch(err => {
-      props.setJobStatus("failed");
+      props.setJobStatus("failedToCreate");
       console.log(err)
     })
   }
 
   
 
-  const submitPart = function(part, songId, method) {
+  const submitPart = function(part, songId) {
 
     //Assemble and set loading object
     const loading = {};
@@ -129,52 +177,69 @@ function SongForm(props) {
     partData.append("pitch_order", parts.indexOf(part))
 
     //POST/PATCH the Part
-    sendPart(songId, part.name, partData, method)
+    sendPart(songId, part, partData)
     
   }
 
-  const sendSong = function(songData, method) {
-    return axios({
-      method: method,
-      url: `${apiUrl}/songs`, 
-      data: songData
-    })
-    .catch(err => {
+  const sendSong = function(songData) {
+    
+    let sentSong;
+    if (props.factoryMode === "new") {
+      sentSong = axios({
+        method: "post",
+        url: `${apiUrl}/songs`, 
+        data: songData
+      })
+    } else if (props.factoryMode === "edit") {
+      sentSong = axios({
+        method: "patch",
+        url: `${apiUrl}/songs/${props.editableSong.id}`, 
+        data: songData
+      })
+    }
+
+    return sentSong.catch(err => {
       props.setJobStatus("failed");
       console.log(err)
     });
   }
 
-  const handleSubmit = function(e) {
+  const submitSong = function(e) {
     e.preventDefault();
     
     const songData = new FormData();
     songData.append("title", title)
     songData.append("parts_promised", parts.length)
-
     //POST/PATCH the new Song
-    let method;
-    if (props.factoryMode === "new") {
-      method = "post"
-    } else if (props.factoryMode === "edit") {
-      method = "patch"
-    }
-
-    sendSong(songData, method)
+    sendSong(songData)
     .then(response => {
-      //After POSTing/PATCHing the Song, POST/PATCH each of the Song's Parts
+      //After sending the Song, submit each of the Song's Parts
       parts.forEach(part => {
-        submitPart(part, response.data.id, method)
+        submitPart(part, response.data.id)
       })
     })
+    //If this is a PATCH and there any parts being removed, delete them
     props.setFactoryMode("delivery");
     props.setJobStatus("submitting");
+    if (props.editableParts) {console.log(getIdsOfObsoleteParts());}
+  }
+
+  const submitValue = function() {
+    return (props.factoryMode === "new" ? "Submit Song" : "Update Song")
+  }
+
+  const deleteBtn = function() {
+    if (props.factoryMode === "edit") {
+      return (
+        <button type="button" onClick={destroyExistingSong}>Delete Song</button>
+      )
+    }
   }
 
   
 
   return (
-    <form className="SongForm" onSubmit={handleSubmit}>
+    <form className="SongForm" onSubmit={submitSong}>
       <button type="button" onClick={closeForm}>
         <CancelIcon />
       </button>
@@ -192,7 +257,8 @@ function SongForm(props) {
         )
     })}
       <button type="button" className="addPart" onClick={addPart}>Add Part</button>
-      <input type="submit" />
+      <input type="submit" value={submitValue()}/>
+      {deleteBtn()}
     </form>
   )
 }

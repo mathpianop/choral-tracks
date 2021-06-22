@@ -5,9 +5,7 @@ import { useState, useEffect } from "react";
 function SongFactory(props) {
   
   const [loading, setLoading] = useState({});
-  
  
-
   const handleNewSong = function() {
     props.setFactoryMode("new");
     props.setJobStatus("assembly");
@@ -25,6 +23,7 @@ function SongFactory(props) {
           />
         );
       case "delivery":
+      case "destruction":
         return (
           <SubmitProgress 
             loading={loading}
@@ -54,14 +53,18 @@ function SongFactory(props) {
 
   const button = function() {
     //If a job isn't in progress, show the new song button
-    if (props.jobStatus === "none" || props.jobStatus === "submitted") {
+    if (
+      props.jobStatus === "none" || 
+      props.jobStatus === "submitted" ||
+      props.jobStatus === "destroyed"
+      ) {
       return <button onClick={handleNewSong}>New</button>
     }
   }
 
   useEffect(() => {
     //If all parts are loading, mark job as finished
-    if (Object.values(loading).every(Boolean)) {
+    if (Object.values(loading).every(Boolean) && props.jobStatus === "submitting") {
       props.setJobStatus("submitted")
     }
     //eslint-disable-next-line

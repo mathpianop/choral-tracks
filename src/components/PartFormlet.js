@@ -23,6 +23,7 @@ function PartFormlet(props) {
         name="name" 
         value={props.part.name} 
         onChange={handleFormChange}
+        required
       />
       <label>Initial</label>
       <input 
@@ -30,6 +31,7 @@ function PartFormlet(props) {
         name="initial" 
         value={props.part.initial} 
         onChange={handleFormChange}
+        required
       />
       <RecordingInput
         mode={props.part.mode}

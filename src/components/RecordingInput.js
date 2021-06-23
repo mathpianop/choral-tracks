@@ -19,6 +19,7 @@ function RecordingInput(props) {
           accept="audio/*"
           name="recording" 
           onChange={props.handleFileUpload}
+          required
         />
       )
     } else if (acceptNewRecording && props.mode === "edit") {
@@ -29,6 +30,7 @@ function RecordingInput(props) {
             accept="audio/*"
             name="recording" 
             onChange={props.handleFileUpload}
+            required
           />
           <button onClick={revertToOldRecording}>
             Revert to Previous Recording

@@ -1,22 +1,22 @@
 function PartLoadedEntry(props) {
   const loadedEntryVerbs = function() {
-    if (props.contentloaded.type === "create") {
+    if (props.loading.type === "create") {
       return {working: "Loading", finished: "Loaded"}
-    } else if (props.loaded.type === "update") {
+    } else if (props.loading.type === "update") {
       return {working: "Updating", finished: "Updated"}
-    } else if (props.loaded.type === "destroy") {
+    } else if (props.loading.type === "destroy") {
       return {working: "Destroying", finished: "Destroyed"}
     }
   }
   const content = function() {
-    if (props.loaded.success) {
+    if (props.loading.success) {
       return `${props.partName}: ${loadedEntryVerbs().finished}`;
     } else {
       return `${props.partName}: ${loadedEntryVerbs().working}`;
     }
   }
 
-  const className = () => (props.loaded ? "working" : "finished");
+  const className = () => (props.loading.success ? "working" : "finished");
 
   return (
     <div className="PartLoadedEntry" >

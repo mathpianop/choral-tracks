@@ -222,6 +222,7 @@ function SongForm(props) {
     ///Add a loading object for each part to loadings
     //functionize
     props.setLoadings(loadings => {
+      loadings = {}
       parts.forEach(part => {
         if (part.mode === "new") {
           loadings[part.name] = {success: false, type: "create"}

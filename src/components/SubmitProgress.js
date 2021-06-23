@@ -16,12 +16,12 @@ function SubmitProgress(props) {
   }
 
   const progressStatus = function() {
-    if (props.jobStatus === "submitting") {
-      return Object.entries(props.loading).map(partLoadingEntry => {
+    if (props.jobStatus === "creating" || props.jobStatus === "updating") {
+      return Object.entries(props.loadings).map(partLoadingEntry => {
         return (
           <PartLoadingEntry
             partName={partLoadingEntry[0]}
-            loaded={partLoadingEntry[1]}
+            loading={partLoadingEntry[1]}
             key={`${partLoadingEntry[0]}-key`}
           />
         )

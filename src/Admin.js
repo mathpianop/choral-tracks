@@ -7,7 +7,7 @@ function Admin() {
   const [songs, setSongs] = useState([]);
   const [parts, setParts] = useState([]);
   const [factoryMode, setFactoryMode] = useState("idle");
-  //jobStatus can be: none, assembly, submitting, created, updated
+  //jobStatus can be: none, assembly, creating, created, updating, updated
   //destroyed, destroying, failedToCreate, failedToUpdate, or failedToDestroy
   const [jobStatus, setJobStatus] = useState("none");
   const [editableSong, setEditableSong] = useState(null);

@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 
 function SongFactory(props) {
   
-  const [loading, setLoading] = useState({});
+  //loadings is an object of loading objects
+  //Each loading object has two keys, 
+  //success (Boolean), and type (String: "create", "update", or "destroy")
+  const [loadings, setLoadings] = useState([]);
  
   const handleNewSong = function() {
     props.setFactoryMode("new");
@@ -17,7 +20,7 @@ function SongFactory(props) {
         return (
           <SongForm
             setFactoryMode={props.setFactoryMode}
-            setLoading={setLoading}
+            setLoadings={setLoadings}
             setJobStatus={props.setJobStatus}
             factoryMode="new"
           />
@@ -26,7 +29,7 @@ function SongFactory(props) {
       case "destruction":
         return (
           <SubmitProgress 
-            loading={loading}
+            loadings={loadings}
             setJobStatus={props.setJobStatus}
             jobStatus={props.jobStatus}
           />
@@ -35,7 +38,7 @@ function SongFactory(props) {
         return (
           <SongForm
             setFactoryMode={props.setFactoryMode}
-            setLoading={setLoading}
+            setLoadings={setLoadings}
             setJobStatus={props.setJobStatus}
             editableSong={props.editableSong}
             editableParts={props.editableParts}
@@ -65,7 +68,7 @@ function SongFactory(props) {
 
   useEffect(() => {
     //If all parts are loading, mark job as finished
-    if (Object.values(loading).every(Boolean)) {
+    if (Object.values(loadings).every(loading => loading.success)) {
       if (props.jobStatus === "creating") {
         props.setJobStatus("submitted")
       } else if (props.jobStatus === "updating") {
@@ -74,7 +77,7 @@ function SongFactory(props) {
       }
     }
     //eslint-disable-next-line
-  }, [loading])
+  }, [loadings])
 
 
   return (

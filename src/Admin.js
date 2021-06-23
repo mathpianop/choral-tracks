@@ -7,8 +7,8 @@ function Admin() {
   const [songs, setSongs] = useState([]);
   const [parts, setParts] = useState([]);
   const [factoryMode, setFactoryMode] = useState("idle");
-  //jobStatus can be: none, assembly, submitting, submitted,
-  //destroyed, destroying, failedToCreate, or failedToDestroy
+  //jobStatus can be: none, assembly, submitting, created, updated
+  //destroyed, destroying, failedToCreate, failedToUpdate, or failedToDestroy
   const [jobStatus, setJobStatus] = useState("none");
   const [editableSong, setEditableSong] = useState(null);
   const [editableParts, setEditableParts] = useState(null);
@@ -22,7 +22,7 @@ function Admin() {
 
   const loadSongs = function() {
     //fetch songs/parts from Rails API
-    fetch(`${apiUrl}/admin-songs`)
+    fetch(`${apiUrl}/admin`)
     .then(response => {
       return response.json();
     })
@@ -37,7 +37,8 @@ function Admin() {
   useEffect(() => {
     switch (jobStatus) {
       case "none":
-      case "submitted":
+      case "created":
+      case "updated":
       case "destroyed":
       case "failedToCreate": //Even in this case, a Song could be partially created
          loadSongs();

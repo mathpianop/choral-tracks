@@ -54,9 +54,10 @@ function SongFactory(props) {
   const button = function() {
     //If a job isn't in progress, show the new song button
     if (
-      props.jobStatus === "none" || 
-      props.jobStatus === "submitted" ||
-      props.jobStatus === "destroyed"
+      !props.jobStatus === "assembly" &&
+      !props.jobStatus === "creating" &&
+      !props.jobStatus === "updating" &&
+      !props.jobStatus === "destroying" 
       ) {
       return <button onClick={handleNewSong}>New</button>
     }
@@ -64,8 +65,13 @@ function SongFactory(props) {
 
   useEffect(() => {
     //If all parts are loading, mark job as finished
-    if (Object.values(loading).every(Boolean) && props.jobStatus === "submitting") {
-      props.setJobStatus("submitted")
+    if (Object.values(loading).every(Boolean)) {
+      if (props.jobStatus === "creating") {
+        props.setJobStatus("submitted")
+      } else if (props.jobStatus === "updating") {
+        console.log("updated")
+        props.setJobStatus("updated")
+      }
     }
     //eslint-disable-next-line
   }, [loading])

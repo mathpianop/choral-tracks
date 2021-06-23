@@ -13,7 +13,8 @@ function SongInfo(props) {
   const editButton = function() {
     //If a job not currently being assembled or executed, display edit button
     switch (props.jobStatus) {
-      case "submitting":
+      case "creating":
+      case "updating":
       case "destroying":
       case "assembly":
         return "";

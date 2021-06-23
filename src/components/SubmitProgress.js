@@ -4,8 +4,10 @@ function SubmitProgress(props) {
 
   const topMessage = function() {
     switch (props.jobStatus) {
-      case "submitting":
-       return "Submitting song...";
+      case "creating":
+       return "Creating song...";
+      case "updating":
+        return "Updating song..."
       case "destroying":
         return "Destroying song...";
       default:
@@ -33,10 +35,14 @@ function SubmitProgress(props) {
     switch (props.jobStatus) {
       case "submitted":
         return "Song successfully created!";
+      case "updated":
+        return "Song succesfully updated!";
       case "destroyed":
-        return "Song successfully destroyed!"
+        return "Song successfully destroyed!";
       case "failedToCreate":
         return "Rats! Song creation could not be completed";
+      case "failedToUpdate":
+      return "Rats! Song could not be succesfully updated"
       case "failedToDestroy":
         return "Rats! Song could not be succesfully destroyed";
       default:

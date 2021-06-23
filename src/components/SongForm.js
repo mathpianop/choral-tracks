@@ -121,10 +121,12 @@ function SongForm(props) {
   }
   
   const destroyExistingPart = function(songId, partId) {
-    return axios({
+    axios({
       method: "delete",
       url: `${apiUrl}/songs/${songId}/parts/${partId}`
     })
+    .then(response => console.log(response))
+    .catch(err => console.log(err))
   }
 
 
@@ -155,7 +157,11 @@ function SongForm(props) {
       }
     })
     .catch(err => {
-      props.setJobStatus("failedToCreate");
+      if (props.factoryMode === "new") {
+         props.setJobStatus("failedToCreate");
+      } else if (props.factoryMode === "edit") {
+        props.setJobStatus("failedToUpdate")
+      }
       console.log(err)
     })
   }
@@ -199,7 +205,11 @@ function SongForm(props) {
     }
 
     return sentSong.catch(err => {
-      props.setJobStatus("failed");
+      if (props.setFactoryMode === "new") {
+        props.setJobStatus("failedToCreate");
+      } else if (props.setFactoryMode === "edit") {
+        props.setJobStatus("failedToUpdate")
+      }
       console.log(err)
     });
   }
@@ -210,7 +220,7 @@ function SongForm(props) {
     const songData = new FormData();
     songData.append("title", title)
     songData.append("parts_promised", parts.length)
-    //POST/PATCH the new Song
+    //POST or PATCH the new Song
     sendSong(songData)
     .then(response => {
       //After sending the Song, submit each of the Song's Parts
@@ -219,9 +229,21 @@ function SongForm(props) {
       })
     })
     //If this is a PATCH and there any parts being removed, delete them
+    if (props.editableParts) {
+      const obsoletePartIds = getIdsOfObsoleteParts();
+      obsoletePartIds.forEach(partId => {
+        destroyExistingPart(props.editableSong.id, partId)
+      });
+    }
+
+    if (props.factoryMode === "new") {
+      props.setJobStatus("creating");
+    } else if (props.factoryMode === "edit") {
+      props.setJobStatus("updating")
+    }
+    
     props.setFactoryMode("delivery");
-    props.setJobStatus("submitting");
-    if (props.editableParts) {console.log(getIdsOfObsoleteParts());}
+    
   }
 
   const submitValue = function() {
@@ -237,7 +259,6 @@ function SongForm(props) {
   }
 
   
-
   return (
     <form className="SongForm" onSubmit={submitSong}>
       <button type="button" onClick={closeForm}>

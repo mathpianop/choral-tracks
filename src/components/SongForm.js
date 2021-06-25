@@ -274,13 +274,21 @@ function SongForm(props) {
     return (props.factoryMode === "new" ? "Submit Song" : "Update Song")
   }
 
+  const handleDestroySong = function() {
+    const confirmation = window.confirm("Do you really want to delete this song?");
+    if (confirmation) {
+     destroyExistingSong(); 
+    }
+  }
+
   const deleteBtn = function() {
     if (props.factoryMode === "edit") {
       return (
-        <button type="button" onClick={destroyExistingSong}>Delete Song</button>
+        <button type="button" onClick={handleDestroySong}>Delete Song</button>
       )
     }
   }
+
 
   return (
     <form className="SongForm" onSubmit={submitSong}>

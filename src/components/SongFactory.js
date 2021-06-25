@@ -57,10 +57,10 @@ function SongFactory(props) {
   const button = function() {
     //If a job isn't in progress, show the new song button
     if (
-      !props.jobStatus === "assembly" &&
-      !props.jobStatus === "creating" &&
-      !props.jobStatus === "updating" &&
-      !props.jobStatus === "destroying" 
+      !(props.jobStatus === "assembly") &&
+      !(props.jobStatus === "creating") &&
+      !(props.jobStatus === "updating") &&
+      !(props.jobStatus === "destroying") 
       ) {
       return <button onClick={handleNewSong}>New</button>
     }
@@ -70,7 +70,7 @@ function SongFactory(props) {
     //If all parts are loading, mark job as finished
     if (Object.values(loadings).every(loading => loading.success)) {
       if (props.jobStatus === "creating") {
-        props.setJobStatus("submitted")
+        props.setJobStatus("created")
       } else if (props.jobStatus === "updating") {
         console.log("updated")
         props.setJobStatus("updated")

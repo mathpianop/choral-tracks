@@ -35,18 +35,16 @@ function Admin() {
 
   //Execute on ComponentDidMount and when the CurrentCollection might changes
   useEffect(() => {
-    switch (jobStatus) {
-      case "none":
-      case "created":
-      case "updated":
-      case "destroyed":
-      case "failedToCreate": //Even in this case, a Song could be partially created
-         loadSongs();
-        break
-      default:
-        // Don't reload
-    } 
-  
+  //If a job isn't in progress, show the new song button
+  if (
+    !(jobStatus === "assembly") &&
+    !(jobStatus === "creating") &&
+    !(jobStatus === "updating") &&
+    !(jobStatus === "destroying") 
+    ) {
+    loadSongs();
+  }
+
   // eslint-disable-next-line 
   }, [jobStatus])
   

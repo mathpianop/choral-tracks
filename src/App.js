@@ -60,6 +60,15 @@ function App() {
       men: "M"
       },
     id: 3 
+    },
+    {location: "ss-peter-and-paul",
+    title: "Troparion for Ss. Peter and Paul",
+    parts: ["melody", "ison"],
+    initials: {
+      melody: "M",
+      ison: "I"
+      },
+    id: 4 
     }
 
   ]

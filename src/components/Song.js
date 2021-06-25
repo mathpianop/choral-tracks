@@ -169,6 +169,10 @@ function Song(props) {
     });
     //Once loaded, select the first part arbitrarily and set the duration
     Object.values(audioRef.current.data)[0].then(buffer => setDuration(buffer.duration));
+    return (() => {
+      //On ComponentWillUnMount, disconnect all the source nodes
+      Object.values(audioRef.current.sourceNodes).forEach(node => node.disconnect())
+    })
   // eslint-disable-next-line
   }, [])
 

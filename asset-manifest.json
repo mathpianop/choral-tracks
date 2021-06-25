@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "https://mathpianop.github.io/choral-tracks-react/static/css/main.bc17bfb5.chunk.css",
+    "main.css": "https://mathpianop.github.io/choral-tracks-react/static/css/main.17e52afb.chunk.css",
     "main.js": "https://mathpianop.github.io/choral-tracks-react/static/js/main.0ca66dad.chunk.js",
     "main.js.map": "https://mathpianop.github.io/choral-tracks-react/static/js/main.0ca66dad.chunk.js.map",
     "runtime-main.js": "https://mathpianop.github.io/choral-tracks-react/static/js/runtime-main.51c72a81.js",
@@ -10,14 +10,14 @@
     "static/js/2.85207253.chunk.js.map": "https://mathpianop.github.io/choral-tracks-react/static/js/2.85207253.chunk.js.map",
     "index.html": "https://mathpianop.github.io/choral-tracks-react/index.html",
     "static/css/2.dd6be22b.chunk.css.map": "https://mathpianop.github.io/choral-tracks-react/static/css/2.dd6be22b.chunk.css.map",
-    "static/css/main.bc17bfb5.chunk.css.map": "https://mathpianop.github.io/choral-tracks-react/static/css/main.bc17bfb5.chunk.css.map",
+    "static/css/main.17e52afb.chunk.css.map": "https://mathpianop.github.io/choral-tracks-react/static/css/main.17e52afb.chunk.css.map",
     "static/js/2.85207253.chunk.js.LICENSE.txt": "https://mathpianop.github.io/choral-tracks-react/static/js/2.85207253.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.51c72a81.js",
     "static/css/2.dd6be22b.chunk.css",
     "static/js/2.85207253.chunk.js",
-    "static/css/main.bc17bfb5.chunk.css",
+    "static/css/main.17e52afb.chunk.css",
     "static/js/main.0ca66dad.chunk.js"
   ]
 }

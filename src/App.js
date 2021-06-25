@@ -51,7 +51,17 @@ function App() {
       bass: "B"
       },
     id: 2 
+    },
+    {location: "for-all-the-saints",
+    title: "For All The Saints",
+    parts: ["women", "men"],
+    initials: {
+      women: "W",
+      men: "M"
+      },
+    id: 3 
     }
+
   ]
   return (
     <div className="App">

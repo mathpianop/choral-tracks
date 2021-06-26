@@ -1,10 +1,10 @@
-import "../style/Public.css";
 import { useState, useEffect } from "react"
 import Song from "./Song.js";
 import SongBtn from "./SongBtn.js";
 import {apiUrl} from "../apiUrl.js";
+import "../style/Home.css";
 
-function Public() {
+function Home() {
   //Store id of selected song
   const [selectedSong, setSelectedSong] = useState(null);
   const [songs, setSongs] = useState([])
@@ -44,7 +44,7 @@ function Public() {
     })
   }, [])
   return (
-    <div className="App">
+    <div className="Home">
       <h1>Holy Transfiguration Choir</h1>
       <section id="overview">
         <p >
@@ -68,6 +68,6 @@ function Public() {
   );
 }
 
-export default Public;
+export default Home;
 
 

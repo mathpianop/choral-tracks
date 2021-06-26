@@ -2,7 +2,7 @@ import SongInfo from "./SongInfo.js";
 
 function CurrentCollection(props) {
 
-  const songsContent = function() {
+  const songs = function() {
     //If parts have been loaded and set in state, render SongInfo list
     if (Object.keys(props.parts).length > 0) {
       return props.songs.map(song => {
@@ -18,11 +18,9 @@ function CurrentCollection(props) {
       })
     }
   }
-
-  
   return (
     <div className="CurrentSelection">
-      {songsContent()}
+      {songs()}
     </div>
   )
 }

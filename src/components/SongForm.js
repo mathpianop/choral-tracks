@@ -107,7 +107,8 @@ function SongForm(props) {
     props.setJobStatus("destroying");
     axios({
       method: "delete",
-      url: `${apiUrl}/songs/${props.editableSong.id}`
+      url: `${apiUrl}/songs/${props.editableSong.id}`,
+      headers: { Authorization: `Bearer ${props.token}` }
     })
     .then(response => {
       if (response.status === 200) {

@@ -19,6 +19,15 @@ time, mark, audio, video {
 	vertical-align: baseline;
 }
 
+h1 {
+	font-family: cursive;
+	font-size: 50px;
+	margin: 20px;
+	padding-bottom: 10px;
+	border-bottom: 2px solid black;
+	text-align: center;
+}
+
 
 button {
   cursor: pointer;

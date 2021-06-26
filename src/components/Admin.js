@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import SongFactory from "./SongFactory.js";
 import CurrentCollection from "./CurrentCollection.js"
 import { apiUrl } from "../apiUrl.js";
@@ -8,7 +9,7 @@ function Admin(props) {
   const [parts, setParts] = useState([]);
   const [factoryMode, setFactoryMode] = useState("idle");
   //jobStatus can be: none, assembly, creating, created, updating, updated
-  //destroyed, destroying, failedToCreate, failedToUpdate, or failedToDestroy
+  //destroying, destroyed, failedToCreate, failedToUpdate, or failedToDestroy
   const [jobStatus, setJobStatus] = useState("none");
   const [editableSong, setEditableSong] = useState(null);
   const [editableParts, setEditableParts] = useState(null);
@@ -53,6 +54,9 @@ function Admin(props) {
 
   return (
     <div className="Admin">
+      <Link to="/">
+        <button>Home</button>
+      </Link>
       <CurrentCollection
         songs={songs}
         parts={parts}

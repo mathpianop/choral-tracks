@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { Link } from "react-router-dom";
 import Song from "./Song.js";
 import SongBtn from "./SongBtn.js";
 import {apiUrl} from "../apiUrl.js";
@@ -45,6 +46,9 @@ function Home() {
   }, [])
   return (
     <div className="Home">
+      <Link to="/admin">
+        <button>Admin</button>
+      </Link>
       <h1>Holy Transfiguration Choir</h1>
       <section id="overview">
         <p >

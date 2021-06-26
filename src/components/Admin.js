@@ -23,7 +23,6 @@ function Admin(props) {
 
   const loadSongs = function() {
     //fetch songs/parts from Rails API
-    console.log(props.token)
     fetch(`${apiUrl}/admin`, {
       headers: { Authorization: `Bearer ${props.token}` }
     })

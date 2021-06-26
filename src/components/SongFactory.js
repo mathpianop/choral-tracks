@@ -19,6 +19,7 @@ function SongFactory(props) {
       case "new":
         return (
           <SongForm
+            token={props.token}
             setFactoryMode={props.setFactoryMode}
             setLoadings={setLoadings}
             setJobStatus={props.setJobStatus}

@@ -1,10 +1,11 @@
 function PartLoadedEntry(props) {
 
   const loadedEntryVerbs = function() {
-    // Return status verbs based on whether mode is create, update, or destroy
-    if (props.loading.mode === "create") {
+    // Return status verbs based on whether mode is new, edit, or destroy
+    console.log(props.loading)
+    if (props.loading.mode === "new") {
       return {working: "Loading", finished: "Loaded"}
-    } else if (props.loading.mode === "update") {
+    } else if (props.loading.mode === "edit") {
       return {working: "Updating", finished: "Updated"}
     } else if (props.loading.mode === "destroy") {
       return {working: "Destroying", finished: "Destroyed"}

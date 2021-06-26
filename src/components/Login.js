@@ -32,7 +32,6 @@ function Login(props) {
       return response.json();
     })
     .then(decodedResponse => {
-      console.log(decodedResponse)
       //If login successful, set the token in the App component
       // and in localStorage, and indicate that the admin is authed
       if (decodedResponse.status === 200) {

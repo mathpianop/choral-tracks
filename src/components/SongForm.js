@@ -98,8 +98,8 @@ function SongForm(props) {
       loadings = {}
       loadingParts.forEach(part => {
         loadings[part.name] = {success: false, mode: part.mode}
-        return {...loadings}
       });
+      return {...loadings}
     });
   }
 

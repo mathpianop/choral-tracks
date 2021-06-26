@@ -20,27 +20,6 @@ time, mark, audio, video {
 }
 
 
-h1 {
-	font-family: cursive;
-	font-size: 50px;
-	margin: 20px;
-	padding-bottom: 10px;
-	border-bottom: 2px solid black;
-	text-align: center;
-}
-
-#overview {
-	width: 600px;
-	margin: auto;
-	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-	font-size: 17px;
-}
-
 button {
   cursor: pointer;
-}
-
-#disclaimer {
-	margin-top: 10px;
-	font-style: italic;
 }

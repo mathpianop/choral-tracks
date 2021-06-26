@@ -1,71 +1,22 @@
-import "./App.css";
-import { useState, useEffect } from "react"
-import Song from "./components/Song.js";
-import SongBtn from "./components/SongBtn.js";
-import {apiUrl} from "./apiUrl.js";
+import { HashRouter, Switch, Route } from "react-router-dom";
+import { useState } from "react";
+import Public from "./components/Public.js";
+import AdminFilter from "./components/AdminFilter.js";
+import Login from "./components/Login.js";
+import "./App.css"
 
 function App() {
-  //Store id of selected song
-  const [selectedSong, setSelectedSong] = useState(null);
-  const [songs, setSongs] = useState([])
-
-  const songContent = function(song) {
-    if (song.id === selectedSong) {
-      return (
-        <Song 
-        title={song.title}
-        id={song.id}
-        key={song.id}
-      />
-      )
-    } else {
-      return (
-        <SongBtn 
-          title={song.title}
-          id={song.id}
-          setSelectedSong={setSelectedSong}
-          key={song.title + song.id}
-        />
-      )
-    }
-  }
-  
-  useEffect(() => {
-    //On ComponentDidMount, fetch the songs index to create the list index
-    fetch(`${apiUrl}/songs`)
-    .then(response => {
-      return response.json()
-    })
-    .then(songsData => {
-      setSongs(songsData);
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }, [])
+  const [token, setToken] = useState(localStorage.getItem("token"))
+  console.log(token)
   return (
-    <div className="App">
-      <h1>Holy Transfiguration Choir</h1>
-      <section id="overview">
-        <p >
-          Welcome to the HT choral resources!
-          Hopefully, there will be a lot more to come, but for right now,
-          check out the song player below. If you click on one of the titles,
-          you can play the song with options to hear your part by itself ("isolate"),
-          or with the other parts softer ("emphasize").
-        </p>
-        <p id="disclaimer">
-          NB: &ensp; This player ain't gonna work on a mobile device. &nbsp;
-          Also, you may find that you get the best experience using headphones,
-          especially when selecting "emphasize".
-        </p>
-      </section>
-      
-      {songs.map(song => {
-        return songContent(song);
-      })}
-    </div>
-  );
+    <HashRouter>
+      <Switch>
+        <Route exact path="/" component={Public} />
+        <Route path="/admin" render={(props) => <AdminFilter {...props} token={token} />}/>
+        <Route path="/login" render={(props) => <Login {...props} setToken={setToken} />} />
+      </Switch>
+    </HashRouter>
+  )
 }
 
 export default App;

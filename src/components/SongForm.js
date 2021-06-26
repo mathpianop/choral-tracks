@@ -123,7 +123,8 @@ function SongForm(props) {
   const destroyExistingPart = function(songId, part) {
     axios({
       method: "delete",
-      url: `${apiUrl}/songs/${songId}/parts/${part.id}`
+      url: `${apiUrl}/songs/${songId}/parts/${part.id}`,
+      headers: { Authorization: `Bearer ${props.token}` }
     })
     .then(response => {
       //If the part destroys succesfully, update loadings object
@@ -146,13 +147,15 @@ function SongForm(props) {
       sentPart = axios({
         method: "post",
         url: `${apiUrl}/songs/${songId}/parts`,
-        data: partData
+        data: partData,
+        headers: { Authorization: `Bearer ${props.token}` }
       })
     } else if (part.mode === "edit") {
       sentPart = axios({
         method: "patch",
         url: `${apiUrl}/songs/${songId}/parts/${part.id}`,
-        data: partData
+        data: partData,
+        headers: { Authorization: `Bearer ${props.token}` }
       })
     }
 
@@ -197,13 +200,15 @@ function SongForm(props) {
       sentSong = axios({
         method: "post",
         url: `${apiUrl}/songs`, 
-        data: songData
+        data: songData,
+        headers: { Authorization: `Bearer ${props.token}` }
       })
     } else if (props.factoryMode === "edit") {
       sentSong = axios({
         method: "patch",
         url: `${apiUrl}/songs/${props.editableSong.id}`, 
-        data: songData
+        data: songData,
+        headers: { Authorization: `Bearer ${props.token}` }
       })
     }
     //If response status is 400, set jobStatus to appropriate failure status

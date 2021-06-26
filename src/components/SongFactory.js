@@ -37,6 +37,7 @@ function SongFactory(props) {
       case "edit":
         return (
           <SongForm
+            token={props.token}
             setFactoryMode={props.setFactoryMode}
             setLoadings={setLoadings}
             setJobStatus={props.setJobStatus}

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import SongFactory from "./components/SongFactory.js";
-import CurrentCollection from "./components/CurrentCollection.js"
-import { apiUrl } from "./apiUrl.js";
+import SongFactory from "./SongFactory.js";
+import CurrentCollection from "./CurrentCollection.js"
+import { apiUrl } from "../apiUrl.js";
 
-function Admin() {
+function Admin(props) {
   const [songs, setSongs] = useState([]);
   const [parts, setParts] = useState([]);
   const [factoryMode, setFactoryMode] = useState("idle");
@@ -22,7 +22,10 @@ function Admin() {
 
   const loadSongs = function() {
     //fetch songs/parts from Rails API
-    fetch(`${apiUrl}/admin`)
+    console.log(props.token)
+    fetch(`${apiUrl}/admin`, {
+      headers: { Authorization: `Bearer ${props.token}` }
+    })
     .then(response => {
       return response.json();
     })
@@ -35,19 +38,19 @@ function Admin() {
 
   //Execute on ComponentDidMount and when the CurrentCollection might changes
   useEffect(() => {
-  //If a job isn't in progress, show the new song button
-  if (
-    !(jobStatus === "assembly") &&
-    !(jobStatus === "creating") &&
-    !(jobStatus === "updating") &&
-    !(jobStatus === "destroying") 
-    ) {
-    loadSongs();
-  }
+    //If the jobStatus changes and a job isn't in progress, reload the CurrentCollection
+    if (
+      !(jobStatus === "assembly") &&
+      !(jobStatus === "creating") &&
+      !(jobStatus === "updating") &&
+      !(jobStatus === "destroying") 
+      ) {
+      loadSongs();
+    }
 
   // eslint-disable-next-line 
   }, [jobStatus])
-  
+
   return (
     <div className="Admin">
       <CurrentCollection
@@ -63,6 +66,7 @@ function Admin() {
         setFactoryMode={setFactoryMode}
         editableSong={editableSong}
         editableParts={editableParts}
+        token={props.token}
       />
     </div>
     

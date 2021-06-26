@@ -12,7 +12,8 @@ function RecordingInput(props) {
   }
 
   const content = function() {
-    if (acceptNewRecording && props.mode === "new") {
+    if (props.mode === "new") {
+      //If we are creating a new song, display button to upload new recording
       return (
         <input 
           type="file" 
@@ -22,6 +23,8 @@ function RecordingInput(props) {
           required
         />
       )
+      //If we are overriding the old recording, display button to upload new recording,
+      //but also button to revert to back to the old one
     } else if (acceptNewRecording && props.mode === "edit") {
       return (
         <div className="override-recording">
@@ -38,6 +41,7 @@ function RecordingInput(props) {
         </div>
        
       )
+      //If we are editing the song, display button to override recording
     } else {
       return (
         <button type="button" onClick={overrideRecording}>

@@ -14,7 +14,6 @@ function PartFormlet(props) {
     props.updatePart(props.index, e.target.name, e.target.files[0]);
   }
 
-
   return (
     <div className="PartFormlet">
       <label>Name</label>

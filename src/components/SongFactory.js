@@ -3,10 +3,9 @@ import SubmitProgress from "./SubmitProgress.js"
 import { useState, useEffect } from "react";
 
 function SongFactory(props) {
-  
   //loadings is an object of loading objects
   //Each loading object has two keys, 
-  //success (Boolean), and type (String: "create", "update", or "destroy")
+  //success (Boolean), and mode (String: "create", "update", or "destroy")
   const [loadings, setLoadings] = useState([]);
  
   const handleNewSong = function() {
@@ -16,6 +15,7 @@ function SongFactory(props) {
 
   const content = function() {
     switch (props.factoryMode) {
+      //If we are creating or updating a song, render the SongForm
       case "new":
         return (
           <SongForm
@@ -23,15 +23,6 @@ function SongFactory(props) {
             setLoadings={setLoadings}
             setJobStatus={props.setJobStatus}
             factoryMode="new"
-          />
-        );
-      case "delivery":
-      case "destruction":
-        return (
-          <SubmitProgress 
-            loadings={loadings}
-            setJobStatus={props.setJobStatus}
-            jobStatus={props.jobStatus}
           />
         );
       case "edit":
@@ -44,6 +35,17 @@ function SongFactory(props) {
             editableSong={props.editableSong}
             editableParts={props.editableParts}
             factoryMode="edit"
+          />
+        );
+      //If we are submitting the SongForm, or if we are destroying a song,
+      //render SubmitProgress
+      case "delivery":
+      case "destruction":
+        return (
+          <SubmitProgress 
+            loadings={loadings}
+            setJobStatus={props.setJobStatus}
+            jobStatus={props.jobStatus}
           />
         );
       default:
@@ -73,7 +75,6 @@ function SongFactory(props) {
       if (props.jobStatus === "creating") {
         props.setJobStatus("created")
       } else if (props.jobStatus === "updating") {
-        console.log("updated")
         props.setJobStatus("updated")
       }
     }

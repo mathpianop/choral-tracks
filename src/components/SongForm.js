@@ -29,11 +29,10 @@ function SongForm(props) {
      }
   }
    
-
   const initializeParts = function() {
     //If the SongForm is for a new song or for one without any fulfilled parts,
     //return an array with a single newPart
-    if (props.editableParts === undefined) {
+    if (!props.editableParts) {
       return [newPart()];
     } else {
       let initialParts = [...props.editableParts];
@@ -94,12 +93,43 @@ function SongForm(props) {
     setParts([...oldParts]);
   }
 
+  const assembleLoadingsObject = function(loadingParts) {
+    props.setLoadings(loadings => {
+      loadings = {}
+      loadingParts.forEach(part => {
+        loadings[part.name] = {success: false, mode: part.mode}
+        return {...loadings}
+      });
+    });
+  }
+
+  const updateLoadingsObject = function(part) {
+    props.setLoadings(loadings => {
+      loadings[part.name].success = true;
+      return {...loadings};
+    });
+  }
+
   const getObsoleteParts = function() {
     const oldParts = Object.values(props.editableParts);
     //Filter out the new parts (which don't have an id)
-    //and get the ids of the parts that are being updated
+    //and get the ids of the remaining parts (which are being updated)
     const UpdatingPartIds = parts.filter(part => part.id).map(part => part.id);
     return oldParts.filter(part => !UpdatingPartIds.includes(part.id));
+  }
+
+  const deleteObsoleteParts = function() {
+    const obsoleteParts = getObsoleteParts();
+    props.setLoadings(loadings => {
+      //Add a loading object for each part to loadings
+      obsoleteParts.forEach(part => {
+        loadings[part.name] = {success: false, mode: "destroy"}
+      })
+      return {...loadings}
+    })
+    obsoleteParts.forEach(part => {
+      destroyExistingPart(props.editableSong.id, part)
+    });
   }
 
   const destroyExistingSong = function() {
@@ -117,7 +147,6 @@ function SongForm(props) {
     })
     .catch(err => {
       props.setJobStatus("failedToDestroy");
-      console.log(err)
     })
   }
   
@@ -129,45 +158,29 @@ function SongForm(props) {
     })
     .then(response => {
       //If the part destroys succesfully, update loadings object
-      //functionize
       if (response.status === 200) {
-        props.setLoadings(loadings => {
-          loadings[part.name].success = true;
-          return {...loadings};
-        })
+        updateLoadingsObject(part);
       }
     })
     .catch(err => console.log(err))
   }
 
-
   const sendPart = function(songId, part, partData) {
-
-    let sentPart;
-    if (part.mode === "new") {
-      sentPart = axios({
-        method: "post",
-        url: `${apiUrl}/songs/${songId}/parts`,
-        data: partData,
-        headers: { Authorization: `Bearer ${props.token}` }
-      })
-    } else if (part.mode === "edit") {
-      sentPart = axios({
-        method: "patch",
-        url: `${apiUrl}/songs/${songId}/parts/${part.id}`,
-        data: partData,
-        headers: { Authorization: `Bearer ${props.token}` }
-      })
-    }
+    //Assemble Axios request 
+    const method = (part.mode === "new" ? "post" : "patch")
+    const id = (part.mode === "new" ? "" : part.id)
+    const sentPart = axios({
+      method: method,
+      url: `${apiUrl}/songs/${songId}/parts/${id}`,
+      data: partData,
+      headers: { Authorization: `Bearer ${props.token}` }
+    })
 
     sentPart.then(response => {
       //If the part uploads succesfully, update loadings object
       //functionize
       if (response.status === 200) {
-        props.setLoadings(loadings => {
-          loadings[part.name].success = true;
-          return {...loadings};
-        })
+        updateLoadingsObject(part);
       }
     })
     .catch(err => {
@@ -176,42 +189,31 @@ function SongForm(props) {
       } else if (props.factoryMode === "edit") {
         props.setJobStatus("failedToUpdate")
       }
-      console.log(err)
     })
   }
 
   const submitPart = function(part, songId) {
-   
     //Create a FormData object and append the Part params
     const partData = new FormData();
-    ["name", "initial", "recording"].forEach(property => {
-      partData.append(property, part[property])
-    })
+    partData.append("name", part.name);
+    partData.append("initial", part.initial);
+    partData.append("recording", part.recording)
     partData.append("song_id", songId);
     partData.append("pitch_order", parts.indexOf(part))
-
     //POST/PATCH the Part
     sendPart(songId, part, partData)
   }
 
   const sendSong = function(songData) {
-    
-    let sentSong;
-    if (props.factoryMode === "new") {
-      sentSong = axios({
-        method: "post",
-        url: `${apiUrl}/songs`, 
-        data: songData,
-        headers: { Authorization: `Bearer ${props.token}` }
-      })
-    } else if (props.factoryMode === "edit") {
-      sentSong = axios({
-        method: "patch",
-        url: `${apiUrl}/songs/${props.editableSong.id}`, 
-        data: songData,
-        headers: { Authorization: `Bearer ${props.token}` }
-      })
-    }
+    //Assemble axios request
+    const method = (props.factoryMode === "new" ? "post" : "patch")
+    const id = (props.factoryMode === "new" ? "" : props.editableSong.id)
+    const sentSong = axios({
+      method: method,
+      url: `${apiUrl}/songs/${id}`, 
+      data: songData,
+      headers: { Authorization: `Bearer ${props.token}` }
+    })
     //If response status is 400, set jobStatus to appropriate failure status
     return sentSong.catch(err => {
       if (props.setFactoryMode === "new") {
@@ -227,23 +229,11 @@ function SongForm(props) {
     e.preventDefault();
     ///Add a loading object for each part to loadings
     //functionize
-    props.setLoadings(loadings => {
-      loadings = {}
-      parts.forEach(part => {
-        if (part.mode === "new") {
-          loadings[part.name] = {success: false, type: "create"}
-        } else if (part.mode === "edit") {
-          loadings[part.name] = {success: false, type: "update"}
-        }
-      });
-      return {...loadings}
-  });
-
+    assembleLoadingsObject(parts)
     //Assemble the FormData object
     const songData = new FormData();
     songData.append("title", title)
     songData.append("parts_promised", parts.length)
-
     //POST or PATCH the new Song
     sendSong(songData)
     .then(response => {
@@ -254,18 +244,7 @@ function SongForm(props) {
     })
     //If this is a PATCH and there any parts being removed, delete them
     if (props.editableParts) {
-      const obsoleteParts = getObsoleteParts();
-      props.setLoadings(loadings => {
-        //Add a loading object for each part to loadings
-        //functionize
-        obsoleteParts.forEach(part => {
-          loadings[part.name] = {success: false, type: "destroy"}
-        })
-        return {...loadings}
-      })
-      obsoleteParts.forEach(part => {
-        destroyExistingPart(props.editableSong.id, part)
-      });
+      deleteObsoleteParts();
     }
     //set jobStatus to the appropriate delivery status
     if (props.factoryMode === "new") {
@@ -288,13 +267,13 @@ function SongForm(props) {
   }
 
   const deleteBtn = function() {
+    //If we are editing an existing song, display button to delete Song
     if (props.factoryMode === "edit") {
       return (
         <button type="button" onClick={handleDestroySong}>Delete Song</button>
       )
     }
   }
-
 
   return (
     <form className="SongForm" onSubmit={submitSong}>

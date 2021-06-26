@@ -27,10 +27,10 @@ function SongInfo(props) {
     }
   }
 
-
   const handleEdit = function() {
     props.editSong(props.song)
   }
+  
   return (
     <div className="SongInfo">
       <span>{props.song.title}</span>

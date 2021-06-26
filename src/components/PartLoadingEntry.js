@@ -1,10 +1,12 @@
 function PartLoadedEntry(props) {
+
   const loadedEntryVerbs = function() {
-    if (props.loading.type === "create") {
+    // Return status verbs based on whether mode is create, update, or destroy
+    if (props.loading.mode === "create") {
       return {working: "Loading", finished: "Loaded"}
-    } else if (props.loading.type === "update") {
+    } else if (props.loading.mode === "update") {
       return {working: "Updating", finished: "Updated"}
-    } else if (props.loading.type === "destroy") {
+    } else if (props.loading.mode === "destroy") {
       return {working: "Destroying", finished: "Destroyed"}
     }
   }
@@ -16,6 +18,7 @@ function PartLoadedEntry(props) {
     }
   }
 
+  //Apply "working" or "finished" className depending whether loading complete
   const className = () => (props.loading.success ? "working" : "finished");
 
   return (

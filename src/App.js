@@ -7,7 +7,7 @@ import "./App.css"
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"))
-  console.log(token)
+  console.log("token ", token)
   return (
     <HashRouter>
       <Switch>

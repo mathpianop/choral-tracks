@@ -31,6 +31,7 @@ function Login(props) {
       body: params
     })
     .then(response => {
+      console.log(response)
       return response.json();
     })
     .then(decodedResponse => {
@@ -38,7 +39,6 @@ function Login(props) {
       //If login successful, set the token in the App component
       // and in localStorage, and indicate that the admin is authed
       if (decodedResponse.status === 200) {
-        console.log("200 OK");
         localStorage.setItem("token", decodedResponse.token);
         props.setToken(decodedResponse.token);
         setIsAuthed(true);

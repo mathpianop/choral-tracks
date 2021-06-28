@@ -1,0 +1,21 @@
+.PartFormlet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
+}
+
+.PartFormlet label {
+  padding-right: 5px;
+  padding-left: 15px;
+}
+
+.part-number {
+  white-space: nowrap;
+}
+
+.initial-input {
+  width: 35px;
+  padding-left: 0;
+}
+

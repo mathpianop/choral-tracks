@@ -1,0 +1,11 @@
+.SongForm {
+  position: relative;
+}
+
+.song-title-input {
+  display: block;
+  height: 50px;
+  width: 150px;
+  margin: auto;
+}
+

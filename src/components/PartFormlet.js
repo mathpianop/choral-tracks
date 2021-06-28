@@ -1,4 +1,6 @@
 import RecordingInput from "./RecordingInput.js"
+import CancelIcon from "@material-ui/icons/Close";
+import "../style/PartFormlet.css"
 
 function PartFormlet(props) {
 
@@ -16,18 +18,20 @@ function PartFormlet(props) {
 
   return (
     <div className="PartFormlet">
-      <label>Name</label>
+      <span className="part-number">{`Part ${props.index + 1}`}</span>
       <input 
         type="text" 
         name="name" 
+        placeholder="Name"
         value={props.part.name} 
         onChange={handleFormChange}
         required
       />
-      <label>Initial</label>
       <input 
         type="text" 
         name="initial" 
+        className="initial-input"
+        placeholder="Initial"
         value={props.part.initial} 
         onChange={handleFormChange}
         required
@@ -36,7 +40,9 @@ function PartFormlet(props) {
         mode={props.part.mode}
         handleFileUpload={handleFileUpload}
       />
-      <button type="button" onClick={removePart}>Remove Part</button>
+      <button type="button" onClick={removePart}>
+        <CancelIcon />
+      </button>
     </div>
   )
 }

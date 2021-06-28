@@ -29,6 +29,26 @@ h1 {
 }
 
 
-button {
+button, input[type="submit"] {
   cursor: pointer;
+	padding: 5px;
+  border: none;
+  background-color: rgb(90, 87, 87);
+  border-radius: 5px;
+  box-shadow: 0 3px 4px 0 rgb(0 0 0 / 50%);
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	color: #fff
+}
+
+input[type="text"] {
+	height: 25px;
+	padding-left: 5px;
+	border: 1px solid gray;
+	border-radius: 5px;
+}
+
+.nav-btn {
+	background-color: rgb(124, 165, 255);
+	font-family: Arial, Helvetica, sans-serif;
+  color: #000;
 }

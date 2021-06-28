@@ -47,7 +47,7 @@ function Home() {
   return (
     <div className="Home">
       <Link to="/admin">
-        <button>Admin</button>
+        <button className="nav-btn">Admin</button>
       </Link>
       <h1>Holy Transfiguration Choir</h1>
       <section id="overview">

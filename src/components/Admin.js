@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import SongFactory from "./SongFactory.js";
 import CurrentCollection from "./CurrentCollection.js"
 import { apiUrl } from "../apiUrl.js";
+import "../style/Admin.css"
 
 function Admin(props) {
   const [songs, setSongs] = useState([]);
@@ -54,7 +55,7 @@ function Admin(props) {
   return (
     <div className="Admin">
       <Link to="/">
-        <button>Home</button>
+        <button className="nav-btn">Home</button>
       </Link>
       <CurrentCollection
         songs={songs}

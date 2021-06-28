@@ -3,7 +3,7 @@ import { useState } from "react";
 import { apiUrl } from "../apiUrl.js";
 import uniqid from "uniqid";
 import axios from "axios";
-import CancelIcon from "@material-ui/icons/Close";
+import "../style/SongForm.css";
 
 function SongForm(props) {
 
@@ -277,11 +277,14 @@ function SongForm(props) {
 
   return (
     <form className="SongForm" onSubmit={submitSong}>
-      <button type="button" onClick={closeForm}>
-        <CancelIcon />
-      </button>
-      <label>Song Title</label>
-      <input type="text" name="title" value={title} onChange={handleChange}/>
+      <input 
+        type="text" 
+        name="title" 
+        className="song-title-input"
+        placeholder="Song Title"
+        value={title} 
+        onChange={handleChange}
+      />
       {parts.map((part, index) => {
         return (
           <PartFormlet
@@ -296,6 +299,9 @@ function SongForm(props) {
       <button type="button" className="addPart" onClick={addPart}>Add Part</button>
       <input type="submit" value={submitValue()}/>
       {deleteBtn()}
+      <button type="button" onClick={closeForm} className="song-form-cancel">
+        Cancel
+      </button>
     </form>
   )
 }

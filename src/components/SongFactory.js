@@ -1,6 +1,7 @@
 import SongForm from "./SongForm.js";
 import SubmitProgress from "./SubmitProgress.js"
 import { useState, useEffect } from "react";
+import "../style/SongFactory.css";
 
 function SongFactory(props) {
   //loadings is an object of loading objects

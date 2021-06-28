@@ -1,12 +1,6 @@
-.SongFactory {
-  width: 400px;
-  margin: 30px auto;
-  border: 2px solid #000000;
-  border-radius: 20px;
-  background-color: rgb(229, 235, 245);
-}
+
 
 #new-song-btn {
   display: inline-block;
-  margin: 10px;
+  margin-right: 10px;
 }

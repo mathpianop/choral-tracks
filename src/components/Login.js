@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Redirect } from "react-router";
 import { apiUrl } from "../apiUrl.js"
+import "../style/Login.css";
 
 function Login(props) {
   
@@ -53,36 +54,41 @@ function Login(props) {
   }
 
   const incorrectCredentialsMessage = function() {
-    return (incorrectCredentials ? "Either the username or password is incorrect" : "")
+    return (incorrectCredentials ? "Either the username or the password is incorrect" : "")
   }
 
   if (isAuthed) {
     return <Redirect to="/admin"></Redirect>
   } else {
     return (
-      <div className="Login">
-        <span id="incorrect-credentials-message">
-          {incorrectCredentialsMessage()}
-        </span>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Username:</label>
-          <input 
-            type="text" 
-            id="username" 
-            name="username" 
-            value={formData.username}
-            onChange={handleChange}
-          />
-          <label htmlFor="password">Password</label>
-          <input 
-            type="password" 
-            id="password" 
-            name="password" 
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <input type="submit" value="Log in"/>
-        </form>
+      <div className="Login central-container">
+        
+          <span id="incorrect-credentials-message">
+            {incorrectCredentialsMessage()}
+          </span>
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="username">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username" 
+              className="text-input"
+              value={formData.username}
+              onChange={handleChange}
+              required
+            />
+            <label htmlFor="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              className="text-input" 
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <input type="submit" className="pseudo-btn" value="Log in"/>
+          </form>
       </div>
     )
   }

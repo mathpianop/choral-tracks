@@ -32,7 +32,14 @@ h1 {
 	text-align: center;
 }
 
-
+.central-container {
+  width: 320px;
+  margin: 30px auto;
+	padding: 20px;
+  border: 2px solid #000000;
+  border-radius: 20px;
+  background-color: rgb(229, 235, 245);
+}
 
 
 .pseudo-btn {

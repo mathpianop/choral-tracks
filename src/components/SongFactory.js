@@ -96,8 +96,10 @@ function SongFactory(props) {
 
   return (
     <div className="SongFactory">
-      {button()}
-      {content()}
+      <div className="central-container">
+        {button()}
+        {content()}
+      </div>
     </div>
   )
 }

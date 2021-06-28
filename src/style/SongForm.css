@@ -1,11 +1,31 @@
 .SongForm {
   position: relative;
-}
-
-.song-title-input {
-  display: block;
-  height: 50px;
-  width: 150px;
+  width: 300px;
+  padding: 20px;
   margin: auto;
 }
 
+.SongForm .song-title-input {
+  display: block;
+  height: 40px;
+  width: 150px;
+  margin: auto;
+  font-size: 20px;
+  justify-self: center;
+}
+
+.title-bar {
+  display: flex;
+  align-items: flex-end;
+}
+
+
+
+.main-form-btns > * {
+  margin-right: 10px;
+}
+
+input[type="file"] {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  cursor: pointer;
+}

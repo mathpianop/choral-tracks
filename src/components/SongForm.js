@@ -277,14 +277,17 @@ function SongForm(props) {
 
   return (
     <form className="SongForm" onSubmit={submitSong}>
-      <input 
-        type="text" 
-        name="title" 
-        className="song-title-input"
-        placeholder="Song Title"
-        value={title} 
-        onChange={handleChange}
-      />
+      <div className="title-bar">
+        <button type="button" className="pseudo-btn" id="add-part-btn" onClick={addPart}>Add Part</button>
+        <input 
+          type="text" 
+          name="title" 
+          className="text-input song-title-input"
+          placeholder="Song Title"
+          value={title} 
+          onChange={handleChange}
+        />
+      </div>
       {parts.map((part, index) => {
         return (
           <PartFormlet
@@ -296,12 +299,14 @@ function SongForm(props) {
           />
         )
     })}
-      <button type="button" className="addPart" onClick={addPart}>Add Part</button>
-      <input type="submit" value={submitValue()}/>
-      {deleteBtn()}
-      <button type="button" onClick={closeForm} className="song-form-cancel">
-        Cancel
-      </button>
+      <div className="main-form-btns">
+        <input type="submit" className="pseudo-btn" value={submitValue()}/>
+          {deleteBtn()}
+        <button type="button" className="song-form-cancel pseudo-btn" onClick={closeForm}>
+          Cancel
+        </button>
+      </div>
+      
     </form>
   )
 }

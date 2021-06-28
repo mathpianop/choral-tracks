@@ -19,6 +19,10 @@ time, mark, audio, video {
 	vertical-align: baseline;
 }
 
+body {
+	position: relative;
+}
+
 h1 {
 	font-family: cursive;
 	font-size: 50px;
@@ -29,18 +33,21 @@ h1 {
 }
 
 
-button, input[type="submit"] {
-  cursor: pointer;
+
+
+.pseudo-btn {
+	cursor: pointer;
 	padding: 5px;
   border: none;
   background-color: rgb(90, 87, 87);
+	
   border-radius: 5px;
   box-shadow: 0 3px 4px 0 rgb(0 0 0 / 50%);
 	font-family: Georgia, 'Times New Roman', Times, serif;
 	color: #fff
 }
 
-input[type="text"] {
+.text-input {
 	height: 25px;
 	padding-left: 5px;
 	border: 1px solid gray;
@@ -48,7 +55,15 @@ input[type="text"] {
 }
 
 .nav-btn {
+	position: absolute;
+	top: 10px;
+	right: 40px;
+	padding: 5px;
 	background-color: rgb(124, 165, 255);
+	border: none;
+	border-radius: 5px;
+  box-shadow: 0 3px 4px 0 rgb(0 0 0 / 30%);
 	font-family: Arial, Helvetica, sans-serif;
   color: #000;
+	cursor: pointer;
 }

@@ -1,4 +1,7 @@
 
+.Home {
+	overflow: auto;
+}
 
 #overview {
 	width: 600px;

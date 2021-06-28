@@ -22,6 +22,7 @@ function PartFormlet(props) {
       <input 
         type="text" 
         name="name" 
+        className="text-input"
         placeholder="Name"
         value={props.part.name} 
         onChange={handleFormChange}
@@ -30,19 +31,19 @@ function PartFormlet(props) {
       <input 
         type="text" 
         name="initial" 
-        className="initial-input"
+        className="text-input initial-input"
         placeholder="Initial"
         value={props.part.initial} 
         onChange={handleFormChange}
         required
       />
+      <button type="button" className="remove-part-btn" onClick={removePart}>
+        <CancelIcon />
+      </button>
       <RecordingInput
         mode={props.part.mode}
         handleFileUpload={handleFileUpload}
       />
-      <button type="button" onClick={removePart}>
-        <CancelIcon />
-      </button>
     </div>
   )
 }

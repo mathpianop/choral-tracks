@@ -52,9 +52,9 @@ function SongFactory(props) {
         );
       default:
         return (
-          <div className="prompt">
+          <span className="prompt">
             Add a song or select a song to edit
-          </div>
+          </span>
         )
     }
   }
@@ -67,7 +67,7 @@ function SongFactory(props) {
       !(props.jobStatus === "updating") &&
       !(props.jobStatus === "destroying") 
       ) {
-      return <button onClick={handleNewSong}>New</button>
+      return <button className="pseudo-btn" id="new-song-btn" onClick={handleNewSong}>New</button>
     }
   }
 
@@ -86,8 +86,8 @@ function SongFactory(props) {
 
   return (
     <div className="SongFactory">
-      {content()}
       {button()}
+      {content()}
     </div>
   )
 }

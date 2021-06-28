@@ -143,10 +143,12 @@ function SongForm(props) {
     .then(response => {
       if (response.status === 200) {
         props.setJobStatus("destroyed");
+        props.setFactoryMode("idle");
       }
     })
     .catch(err => {
       props.setJobStatus("failedToDestroy");
+      props.setFactoryMode("idle");
     })
   }
   
@@ -186,8 +188,10 @@ function SongForm(props) {
     .catch(err => {
       if (props.factoryMode === "new") {
          props.setJobStatus("failedToCreate");
+         props.setFactoryMode("idle");
       } else if (props.factoryMode === "edit") {
-        props.setJobStatus("failedToUpdate")
+        props.setJobStatus("failedToUpdate");
+        props.setFactoryMode("idle");
       }
     })
   }
@@ -218,8 +222,10 @@ function SongForm(props) {
     return sentSong.catch(err => {
       if (props.setFactoryMode === "new") {
         props.setJobStatus("failedToCreate");
+        props.setFactoryMode("idle");
       } else if (props.setFactoryMode === "edit") {
-        props.setJobStatus("failedToUpdate")
+        props.setJobStatus("failedToUpdate");
+        props.setFactoryMode("idle");
       }
       console.log(err)
     });
@@ -270,7 +276,7 @@ function SongForm(props) {
     //If we are editing an existing song, display button to delete Song
     if (props.factoryMode === "edit") {
       return (
-        <button type="button" onClick={handleDestroySong}>Delete Song</button>
+        <button type="button" className="pseudo-btn" onClick={handleDestroySong}>Delete Song</button>
       )
     }
   }
@@ -278,7 +284,7 @@ function SongForm(props) {
   return (
     <form className="SongForm" onSubmit={submitSong}>
       <div className="title-bar">
-        <button type="button" className="pseudo-btn" id="add-part-btn" onClick={addPart}>Add Part</button>
+        
         <input 
           type="text" 
           name="title" 
@@ -300,11 +306,19 @@ function SongForm(props) {
         )
     })}
       <div className="main-form-btns">
-        <input type="submit" className="pseudo-btn" value={submitValue()}/>
-          {deleteBtn()}
+        <button 
+          type="button" 
+          className="pseudo-btn" 
+          id="add-part-btn" 
+          onClick={addPart}
+        >
+          Add Part
+        </button>
         <button type="button" className="song-form-cancel pseudo-btn" onClick={closeForm}>
           Cancel
         </button>
+        {deleteBtn()}
+        <input type="submit" className="pseudo-btn" value={submitValue()}/>
       </div>
       
     </form>

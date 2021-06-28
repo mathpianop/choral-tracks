@@ -67,7 +67,15 @@ function SongFactory(props) {
       !(props.jobStatus === "updating") &&
       !(props.jobStatus === "destroying") 
       ) {
-      return <button className="pseudo-btn" id="new-song-btn" onClick={handleNewSong}>New</button>
+      return (
+        <button 
+          className="pseudo-btn" 
+          id="new-song-btn" 
+          onClick={handleNewSong}
+        >
+          New Song
+        </button>
+      )
     }
   }
 
@@ -75,9 +83,11 @@ function SongFactory(props) {
     //If all parts are loading, mark job as finished
     if (Object.values(loadings).every(loading => loading.success)) {
       if (props.jobStatus === "creating") {
-        props.setJobStatus("created")
+        props.setJobStatus("created");
+        props.setFactoryMode("idle");
       } else if (props.jobStatus === "updating") {
-        props.setJobStatus("updated")
+        props.setJobStatus("updated");
+        props.setFactoryMode("idle");
       }
     }
     //eslint-disable-next-line

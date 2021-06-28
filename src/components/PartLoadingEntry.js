@@ -1,8 +1,9 @@
+import "../style/PartLoadingEntry.css";
+
 function PartLoadedEntry(props) {
 
   const loadedEntryVerbs = function() {
     // Return status verbs based on whether mode is new, edit, or destroy
-    console.log(props.loading)
     if (props.loading.mode === "new") {
       return {working: "Loading", finished: "Loaded"}
     } else if (props.loading.mode === "edit") {
@@ -20,7 +21,7 @@ function PartLoadedEntry(props) {
   }
 
   //Apply "working" or "finished" className depending whether loading complete
-  const className = () => (props.loading.success ? "working" : "finished");
+  const className = () => (props.loading.success ? "finished" : "working");
 
   return (
     <div className="PartLoadedEntry" >

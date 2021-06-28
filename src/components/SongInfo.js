@@ -4,9 +4,7 @@ function SongInfo(props) {
   const parts = function() {
     //If the song has parts, render parts info list
     if (props.songParts) {
-      return props.songParts.map(part => {
-        return <span key={part.id}>{part.name}</span>
-      })
+      return props.songParts.map(part => part.name).join(", ")
     }
   }
 
@@ -34,8 +32,10 @@ function SongInfo(props) {
   return (
     <div className="SongInfo">
       <span>{props.song.title}</span>
-      <span>{`Parts (${props.song["parts_promised"]} promised):`}</span>
-      {parts()}
+      <div>
+        {`Parts (${props.song["parts_promised"]} expected): `}
+        <span>{parts()}</span>
+      </div>
       {editButton()}
     </div>
   )

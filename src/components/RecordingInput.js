@@ -36,8 +36,8 @@ function RecordingInput(props) {
             onChange={props.handleFileUpload}
             required
           />
-          <button onClick={revertToOldRecording}>
-            Revert to Previous Recording
+          <button className="revert-btn" onClick={revertToOldRecording}>
+            Revert to Existing Recording
           </button>
         </div>
        

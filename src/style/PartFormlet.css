@@ -16,6 +16,12 @@
   margin: 5px 0;
 }
 
+.edit-part {
+  border-color: green;
+  box-shadow: 0 0 2px rgb(100, 231, 100);
+  background-color: rgb(202, 198, 198);
+}
+
 .PartFormlet label {
   padding-right: 5px;
   padding-left: 15px;

@@ -8,7 +8,6 @@ function Login(props) {
   //Even if token is present, set isAuthed to false
   const [isAuthed, setIsAuthed] = useState(false)
   const [incorrectCredentials, setIncorrectCredentials] = useState(false)
-  console.log("isAuthed ", isAuthed)
 
   const [formData, setFormData] = useState({
     username: "",
@@ -32,11 +31,9 @@ function Login(props) {
       body: params
     })
     .then(response => {
-      console.log(response)
       return response.json();
     })
     .then(decodedResponse => {
-      console.log(decodedResponse)
       //If login successful, set the token in the App component
       // and in localStorage, and indicate that the admin is authed
       if (decodedResponse.status === 200) {

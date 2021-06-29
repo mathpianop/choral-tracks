@@ -16,8 +16,12 @@ function PartFormlet(props) {
     props.updatePart(props.index, e.target.name, e.target.files[0]);
   }
 
+  const className = function() {
+    return (props.part.mode === "edit" ? "PartFormlet edit-part" : "PartFormlet")
+  }
+
   return (
-    <div className="PartFormlet">
+    <div className={className()}>
       <span className="part-number">{`Part ${props.index + 1}`}</span>
       <input 
         type="text" 

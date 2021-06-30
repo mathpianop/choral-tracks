@@ -33,17 +33,22 @@ function Home() {
   
   useEffect(() => {
     //On ComponentDidMount, fetch the songs index to create the list index
-    fetch(`${apiUrl}/songs`)
-    .then(response => {
-      return response.json()
-    })
-    .then(songsData => {
-      setSongs(songsData);
-    })
-    .catch(err => {
-      console.log(err)
-    })
+    const abortController = new AbortController();
+    const fetchSongs = async function(abortControllerSignal) {
+      try {
+        const response = await fetch(`${apiUrl}/songs`)
+        const songsData = await response.json();
+        setSongs(songsData)
+      } catch(err) {
+        if (!abortController.signal.aborted) {
+          console.log(err)
+        }
+      }
+    }
+    fetchSongs(abortController.signal)
+    return () => abortController.abort();
   }, [])
+
   return (
     <div className="Home">
       <Link to="/admin">

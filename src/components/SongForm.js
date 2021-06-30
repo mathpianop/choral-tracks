@@ -1,5 +1,5 @@
 import PartFormlet from "./PartFormlet.js"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { apiUrl } from "../apiUrl.js";
 import uniqid from "uniqid";
 import axios from "axios";
@@ -132,71 +132,70 @@ function SongForm(props) {
     });
   }
 
-  const destroyExistingSong = function() {
+  const destroyExistingSong = async function(cancelSources) {
     props.setFactoryMode("destruction");
-    props.setJobStatus("destroying");
-    axios({
-      method: "delete",
-      url: `${apiUrl}/songs/${props.editableSong.id}`,
-      headers: { Authorization: `Bearer ${props.token}` }
-    })
-    .then(response => {
+    try {
+      const response = await axios({
+        method: "delete",
+        url: `${apiUrl}/songs/${props.editableSong.id}`,
+        headers: { Authorization: `Bearer ${props.token}` },
+        cancelToken: cancelSources[0].token
+      })
       if (response.status === 200) {
         props.setJobStatus("destroyed");
         props.setFactoryMode("idle");
       }
-    })
-    .catch(err => {
+    } catch(err) {
       props.setJobStatus("failedToDestroy");
       props.setFactoryMode("idle");
-    })
+    }
   }
   
-  const destroyExistingPart = function(songId, part) {
-    axios({
-      method: "delete",
-      url: `${apiUrl}/songs/${songId}/parts/${part.id}`,
-      headers: { Authorization: `Bearer ${props.token}` }
-    })
-    .then(response => {
+  const destroyExistingPart = async function(songId, part) {
+    try {
+      const response = await axios({
+        method: "delete",
+        url: `${apiUrl}/songs/${songId}/parts/${part.id}`,
+        headers: { Authorization: `Bearer ${props.token}` }
+      })    
       //If the part destroys succesfully, update loadings object
       if (response.status === 200) {
         updateLoadingsObject(part);
       }
-    })
-    .catch(err => console.log(err))
+    } catch(err) {
+      console.log(err)
+    }
   }
 
-  const sendPart = function(songId, part, partData) {
+  const sendPart = async function(songId, part, partData, cancelSource) {
     //Assemble Axios request 
     const method = (part.mode === "new" ? "post" : "patch")
     const id = (part.mode === "new" ? "" : part.id)
-    const sentPart = axios({
-      method: method,
-      url: `${apiUrl}/songs/${songId}/parts/${id}`,
-      data: partData,
-      headers: { Authorization: `Bearer ${props.token}` }
-    })
-
-    sentPart.then(response => {
+    try {
+      const response = await axios({
+        method: method,
+        url: `${apiUrl}/songs/${songId}/parts/${id}`,
+        data: partData,
+        headers: { Authorization: `Bearer ${props.token}` },
+        cancelToken: cancelSource.token
+      })
       //If the part uploads succesfully, update loadings object
       //functionize
       if (response.status === 200) {
         updateLoadingsObject(part);
       }
-    })
-    .catch(err => {
+    } catch (err) {
       if (props.factoryMode === "new") {
-         props.setJobStatus("failedToCreate");
-         props.setFactoryMode("idle");
-      } else if (props.factoryMode === "edit") {
-        props.setJobStatus("failedToUpdate");
+        props.setJobStatus("failedToCreate");
         props.setFactoryMode("idle");
-      }
-    })
+     } else if (props.factoryMode === "edit") {
+       props.setJobStatus("failedToUpdate");
+       props.setFactoryMode("idle");
+     }
+    }
   }
 
-  const submitPart = function(part, songId) {
+  const submitPart = function(part, songId, cancelSource) {
     //Create a FormData object and append the Part params
     const partData = new FormData();
     partData.append("name", part.name);
@@ -205,21 +204,23 @@ function SongForm(props) {
     partData.append("song_id", songId);
     partData.append("pitch_order", parts.indexOf(part))
     //POST/PATCH the Part
-    sendPart(songId, part, partData)
+    sendPart(songId, part, partData, cancelSource)
   }
 
-  const sendSong = function(songData) {
+  const sendSong = function(songData, cancelSource) {
     //Assemble axios request
     const method = (props.factoryMode === "new" ? "post" : "patch")
     const id = (props.factoryMode === "new" ? "" : props.editableSong.id)
-    const sentSong = axios({
-      method: method,
-      url: `${apiUrl}/songs/${id}`, 
-      data: songData,
-      headers: { Authorization: `Bearer ${props.token}` }
-    })
-    //If response status is 400, set jobStatus to appropriate failure status
-    return sentSong.catch(err => {
+    try {
+      return axios({
+        method: method,
+        url: `${apiUrl}/songs/${id}`, 
+        data: songData,
+        headers: { Authorization: `Bearer ${props.token}` },
+        cancelToken: cancelSource.token
+      })
+      //If response status is 400, set jobStatus to appropriate failure status
+    } catch (err) {
       if (props.setFactoryMode === "new") {
         props.setJobStatus("failedToCreate");
         props.setFactoryMode("idle");
@@ -227,50 +228,35 @@ function SongForm(props) {
         props.setJobStatus("failedToUpdate");
         props.setFactoryMode("idle");
       }
-      console.log(err)
-    });
+      console.log(err);
+    }
   }
 
-  const submitSong = function(e) {
-    e.preventDefault();
+  const submitSong = async function(cancelSources) {
     ///Add a loading object for each part to loadings
-    //functionize
     assembleLoadingsObject(parts)
+    //If this is a PATCH and there any parts being removed, delete them
+    if (props.editableParts) {
+      deleteObsoleteParts();
+    }
+    props.setFactoryMode("delivery");
+
     //Assemble the FormData object
     const songData = new FormData();
     songData.append("title", title)
     songData.append("parts_promised", parts.length)
     //POST or PATCH the new Song
-    sendSong(songData)
-    .then(response => {
-      //After sending the Song, submit each of the Song's Parts
-      parts.forEach(part => {
-        submitPart(part, response.data.id)
-      })
+    const response = await sendSong(songData, cancelSources[0])
+    //After sending the Song, submit each of the Song's Parts
+    parts.forEach((part, index) => {
+      submitPart(part, response.data.id, cancelSources[index + 1])
     })
-    //If this is a PATCH and there any parts being removed, delete them
-    if (props.editableParts) {
-      deleteObsoleteParts();
-    }
-    //set jobStatus to the appropriate delivery status
-    if (props.factoryMode === "new") {
-      props.setJobStatus("creating");
-    } else if (props.factoryMode === "edit") {
-      props.setJobStatus("updating")
-    }
-    props.setFactoryMode("delivery");
   }
 
   const submitValue = function() {
     return (props.factoryMode === "new" ? "Submit Song" : "Update Song")
   }
 
-  const handleDestroySong = function() {
-    const confirmation = window.confirm("Do you really want to delete this song?");
-    if (confirmation) {
-     destroyExistingSong(); 
-    }
-  }
 
   const deleteBtn = function() {
     //If we are editing an existing song, display button to delete Song
@@ -281,8 +267,41 @@ function SongForm(props) {
     }
   }
 
+  const handleDestroySong = function() {
+    const confirmation = window.confirm("Do you really want to delete this song?");
+    if (confirmation) {
+     props.setJobStatus("destroying")
+    }
+  }
+
+  const handleSubmit = function(e) {
+    e.preventDefault();
+    //set jobStatus to the appropriate delivery status
+    if (props.factoryMode === "new") {
+      props.setJobStatus("creating")
+    } else {
+      props.setJobStatus("updating")
+    }
+  }
+
+
+  useEffect(() => {
+    if (props.jobStatus === "creating" || props.jobStatus === "updating") {
+      //Fill an array with one Axios Cancel Token source per part request
+      var cancelSources = parts.map(() => axios.CancelToken.source())
+      //Add in one more for the song request itself
+      cancelSources.push(axios.CancelToken.source())
+      submitSong(cancelSources)
+    } else if (props.jobStatus === "destroying") {
+      var cancelSources = [axios.CancelToken.source()];
+      destroyExistingSong(cancelSources)
+    }
+    //When Component unmounts, cancel all of the Axios requests
+    return () => cancelSources.forEach(source => source.cancel())
+  }, [props.jobStatus])
+
   return (
-    <form className="SongForm" onSubmit={submitSong}>
+    <form className="SongForm" onSubmit={handleSubmit}>
       <div className="title-bar">
         
         <input 

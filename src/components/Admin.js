@@ -22,19 +22,21 @@ function Admin(props) {
     setJobStatus("assembly");
   }
 
-  const loadSongs = function() {
+  const loadSongs = async function(abortControllerSignal) {
     //fetch songs/parts from Rails API
-    fetch(`${apiUrl}/admin`, {
-      headers: { Authorization: `Bearer ${props.token}` }
-    })
-    .then(response => {
-      return response.json();
-    })
-    .then(songsAndParts => {
+    try {
+      const response = await fetch(`${apiUrl}/admin`, {
+        headers: { Authorization: `Bearer ${props.token}` },
+        signal: abortControllerSignal
+      })
+      const songsAndParts = await response.json();
       setSongs(songsAndParts.songs);
       setParts(songsAndParts.parts);
-    })
-    .catch(err => console.log(err))
+    } catch(err) {
+      if (!abortControllerSignal.aborted) {
+        console.log(err)
+      }
+    }
   }
 
   //Execute on ComponentDidMount and when the CurrentCollection might changes
@@ -46,9 +48,10 @@ function Admin(props) {
       !(jobStatus === "updating") &&
       !(jobStatus === "destroying") 
       ) {
-      loadSongs();
+      const abortController = new AbortController()
+      loadSongs(abortController.signal);
+      return () => abortController.abort();
     }
-
   // eslint-disable-next-line 
   }, [jobStatus])
 

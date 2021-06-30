@@ -24,6 +24,7 @@ function SongFactory(props) {
             setFactoryMode={props.setFactoryMode}
             setLoadings={setLoadings}
             setJobStatus={props.setJobStatus}
+            jobStatus={props.jobStatus}   
             factoryMode="new"
           />
         );
@@ -34,6 +35,7 @@ function SongFactory(props) {
             setFactoryMode={props.setFactoryMode}
             setLoadings={setLoadings}
             setJobStatus={props.setJobStatus}
+            jobStatus={props.jobStatus}
             editableSong={props.editableSong}
             editableParts={props.editableParts}
             factoryMode="edit"

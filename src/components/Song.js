@@ -181,10 +181,13 @@ function Song(props) {
   //Load parts on ComponentDidMount
   useEffect(() => {
     const abortController = new AbortController();
+    const sourceNodes = audioRef.current.sourceNodes;
     loadParts(abortController.signal);
 
+    //Abort fetch and pause track on ComponentWillUnmount
     return () => {
-      abortController.abort()
+      abortController.abort();
+      Object.values(sourceNodes).forEach(node => node.stop())
     };
   // eslint-disable-next-line
   }, [])

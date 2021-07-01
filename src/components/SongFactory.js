@@ -5,9 +5,9 @@ import "../style/SongFactory.css";
 
 function SongFactory(props) {
   //loadings is an object of loading objects
-  //Each loading object has two keys, 
-  //success (Boolean), and mode (String: "create", "update", or "destroy")
-  const [loadings, setLoadings] = useState([]);
+  //Each loading object has 2 keys, success (Boolean) 
+  //, and mode (String: "create", "update", or "destroy")
+  const [loadings, setLoadings] = useState({});
  
   const handleNewSong = function() {
     props.setFactoryMode("new");

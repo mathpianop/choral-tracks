@@ -97,13 +97,13 @@ function SongForm(props) {
     props.setLoadings(loadings => {
       loadings = {}
       loadingParts.forEach(part => {
-        loadings[part.name] = {success: false, mode: part.mode}
+        loadings[part.name] = {success: false, mode: part.mode, progressEvent: {}}
       });
       return {...loadings}
     });
   }
 
-  const updateLoadingsObject = function(part) {
+  const indicateSuccess = function(part) {
     props.setLoadings(loadings => {
       loadings[part.name].success = true;
       return {...loadings};
@@ -132,9 +132,7 @@ function SongForm(props) {
     });
   }
 
-  const getProgress = function(progressEvent) {
-    console.log(progressEvent.loaded / progressEvent.total)
-  }
+
 
   const destroyExistingSong = async function(cancelSources) {
     props.setFactoryMode("destruction");
@@ -152,7 +150,6 @@ function SongForm(props) {
       }
     } catch(err) {
       props.setJobStatus("failedToDestroy");
-      props.setFactoryMode("idle");
     }
   }
   
@@ -166,7 +163,7 @@ function SongForm(props) {
       })    
       //If the part destroys succesfully, update loadings object
       if (response.status === 200) {
-        updateLoadingsObject(part);
+        indicateSuccess(part);
       }
     } catch(err) {
       console.log(err)
@@ -184,21 +181,18 @@ function SongForm(props) {
         data: partData,
         headers: { Authorization: `Bearer ${props.token}` },
         cancelToken: cancelSource.token,
-        timeout: 15000,
-        onUploadProgress: getProgress
+        timeout: 15000
       })
       //If the part uploads succesfully, update loadings object
       //functionize
       if (response.status === 200) {
-        updateLoadingsObject(part);
+        indicateSuccess(part);
       }
     } catch (err) {
       if (props.factoryMode === "new") {
         props.setJobStatus("failedToCreate");
-        props.setFactoryMode("idle");
      } else if (props.factoryMode === "edit") {
        props.setJobStatus("failedToUpdate");
-       props.setFactoryMode("idle");
      }
     }
   }
@@ -215,12 +209,12 @@ function SongForm(props) {
     sendPart(songId, part, partData, cancelSource)
   }
 
-  const sendSong = function(songData, cancelSource) {
+  const sendSong = async function(songData, cancelSource) {
     //Assemble axios request
     const method = (props.factoryMode === "new" ? "post" : "patch")
     const id = (props.factoryMode === "new" ? "" : props.editableSong.id)
     try {
-      return axios({
+      return await axios({
         method: method,
         url: `${apiUrl}/songs/${id}`, 
         data: songData,
@@ -228,14 +222,12 @@ function SongForm(props) {
         cancelToken: cancelSource.token,
         timeout: 3000
       })
-      //If response status is 400, set jobStatus to appropriate failure status
+      //If request fails, set jobStatus to appropriate failure status
     } catch (err) {
-      if (props.setFactoryMode === "new") {
+      if (props.jobStatus === "creating") {
         props.setJobStatus("failedToCreate");
-        props.setFactoryMode("idle");
-      } else if (props.setFactoryMode === "edit") {
+      } else if (props.jobStatus === "updating") {
         props.setJobStatus("failedToUpdate");
-        props.setFactoryMode("idle");
       }
       console.log(err);
     }
@@ -257,9 +249,11 @@ function SongForm(props) {
     //POST or PATCH the new Song
     const response = await sendSong(songData, cancelSources[0])
     //After sending the Song, submit each of the Song's Parts
-    parts.forEach((part, index) => {
-      submitPart(part, response.data.id, cancelSources[index + 1])
-    })
+    if (response) {
+      parts.forEach((part, index) => {
+        submitPart(part, response.data.id, cancelSources[index + 1])
+      })
+    }
   }
 
   const submitValue = function() {

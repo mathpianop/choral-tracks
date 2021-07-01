@@ -1,0 +1,60 @@
+.PartFormlet {
+  position: relative;
+  display: flex;
+  margin: 10px auto;
+  padding: 5px 30px 5px 5px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px solid rgb(90, 87, 87);
+  border-radius: 5px;
+  background-color: #fff;
+  font-family: Georgia, 'Times New Roman', Times, serif
+}
+
+.PartFormlet > * {
+  margin: 5px 0;
+}
+
+.edit-part {
+  border-color: green;
+  box-shadow: 0 0 2px rgb(100, 231, 100);
+  background-color: rgb(202, 198, 198);
+}
+
+.PartFormlet label {
+  padding-right: 5px;
+  padding-left: 15px;
+}
+
+.remove-part-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  margin: 0;
+  padding: 0;
+  align-self: flex-start;
+  border: none;
+  background-color: rgb(90, 87, 87);
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.PartFormlet svg {
+  height: 15px;
+  width: 15px;
+  margin-top: 2px;
+  padding: 0 2px;
+}
+
+.part-number {
+  white-space: nowrap;
+  font-size: 20px;
+}
+
+.initial-input {
+  width: 35px;
+  padding-left: 0;
+}
+

@@ -1,0 +1,49 @@
+.SongInfo {
+  margin-bottom: 10px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+
+.song-info-title {
+  display: inline-block;
+  font-weight: 400;
+}
+
+.edit-btn {
+  display: inline-flex;
+  height: 20px;
+  width: 20px;
+  padding: 0;
+  margin-left: 5px;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(90, 87, 87);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-btn svg {
+  height: 15px;
+  width: 15px;
+  color: #fff;
+}
+
+.song-info-parts-title-bar {
+  text-decoration: underline;
+  color: gray;
+}
+
+.parts-header {
+  text-decoration: underline;
+  display: inline-block;
+}
+
+.part-name {
+  display: block;
+}
+
+.song-info-parts {
+  margin-top: 3px;
+  font-weight: 200;
+}

@@ -1,6 +1,6 @@
 {
   "name": "choral-tracks",
-  "homepage": "https://mathpianop.github.io/choral-tracks-react",
+  "homepage": "http://localhost:3001",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -20,7 +20,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "predeploy": "yarn run build",
@@ -28,7 +28,8 @@
     "eject": "react-scripts eject",
     "update-site": "bash update-site.sh",
     "develop": "bash develop.sh",
-    "produce": "bash produce.sh"
+    "produce": "bash produce.sh",
+    "new": "bash new.sh"
   },
   "eslintConfig": {
     "extends": [

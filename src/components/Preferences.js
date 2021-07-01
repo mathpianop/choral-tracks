@@ -5,13 +5,13 @@ import "../style/Preferences.css";
 function Preferences(props) {
   const [selectedPreference, setSelectedPreference] = useState({
     role: "full-choir",
-    part: null
+    partName: null
   });
   
-  const isSelected = function(role, part) {
+  const isSelected = function(role, partName) {
     if (selectedPreference.role === "full-choir" && role === "full-choir") {
       return true
-    } else if (selectedPreference.role === role && selectedPreference.part === part) {
+    } else if (selectedPreference.role === role && selectedPreference.partName === partName) {
       return true
     } else {
       return false
@@ -28,12 +28,12 @@ function Preferences(props) {
         {props.parts.map(part => {
           return (
             <PreferenceBtn 
-              key={`emphasize-${part}`}
-              part={part}
-              content={props.initials[part]}
+              key={`emphasize-${part.name}`}
+              partName={part.name}
+              content={part.initial}
               role="emphasize" 
               handler={props.emphasizePart}
-              selected={isSelected("emphasize", part)}
+              selected={isSelected("emphasize", part.name)}
               setSelectedPreference={setSelectedPreference}
             />
           )
@@ -43,12 +43,12 @@ function Preferences(props) {
         {props.parts.map(part => {
           return (
             <PreferenceBtn 
-              key={`isolate-${part}`}
-              part={part}
-              content={props.initials[part]}
+              key={`isolate-${part.name}`}
+              partName={part.name}
+              content={part.initial}
               role="isolate" 
               handler={props.isolatePart}
-              selected={isSelected("isolate", part)}
+              selected={isSelected("isolate", part.name)}
               setSelectedPreference={setSelectedPreference}
             />
           )

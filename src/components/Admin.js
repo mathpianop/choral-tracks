@@ -14,6 +14,7 @@ function Admin(props) {
   const [jobStatus, setJobStatus] = useState("none");
   const [editableSong, setEditableSong] = useState(null);
   const [editableParts, setEditableParts] = useState(null);
+  const [cancelSources, setCancelSources] = useState([]);
 
   const editSong = function(song) {
     setEditableSong(song);
@@ -52,6 +53,8 @@ function Admin(props) {
       loadSongs(abortController.signal);
       return () => abortController.abort();
     }
+    //When Admin unmounts, cancel all of the Axios requests from SongForm
+    return () => cancelSources.forEach(source => source.cancel())
   // eslint-disable-next-line 
   }, [jobStatus])
 
@@ -60,21 +63,24 @@ function Admin(props) {
       <Link to="/">
         <button className="nav-btn">Home</button>
       </Link>
-      <CurrentCollection
-        songs={songs}
-        parts={parts}
-        editSong={editSong}
-        jobStatus={jobStatus}
-      />
-      <SongFactory 
-        jobStatus={jobStatus}
-        setJobStatus={setJobStatus}
-        factoryMode={factoryMode}
-        setFactoryMode={setFactoryMode}
-        editableSong={editableSong}
-        editableParts={editableParts}
-        token={props.token}
-      />
+      <div className="layout-container">
+        <CurrentCollection
+          songs={songs}
+          parts={parts}
+          editSong={editSong}
+          jobStatus={jobStatus}
+        />
+        <SongFactory 
+          jobStatus={jobStatus}
+          setJobStatus={setJobStatus}
+          factoryMode={factoryMode}
+          setFactoryMode={setFactoryMode}
+          editableSong={editableSong}
+          editableParts={editableParts}
+          token={props.token}
+          setCancelSources={setCancelSources}
+        />
+      </div>
     </div>
     
   )

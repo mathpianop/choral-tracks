@@ -1,5 +1,10 @@
 .Admin {
   overflow: auto;
-  
   height: 100vh;
+}
+
+.layout-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  
 }

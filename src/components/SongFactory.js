@@ -26,6 +26,7 @@ function SongFactory(props) {
             setJobStatus={props.setJobStatus}
             jobStatus={props.jobStatus}   
             factoryMode="new"
+            setCancelSources={props.setCancelSources}
           />
         );
       case "edit":
@@ -39,6 +40,7 @@ function SongFactory(props) {
             editableSong={props.editableSong}
             editableParts={props.editableParts}
             factoryMode="edit"
+            setCancelSources={props.setCancelSources}
           />
         );
       //If we are submitting the SongForm, or if we are destroying a song,
@@ -55,7 +57,7 @@ function SongFactory(props) {
       default:
         return (
           <span className="prompt">
-            Add a song or select a song to edit
+            Create a song or select one to edit
           </span>
         )
     }

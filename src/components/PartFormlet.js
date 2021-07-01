@@ -22,7 +22,7 @@ function PartFormlet(props) {
 
   return (
     <div className={className()}>
-      <span className="part-number">{`Part ${props.index + 1}`}</span>
+      <h4 className="part-number">{`Part ${props.index + 1}`}</h4>
       <input 
         type="text" 
         name="name" 

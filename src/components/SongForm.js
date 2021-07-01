@@ -39,7 +39,7 @@ function SongForm(props) {
       //Pad initialParts with blank part objects wherever pitch order
       //does not correspond to a fulfilled parts
       for (let i = 0; i < props.editableSong["parts_promised"]; i++) {
-        if (i === initialParts[i]["pitch_order"]) {
+        if (initialParts[i] && i === initialParts[i]["pitch_order"]) {
           //if the index corresonds to a pitch order that has been fulfilled,  
           //replace Rails Part with the React Part
           initialParts.splice(i, 1, railsToJs(initialParts[i]));      
@@ -132,6 +132,10 @@ function SongForm(props) {
     });
   }
 
+  const getProgress = function(progressEvent) {
+    console.log(progressEvent.loaded / progressEvent.total)
+  }
+
   const destroyExistingSong = async function(cancelSources) {
     props.setFactoryMode("destruction");
     try {
@@ -139,7 +143,8 @@ function SongForm(props) {
         method: "delete",
         url: `${apiUrl}/songs/${props.editableSong.id}`,
         headers: { Authorization: `Bearer ${props.token}` },
-        cancelToken: cancelSources[0].token
+        cancelToken: cancelSources[0].token,
+        timeout: 3000
       })
       if (response.status === 200) {
         props.setJobStatus("destroyed");
@@ -156,7 +161,8 @@ function SongForm(props) {
       const response = await axios({
         method: "delete",
         url: `${apiUrl}/songs/${songId}/parts/${part.id}`,
-        headers: { Authorization: `Bearer ${props.token}` }
+        headers: { Authorization: `Bearer ${props.token}` },
+        timeout: 3000
       })    
       //If the part destroys succesfully, update loadings object
       if (response.status === 200) {
@@ -177,7 +183,9 @@ function SongForm(props) {
         url: `${apiUrl}/songs/${songId}/parts/${id}`,
         data: partData,
         headers: { Authorization: `Bearer ${props.token}` },
-        cancelToken: cancelSource.token
+        cancelToken: cancelSource.token,
+        timeout: 15000,
+        onUploadProgress: getProgress
       })
       //If the part uploads succesfully, update loadings object
       //functionize
@@ -217,7 +225,8 @@ function SongForm(props) {
         url: `${apiUrl}/songs/${id}`, 
         data: songData,
         headers: { Authorization: `Bearer ${props.token}` },
-        cancelToken: cancelSource.token
+        cancelToken: cancelSource.token,
+        timeout: 3000
       })
       //If response status is 400, set jobStatus to appropriate failure status
     } catch (err) {
@@ -286,24 +295,25 @@ function SongForm(props) {
 
 
   useEffect(() => {
+  
     if (props.jobStatus === "creating" || props.jobStatus === "updating") {
       //Fill an array with one Axios Cancel Token source per part request
-      var cancelSources = parts.map(() => axios.CancelToken.source())
+      const cancelSources = parts.map(() => axios.CancelToken.source())
       //Add in one more for the song request itself
       cancelSources.push(axios.CancelToken.source())
+      props.setCancelSources([...cancelSources])
       submitSong(cancelSources)
     } else if (props.jobStatus === "destroying") {
-      var cancelSources = [axios.CancelToken.source()];
+      const cancelSources = [axios.CancelToken.source()];
+      props.setCancelSources([...cancelSources])
       destroyExistingSong(cancelSources)
     }
-    //When Component unmounts, cancel all of the Axios requests
-    return () => cancelSources.forEach(source => source.cancel())
+    //eslint-disable-next-line
   }, [props.jobStatus])
 
   return (
     <form className="SongForm" onSubmit={handleSubmit}>
       <div className="title-bar">
-        
         <input 
           type="text" 
           name="title" 

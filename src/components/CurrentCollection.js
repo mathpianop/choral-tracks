@@ -1,4 +1,5 @@
 import SongInfo from "./SongInfo.js";
+import "../style/CurrentCollection.css"
 
 function CurrentCollection(props) {
 
@@ -19,7 +20,7 @@ function CurrentCollection(props) {
     }
   }
   return (
-    <div className="CurrentSelection">
+    <div className="CurrentCollection">
       {songs()}
     </div>
   )

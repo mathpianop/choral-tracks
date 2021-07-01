@@ -173,15 +173,19 @@ function Song(props) {
     const response = await fetch(`${apiUrl}/songs/${props.id}/parts`, {
       signal: abortControllerSignal
     });
-    const partsData = response.json();
+    const partsData = await response.json();
+    console.log(partsData)
     setParts(partsData)
   }
 
-  //Execute on ComponentDidMount
+  //Load parts on ComponentDidMount
   useEffect(() => {
     const abortController = new AbortController();
     loadParts(abortController.signal);
-    return () => abortController.cancel()
+
+    return () => {
+      abortController.abort()
+    };
   // eslint-disable-next-line
   }, [])
 

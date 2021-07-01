@@ -166,19 +166,22 @@ function Song(props) {
       return partName.charAt(0) + partName.slice(1);
     })
     return capitalizedArray.join(", ")
-   
+  }
+
+  const loadParts = async function(abortControllerSignal) {
+    //GET songs from Rails API
+    const response = await fetch(`${apiUrl}/songs/${props.id}/parts`, {
+      signal: abortControllerSignal
+    });
+    const partsData = response.json();
+    setParts(partsData)
   }
 
   //Execute on ComponentDidMount
   useEffect(() => {
-    //GET songs from Rails API
-    fetch(`${apiUrl}/songs/${props.id}/parts`)
-    .then(response => {
-      return response.json();
-    })
-    .then(partsData => {
-      setParts(partsData);
-    })
+    const abortController = new AbortController();
+    loadParts(abortController.signal);
+    return () => abortController.cancel()
   // eslint-disable-next-line
   }, [])
 

@@ -174,7 +174,6 @@ function Song(props) {
       signal: abortControllerSignal
     });
     const partsData = await response.json();
-    console.log(partsData)
     setParts(partsData)
   }
 

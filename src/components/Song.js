@@ -126,7 +126,7 @@ function Song(props) {
         audioRef.current.gainNodes[part.name].gain.value = 1
       } else {
         //Set the rest of the parts at a low volume
-        audioRef.current.gainNodes[part].gain.value = .15;
+        audioRef.current.gainNodes[part.name].gain.value = .15;
       }
     })
   }

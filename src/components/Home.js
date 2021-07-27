@@ -64,7 +64,7 @@ function Home() {
           or with the other parts softer ("emphasize").
         </p>
         <p id="disclaimer">
-          NB: &ensp; This player ain't gonna work on a mobile device. &nbsp;
+          NB: &ensp; This player may not work on a mobile device. &nbsp;
           Also, you may find that you get the best experience using headphones,
           especially when selecting "emphasize".
         </p>

@@ -238,6 +238,20 @@ function Song(props) {
     }
   }
 
+  const preferences = function() {
+    //Display preferences only if there is more than one part
+    if (parts.length > 1) {
+      return (
+        <Preferences 
+            parts={parts}
+            emphasizePart={emphasizePart}
+            isolatePart={isolatePart}
+            fullChoir={fullChoir} 
+          />
+      )
+    }
+  }
+
   return (
       <div className="Song">
         <h2 className="song-title">{props.title}</h2>
@@ -255,12 +269,7 @@ function Song(props) {
           <span className="parts">
             {`Parts: ${getCapitalizedPartsString()}`}
           </span>
-          <Preferences 
-            parts={parts}
-            emphasizePart={emphasizePart}
-            isolatePart={isolatePart}
-            fullChoir={fullChoir} 
-          />
+          {preferences()}
           </LoadingMask>
         
       </div>

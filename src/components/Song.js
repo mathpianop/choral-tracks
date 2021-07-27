@@ -239,7 +239,6 @@ function Song(props) {
   }
 
   const preferences = function() {
-    //Display preferences only if there is more than one part
     if (parts.length > 1) {
       return (
         <Preferences 
@@ -269,6 +268,7 @@ function Song(props) {
           <span className="parts">
             {`Parts: ${getCapitalizedPartsString()}`}
           </span>
+          {/* Display preferences only if there is more than one part */}
           {preferences()}
           </LoadingMask>
         

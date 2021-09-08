@@ -26,7 +26,7 @@ Editing and creating new songs is done in the Admin section. When creating a new
 
 ## Installation
 
-* First, follow the instructions to install and set up the Rails backend (https://github.com/mathpianop/choral-tracks-rails):
+* First, follow the instructions to install and set up the Rails backend (https://github.com/mathpianop/choral-tracks-rails).
 
 * Next, clone this repository and install the Node dependencies:
 ```bash

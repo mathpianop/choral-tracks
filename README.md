@@ -11,19 +11,20 @@ I made Choral Tracks to help my church choir learn their parts on their own.  Th
 3. All the parts, but with their part more prominent than the others
 
 All the parts are synced using the JavaScript Audio API and correspond to a single progress bar. Unfortunately, the perfect synchronization comes with a performance cost, since each track has to be downloaded in its entirety for Audio API to work (basically, no streaming).
+<br>
 ![Screenshot of Choral Tracks song player](song-player.png)
 
 
 ## Admin Features
 
 Editing and creating new songs is done in the Admin section. When creating a new song, the admin can specify as many parts as they need. The backend records how many parts were promised originally. If the upload fails for some reason during the submission and one or more tracks are therefore missing, the admin can edit the song with the form prepopulated with the fulfilled parts. The song will only be available to the public if the number of uploaded parts matches the number of parts that the form promised originally (unless the admin then resubmits the form with those unfulfilled parts deleted).
-
+<br>
 ![Screenshot of the Song Form](song-form.png)
 
 
 ## Installation
 
-* First, follow the instructions to install and set up the Rails backend (https://github.com/mathpianop/choral-tracks-rails).
+* First, follow the instructions to install and set up the Rails backend (https://github.com/mathpianop/choral-tracks-rails):
 
 * Next, clone this repository and install the Node dependencies:
 ```bash
@@ -34,14 +35,14 @@ yarn install
 <br>
 <br>
 
-* Next, run the script to switch details from production to development
+* Next, run the script to switch details from production to development:
 ```bash
   yarn run develop
 ```
 <br>
 <br>
 
-* Finally, start the react server
+* Finally, start the react server:
 ```bash
   yarn start
 ```

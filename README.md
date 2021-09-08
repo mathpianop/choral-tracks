@@ -12,12 +12,14 @@ I made Choral Tracks to help my church choir learn their parts on their own.  Th
 
 All the parts are synced using the JavaScript Audio API and correspond to a single progress bar. Unfortunately, the perfect synchronization comes with a performance cost, since each track has to be downloaded in its entirety for Audio API to work (basically, no streaming).
 <br>
+<br>
 ![Screenshot of Choral Tracks song player](song-player.png)
 
 
 ## Admin Features
 
 Editing and creating new songs is done in the Admin section. When creating a new song, the admin can specify as many parts as they need. The backend records how many parts were promised originally. If the upload fails for some reason during the submission and one or more tracks are therefore missing, the admin can edit the song with the form prepopulated with the fulfilled parts. The song will only be available to the public if the number of uploaded parts matches the number of parts that the form promised originally (unless the admin then resubmits the form with those unfulfilled parts deleted).
+<br>
 <br>
 ![Screenshot of the Song Form](song-form.png)
 

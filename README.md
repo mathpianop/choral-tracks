@@ -1,70 +1,47 @@
-# Getting Started with Create React App
+# Choral Tracks: React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Choral Tracks is a React app for playing individual parts, or tracks, of choral pieces. You can check out [the website here](https://htaoc.com/choir/) to see it in the wild. However, if you want to check out the Admin section with the upload/edit functionality (i.e., the coolest part), you'll need to install it locally, along with the Rails backend `choral-tracks-rails`
 
-## Available Scripts
+## Public Features
 
-In the project directory, you can run:
+I made Choral Tracks to help my church choir learn their parts on their own.  The features a song players that allows the user to toggle between:
 
-### `yarn start`
+1. An individual part
+2. All the parts together
+3. All the parts, but with their part more prominent than the others
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+All the parts are synced using the JavaScript Audio API and correspond to a single progress bar. Unfortunately, the perfect synchronization comes with a performance cost, since each track has to be downloaded in its entirety for Audio API to work (basically, no streaming).
+[Screenshot of Choral Tracks song player](song-player.png)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `yarn test`
+## Admin Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Editing and creating new songs is done in the Admin section. When creating a new song, the admin can specify as many parts as they need. The backend records how many parts were promised originally. If the upload fails for some reason during the submission and one or more tracks are therefore missing, the admin can edit the song with the form prepopulated with the fulfilled parts. The song will only be available to the public if the number of uploaded parts matches the number of parts that the form promised originally (unless the admin then resubmits the form with those unfulfilled parts deleted).
 
-### `yarn build`
+[Screenshot of the Song Form](song-form.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* First, follow the instructions to install and set up the Rails backend (https://github.com/mathpianop/choral-tracks-rails).
 
-### `yarn eject`
+* Next, clone this repository and install the Node dependencies:
+```bash
+git clone git@github.com:mathpianop/choral-tracks-react.git
+cd choral-tracks-react
+yarn install
+```
+<br>
+<br>
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+* Next, run the script to switch details from production to development
+```bash
+  yarn run develop
+```
+<br>
+<br>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* Finally, start the react server
+```bash
+  yarn start
+```

@@ -51,4 +51,4 @@ Editing and creating new songs is done in the Admin section. When creating a new
 
 ## Using the app locally
 
-If you seeded the database in the Rails backend, you should be able to see two sample songs on the page. You can also access the Admin section using the username "sample", and and the password "password". You interact with the create/edit song form, but you won't be able to create or destroy songs without setting up your own Cloudinary account and info in an .env file.
+If you seeded the database in the Rails backend, you should be able to see two sample songs on the page. You can also access the Admin section using the username "sample", and and the password "password". You can interact with the create/edit song form, but you won't be able to create or destroy songs without setting up your own Cloudinary account and info in an .env file.

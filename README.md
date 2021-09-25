@@ -43,7 +43,7 @@ yarn install
 <br>
 <br>
 
-* Finally, start the react server:
+* Finally, start the React server:
 ```bash
   yarn start
 ```

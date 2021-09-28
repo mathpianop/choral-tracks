@@ -181,7 +181,7 @@ function SongForm(props) {
         data: partData,
         headers: { Authorization: `Bearer ${props.token}` },
         cancelToken: cancelSource.token,
-        timeout: 30000
+        timeout: 60000
       })
       //If the part uploads succesfully, update loadings object
       //functionize

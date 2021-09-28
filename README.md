@@ -20,7 +20,6 @@ All the parts are synced using the JavaScript Audio API and correspond to a sing
 
 Editing and creating new songs is done in the Admin section. When creating a new song, the admin can specify as many parts as they need. The backend records how many parts were promised originally. If the upload fails for some reason during the submission and one or more tracks are therefore missing, the admin can edit the song with the form prepopulated with the fulfilled parts. The song will only be available to the public if the number of uploaded parts matches the number of parts that the form promised originally (unless the admin then resubmits the form with those unfulfilled parts deleted).
 <br>
-<br>
 ![Screenshot of the Song Form](song-form.png)
 
 ## Installation
@@ -34,13 +33,11 @@ cd choral-tracks-react
 yarn install
 ```
 <br>
-<br>
 
 * Next, run the script to switch details from production to development:
 ```bash
   yarn run develop
 ```
-<br>
 <br>
 
 * Finally, start the React server:

@@ -22,7 +22,7 @@ function Song(props) {
     loaded: {}
   });
   const ctxRef = useRef({
-    ctx: new (window.AudioContext || window.webkitAudioContext)(),
+    ctx: props.audioContext,
     time: 0
   })
 
@@ -60,17 +60,22 @@ function Song(props) {
 
   const playData = function(part) {
     audioRef.current.data[part.name].then(decodedData => {
+      
       // Create source node
       const source = ctxRef.current.ctx.createBufferSource();
       // Store the source in the sourcesRef
-      audioRef.current.sourceNodes[part.name] = source
+      audioRef.current.sourceNodes[part.name] = source;
       // Wire up the data
       source.buffer = decodedData;
       // Connect the source node to the gain node (which controls the volume)
       source.connect(audioRef.current.gainNodes[part.name]);
       // Connect the gain node to the destination (e.g., speakers) and start the audio
       audioRef.current.gainNodes[part.name].connect(ctxRef.current.ctx.destination);
-      source.start(0, timestamp)
+      source.start(0, timestamp);
+      console.log("Playing AudioBuffer", decodedData, ctxRef.current.ctx);
+      source.onended = () => {
+        console.log("Ended");
+      }
     })
   }
 
@@ -88,7 +93,9 @@ function Song(props) {
   const pauseTrack = function() {
     if (playing) {
       parts.forEach(part => {
+        console.log("Stopping");
         audioRef.current.sourceNodes[part.name].stop();
+        console.log("Stopped playing ", audioRef.current.sourceNodes[part.name]);
       });
       //Indicate that playing has stopped
       setPlaying(false);

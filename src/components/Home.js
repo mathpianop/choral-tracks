@@ -9,6 +9,9 @@ function Home() {
   //Store id of selected song
   const [selectedSong, setSelectedSong] = useState(null);
   const [songs, setSongs] = useState([])
+  const [audioContext] = useState(
+    new (window.AudioContext || window.webkitAudioContext)()
+  );
 
   const songContent = function(song) {
     if (song.id === selectedSong) {
@@ -17,6 +20,7 @@ function Home() {
         title={song.title}
         id={song.id}
         key={song.id}
+        audioContext={audioContext}
       />
       )
     } else {

@@ -1,1 +1,1 @@
-export const apiUrl = "https://choral-tracks.herokuapp.com/api"
+export const apiUrl = "http://localhost:3000/api"

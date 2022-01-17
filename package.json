@@ -16,6 +16,7 @@
     "react-loadingmask": "^4.0.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "standardized-audio-context": "^25.3.19",
     "uniqid": "^5.3.0",
     "web-vitals": "^1.0.1"
   },

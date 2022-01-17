@@ -3,15 +3,18 @@ import { Link } from "react-router-dom";
 import Song from "./Song.js";
 import SongBtn from "./SongBtn.js";
 import {apiUrl} from "../apiUrl.js";
+import { AudioContext } from 'standardized-audio-context';
 import "../style/Home.css";
 
 function Home() {
   //Store id of selected song
   const [selectedSong, setSelectedSong] = useState(null);
   const [songs, setSongs] = useState([])
-  const [audioContext] = useState(
-    new (window.AudioContext || window.webkitAudioContext)()
-  );
+  // const [audioContext] = useState(
+  //   new (window.AudioContext || window.webkitAudioContext)()
+  // );
+
+  const [audioContext] = useState(new AudioContext());
 
   const songContent = function(song) {
     if (song.id === selectedSong) {

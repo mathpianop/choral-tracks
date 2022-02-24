@@ -10,9 +10,6 @@ function Home() {
   //Store id of selected song
   const [selectedSong, setSelectedSong] = useState(null);
   const [songs, setSongs] = useState([])
-  // const [audioContext] = useState(
-  //   new (window.AudioContext || window.webkitAudioContext)()
-  // );
 
   const [audioContext] = useState(new AudioContext());
 

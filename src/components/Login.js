@@ -18,6 +18,14 @@ function Login(props) {
     setFormData({...formData, [e.target.name]: e.target.value})
   }
 
+  const setLocalToken = function(tokenString) {
+    //Set local token to remember login
+    //If localStorage is unavailable, swallow error
+    try {
+      localStorage.setItem("token", tokenString);
+    } catch {}
+  }
+
   const handleSubmit = function(e) {
     e.preventDefault();
 
@@ -37,7 +45,7 @@ function Login(props) {
       //If login successful, set the token in the App component
       // and in localStorage, and indicate that the admin is authed
       if (decodedResponse.status === 200) {
-        localStorage.setItem("token", decodedResponse.token);
+        setLocalToken(decodedResponse.token)
         props.setToken(decodedResponse.token);
         setIsAuthed(true);
         //If the response is 401 Unauthorized, indicate incorrectCredentials

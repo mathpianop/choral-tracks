@@ -1,0 +1,1 @@
+Finish guarding against localStorage errors

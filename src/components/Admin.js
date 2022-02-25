@@ -60,7 +60,7 @@ function Admin(props) {
 
   return (
     <div className="Admin">
-      <Link to="/">
+      <Link to=".">
         <button className="nav-btn">Home</button>
       </Link>
       <div className="layout-container">

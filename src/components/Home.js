@@ -1,86 +1,39 @@
-import { useState, useEffect } from "react"
-import { Link } from "react-router-dom";
-import Song from "./Song.js";
-import SongBtn from "./SongBtn.js";
-import {apiUrl} from "../apiUrl.js";
-import { AudioContext } from 'standardized-audio-context';
 import "../style/Home.css";
+import { Route } from "react-router-dom";
+import { HashRouter, Switch } from "react-router-dom";
+import { useState } from "react";
+import DefaultHome from "./DefaultHome";
+import AdminFilter from "./AdminFilter.js";
+import Login from "./Login.js";
 
-function Home() {
-  //Store id of selected song
-  const [selectedSong, setSelectedSong] = useState(null);
-  const [songs, setSongs] = useState([])
+function Home(props) {
 
-  const [audioContext] = useState(new AudioContext());
-
-  const songContent = function(song) {
-    if (song.id === selectedSong) {
-      return (
-        <Song 
-        title={song.title}
-        id={song.id}
-        key={song.id}
-        audioContext={audioContext}
-      />
-      )
-    } else {
-      return (
-        <SongBtn 
-          title={song.title}
-          id={song.id}
-          setSelectedSong={setSelectedSong}
-          key={song.title + song.id}
-        />
-      )
+  const findLocalToken = function() {
+    try {
+      //Try to return token from localStorage
+      return localStorage.getItem("token");
+    } catch (err) {
+      //If not permitted (becuase of Chrome Incognito 3rd-party, etc.), return null
+      return null;
     }
   }
-  
-  useEffect(() => {
-    //On ComponentDidMount, fetch the songs index to create the list index
-    const abortController = new AbortController();
-    const fetchSongs = async function(abortControllerSignal) {
-      try {
-        const response = await fetch(`${apiUrl}/songs`)
-        const songsData = await response.json();
-        setSongs(songsData)
-      } catch(err) {
-        if (!abortController.signal.aborted) {
-          console.log(err)
-        }
-      }
-    }
-    fetchSongs(abortController.signal)
-    return () => abortController.abort();
-  }, [])
 
+  const [token, setToken] = useState(findLocalToken());
+  
   return (
-    <div className="Home">
-      <Link to="/admin">
-        <button className="nav-btn">Admin</button>
-      </Link>
-      <h1>Holy Transfiguration Choir</h1>
-      <section id="overview">
-        <p >
-          Welcome to the HT choral resources!
-          Hopefully, there will be a lot more to come, but for right now,
-          check out the song player below. If you click on one of the titles,
-          you can play the song with options to hear your part by itself ("isolate"),
-          or with the other parts softer ("emphasize").
-        </p>
-        <p id="disclaimer">
-          NB: &ensp; This player may not work on a mobile device. &nbsp;
-          Also, you may find that you get the best experience using headphones,
-          especially when selecting "emphasize".
-        </p>
-      </section>
-      
-      {songs.map(song => {
-        return songContent(song);
-      })}
+    <div className="home">
+      {/* <Link to={`${props.match.path}/hello`}>Click Me</Link>
+      <Link to={`${props.match.path}/world`}>Or Me</Link> */}
+      <HashRouter>
+        <Switch>
+          <Route exact path="/:choirName" component={DefaultHome} />
+          <Route path="/:choirName/admin" render={(props) => <AdminFilter {...props} token={token}/>}/>
+          <Route path="/:choirName/login" render={(props) => <Login {...props} setToken={setToken}/>} />
+        </Switch>
+      </HashRouter>
     </div>
-  );
+    
+  )
 }
 
-export default Home;
-
-
+export default Home

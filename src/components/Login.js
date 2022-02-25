@@ -63,7 +63,7 @@ function Login(props) {
   }
 
   if (isAuthed) {
-    return <Redirect to="/admin"></Redirect>
+    return <Redirect to="./admin"></Redirect>
   } else {
     return (
       <div className="Login central-container">

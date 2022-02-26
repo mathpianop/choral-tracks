@@ -1,6 +1,5 @@
 import { Redirect } from "react-router-dom";
 import Admin from "./Admin.js";
-import stripTrailingSlash from "../helpers/stripTrailingSlash.js";
 
 function AdminFilter(props) {
 

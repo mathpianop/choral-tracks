@@ -11241,6 +11241,11 @@ url-parse@^1.4.3, url-parse@^1.4.7:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
+url-slug@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/url-slug/-/url-slug-3.0.3.tgz#23cf0d91c4591f56382b7d8ad67b8dad54d486da"
+  integrity sha512-6iRFiPGMTuu5vBeVk6U7URwqRoMpvzRUg/Ycx0nqeD2g6AULolOTgI928lZeeSX9AIs8Hboh1/SGZTHymTVvRg==
+
 url@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/url/-/url-0.11.0.tgz#3838e97cfc60521eb73c525a8e55bfdd9e2e28f1"

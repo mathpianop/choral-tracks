@@ -248,6 +248,7 @@ function SongForm(props) {
     songData.append("parts_promised", parts.length)
     //Hard-coded as HT choir for now
     songData.append("choir_id", 1)
+    console.log("Hello World");
     //POST or PATCH the new Song
     const response = await sendSong(songData, cancelSources[0])
     //After sending the Song, submit each of the Song's Parts

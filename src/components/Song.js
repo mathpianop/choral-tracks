@@ -36,21 +36,17 @@ function Song(props) {
     return splitArray.join(".");
   }
 
-  const getData = function(part) {
+  const getData = async function(part) {
     //Convert extension to .mp3 before fetching from Cloudinary
     const myRequest = new Request(convertUrlToMp3(part.recording));
-    return fetch(myRequest)
-    .then(response => {
-      return response.arrayBuffer();
-    })
-    .then(buffer => {
-        return ctxRef.current.ctx.decodeAudioData(buffer, decodedData => {
-          audioRef.current.loaded[part.name] = true
-          console.log(part.name, "loaded")
-          if (allLoaded()) {setLoading(false)}
-          return decodedData;
-      });
-    })
+    const response = await fetch(myRequest);
+    const buffer = await response.arrayBuffer();
+    return ctxRef.current.ctx.decodeAudioData(buffer, decodedData => {
+      audioRef.current.loaded[part.name] = true;
+      console.log(part.name, "loaded");
+      if (allLoaded()) { setLoading(false); }
+      return decodedData;
+    });
   }
 
   const allLoaded = function() {
@@ -277,7 +273,7 @@ function Song(props) {
           </span>
           {/* Display preferences only if there is more than one part */}
           {preferences()}
-          </LoadingMask>
+        </LoadingMask>
         
       </div>
   )

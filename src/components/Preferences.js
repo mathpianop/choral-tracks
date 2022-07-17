@@ -9,13 +9,8 @@ function Preferences(props) {
   });
   
   const isSelected = function(role, partName) {
-    if (selectedPreference.role === "full-choir" && role === "full-choir") {
-      return true
-    } else if (selectedPreference.role === role && selectedPreference.partName === partName) {
-      return true
-    } else {
-      return false
-    }
+    return selectedPreference.role === "full-choir" && role === "full-choir" ||
+          selectedPreference.role === role && selectedPreference.partName === partName;
   }
   
   return (

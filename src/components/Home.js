@@ -43,7 +43,6 @@ function Home(props) {
     const fetchChoir = async function() {
       try {
         const response = await fetch(`${apiUrl}/choirs/${choirId}`)
-
         if (response.status === 200) {
           const choirData = await response.json();
           setSongs(choirData["songs"]);

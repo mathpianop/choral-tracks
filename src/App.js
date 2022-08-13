@@ -1,14 +1,16 @@
-import { HashRouter } from "react-router-dom";
+import { HashRouter, Route } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import Choir from "./components/Choir.js";
 
 
 import "./App.css"
 
 function App() {
-  // Pass in hardcoded choirId (for HT) for the time being
   return (
     <HashRouter>
-      <Choir choirId={1}/>
+      <Switch>
+        <Route path={"/choir"} component={Choir}/>
+      </Switch>
     </HashRouter>
   )
 }

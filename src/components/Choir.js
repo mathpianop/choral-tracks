@@ -22,15 +22,15 @@ function Choir(props) {
   const [token, setToken] = useState(findLocalToken());
   const history = useHistory();
   
-  useEffect(() => history.push(`/${props.choirId}`), []);
+  //useEffect(() => history.push(`/${props.choirId}`), []);
   
   return (
     
     <div className="Choir">
         <Switch>
-          <Route exact path="/:choirId" component={Home} />
-          <Route path="/:choirId/admin" render={(props) => <AdminFilter {...props} token={token}/>}/>
-          <Route path="/:choirId/login" render={(props) => <Login {...props} setToken={setToken}/>} />
+          <Route exact path="/choir/:choirId" render={(props) => <Home {...props} />} />
+          <Route path="/choir/:choirId/admin" render={(props) => <AdminFilter {...props} token={token}/>}/>
+          <Route path="/choir/:choirId/login" render={(props) => <Login {...props} setToken={setToken}/>} />
         </Switch>
     </div>
     

@@ -1,0 +1,113 @@
+import makeRequest from "../makeRequest";
+
+describe("makeRequest", () => {
+
+  afterEach(() => {
+    fetch.mockClear();
+  })
+
+  it("returns a promise resolving to response data when response is ok", async () => {
+    global.fetch = jest.fn(() => 
+      new Promise(resolve => 
+        setTimeout(() => {
+          resolve({
+            ok: true,
+            json: () => Promise.resolve({data: "Choir Data"})
+          });
+        }, 5)
+      )
+    );
+    const choirData = await makeRequest("dummy resource");
+    expect(choirData["data"]).toBe("Choir Data")
+
+  });
+
+  it("Rejects the promise when response is not ok", async () => {
+    global.fetch = jest.fn(() => Promise.resolve({
+      ok: false,
+      json: () => Promise.resolve({message: "Uh Oh"})
+    }));
+    await expect(makeRequest("dummy resource")).rejects.toThrow("Software Bug")
+  });
+
+
+  it("Cancels the request if request time exceeds given limit", async () => {
+    global.fetch = jest.fn(() => 
+      new Promise(resolve => 
+        setTimeout(() => {
+          resolve({
+            ok: true,
+            json: () => Promise.resolve({data: "Choir Data"})
+          });
+        }, 100)
+      )
+    );
+
+    const abortSpy = jest.spyOn(AbortController.prototype, "abort");
+
+    let err;
+    try {
+      await makeRequest("dummy resource", {timeout: 25});
+    } catch(e) {
+      err = e; 
+    }
+
+    expect(abortSpy).toHaveBeenCalledTimes(1);
+    abortSpy.mockClear();
+  });
+
+  it("Doesn't cancel the request if request does not exceed the given limit", async () => {
+    global.fetch = jest.fn(() => 
+      new Promise(resolve => 
+        setTimeout(() => {
+          resolve({
+            ok: true,
+            json: () => Promise.resolve({data: "Choir Data"})
+          });
+        }, 20)
+      )
+    );
+
+    const abortSpy = jest.spyOn(AbortController.prototype, "abort");
+    const choirData = await makeRequest("dummy resource", {timeout: 25});
+
+    expect(abortSpy).not.toHaveBeenCalled();
+    expect(choirData["data"]).toBe("Choir Data");
+  });
+
+  it("Throws error with isNetworkError if request time exceeds given limit", async () => {
+   
+    const mockError = new Error();
+    mockError.name = "AbortError"
+    global.fetch = jest.fn(() => Promise.reject(mockError));
+
+      let err;
+
+      try {
+        await makeRequest("dummy resource", { timeout: 25});
+      } catch(e) {
+        err = e;
+      }
+
+      expect(err.isNetworkError).toBe(true);
+      expect(err.name).toBe("AbortError");
+  });
+
+  it("Throws error with isNetworkError if no internet", async () => {
+    global.fetch = jest.fn(() => Promise.reject(new Error("Failed to fetch")));
+    let err;
+    try {
+      await makeRequest("dummy resource");
+    } catch(e) {
+      err = e;
+    }
+
+    expect(err.isNetworkError).toBe(true);
+  });
+
+
+
+
+
+  
+})

@@ -30,6 +30,23 @@ describe("makeRequest", () => {
     await expect(makeRequest("dummy resource")).rejects.toThrow("Software Bug")
   });
 
+  it("Throws error with isUnauthorized when response status is 401", async () => {
+    global.fetch = jest.fn(() => Promise.resolve({
+      ok: false,
+      status: 401,
+      json: () => Promise.resolve({message: "Uh Oh"})
+    }));
+
+    let err;
+
+    try {
+      await makeRequest("dummy resource");
+    } catch(e) {
+      err = e;
+    }
+    expect(err.isUnauthorized).toBe(true);
+  })
+
 
   it("Cancels the request if request time exceeds given limit", async () => {
     global.fetch = jest.fn(() => 

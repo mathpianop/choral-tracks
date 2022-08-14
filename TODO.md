@@ -8,7 +8,7 @@
 
 4. Fix Safari
 
-5. Take advantage of makeRequest error sophistication
+5. Take advantage of makeRequest isNetwork error sophistication
 
 
 

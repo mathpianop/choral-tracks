@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Redirect } from "react-router";
 import { apiUrl } from "../apiUrl.js"
+import attemptLogin from "../network/attemptLogin.js";
 import "../style/Login.css";
 
 function Login(props) {
@@ -28,33 +29,17 @@ function Login(props) {
 
   const handleSubmit = function(e) {
     e.preventDefault();
-
-    //Create, fill, and post Login FormData
-    const params = new FormData();
-    params.append("password", formData.password)
-    params.append("username", formData.username)
-
-    fetch(`${apiUrl}/login`, {
-      method: "post",
-      body: params
-    })
-    .then(response => {
-      return response.json();
-    })
+    attemptLogin(formData.username, formData.password)
     .then(decodedResponse => {
       //If login successful, set the token in the App component
       // and in localStorage, and indicate that the admin is authed
-      if (decodedResponse.status === 200) {
-        setLocalToken(decodedResponse.token)
-        props.setToken(decodedResponse.token);
-        setIsAuthed(true);
-        //If the response is 401 Unauthorized, indicate incorrectCredentials
-      } else if (decodedResponse.status === 401) {
-        setIncorrectCredentials(true)
-      }
+      setLocalToken(decodedResponse.token)
+      props.setToken(decodedResponse.token);
+      setIsAuthed(true);
     })
     .catch(err => {
-      console.log(err)
+      //If the response is 401 Unauthorized, indicate incorrectCredentials
+      err.isUnauthorized ? setIncorrectCredentials(true) : console.log(err)
     })
   }
 

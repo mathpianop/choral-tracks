@@ -17,7 +17,7 @@ describe("makeRequest", () => {
         }, 5)
       )
     );
-    const choirData = await makeRequest("dummy resource");
+    const choirData = await makeRequest("dummy resource", "json");
     expect(choirData["data"]).toBe("Choir Data")
 
   });
@@ -27,7 +27,7 @@ describe("makeRequest", () => {
       ok: false,
       json: () => Promise.resolve({message: "Uh Oh"})
     }));
-    await expect(makeRequest("dummy resource")).rejects.toThrow("Software Bug")
+    await expect(makeRequest("dummy resource", "json")).rejects.toThrow("Software Bug")
   });
 
   it("Throws error with isUnauthorized when response status is 401", async () => {
@@ -40,7 +40,7 @@ describe("makeRequest", () => {
     let err;
 
     try {
-      await makeRequest("dummy resource");
+      await makeRequest("dummy resource", "json");
     } catch(e) {
       err = e;
     }
@@ -64,7 +64,7 @@ describe("makeRequest", () => {
 
     let err;
     try {
-      await makeRequest("dummy resource", {timeout: 25});
+      await makeRequest("dummy resource", "json", {timeout: 25});
     } catch(e) {
       err = e; 
     }
@@ -86,7 +86,7 @@ describe("makeRequest", () => {
     );
 
     const abortSpy = jest.spyOn(AbortController.prototype, "abort");
-    const choirData = await makeRequest("dummy resource", {timeout: 25});
+    const choirData = await makeRequest("dummy resource", "json", {timeout: 25});
 
     expect(abortSpy).not.toHaveBeenCalled();
     expect(choirData["data"]).toBe("Choir Data");
@@ -101,7 +101,7 @@ describe("makeRequest", () => {
       let err;
 
       try {
-        await makeRequest("dummy resource", { timeout: 25});
+        await makeRequest("dummy resource", "json", { timeout: 25});
       } catch(e) {
         err = e;
       }
@@ -114,7 +114,7 @@ describe("makeRequest", () => {
     global.fetch = jest.fn(() => Promise.reject(new Error("Failed to fetch")));
     let err;
     try {
-      await makeRequest("dummy resource");
+      await makeRequest("dummy resource", "json");
     } catch(e) {
       err = e;
     }

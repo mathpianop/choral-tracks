@@ -4,8 +4,8 @@ import "react-loadingmask/dist/react-loadingmask.css";
 import Preferences from "././Preferences.js"
 import Controls from "./Controls.js";
 import "../style/Song.css";
-import { apiUrl } from "../apiUrl.js";
-
+import getParts from "../network/getParts";
+import getPartBuffer from "../network/getPartBuffer.js";
 
 function Song(props) {
   //Set duration to an arbitrarily long amount of time until song loads
@@ -28,29 +28,14 @@ function Song(props) {
 
   const updaterRef = useRef();
 
-  const convertUrlToMp3 = function(url) {
-    const splitArray = url.split(".");
-    //Replace last element of split array (the current extension)
-    //with 'mp3'
-    splitArray.splice((splitArray.length - 1), 1, 'mp3')
-    return splitArray.join(".");
-  }
-
-  const getData = function(part) {
-    //Convert extension to .mp3 before fetching from Cloudinary
-    const myRequest = new Request(convertUrlToMp3(part.recording));
-    return fetch(myRequest)
-    .then(response => {
-      return response.arrayBuffer();
-    })
-    .then(buffer => {
-        return ctxRef.current.ctx.decodeAudioData(buffer, decodedData => {
-          audioRef.current.loaded[part.name] = true
-          console.log(part.name, "loaded")
-          if (allLoaded()) {setLoading(false)}
-          return decodedData;
-      });
-    })
+  const getData = async function(part) {
+    const buffer = await getPartBuffer(part.recording);
+    return ctxRef.current.ctx.decodeAudioData(buffer, decodedData => {
+      audioRef.current.loaded[part.name] = true;
+      console.log(part.name, "loaded");
+      if (allLoaded()) { setLoading(false); }
+      return decodedData;
+    });
   }
 
   const allLoaded = function() {
@@ -175,24 +160,14 @@ function Song(props) {
     return capitalizedArray.join(", ")
   }
 
-  const loadParts = async function(abortControllerSignal) {
-    //GET songs from Rails API
-    const response = await fetch(`${apiUrl}/songs/${props.id}/parts`, {
-      signal: abortControllerSignal
-    });
-    const partsData = await response.json();
-    setParts(partsData)
-  }
-
   //Load parts on ComponentDidMount
-  useEffect(() => {
-    const abortController = new AbortController();
+  useEffect(async () => {
     const sourceNodes = audioRef.current.sourceNodes;
-    loadParts(abortController.signal);
+    const partsData = await getParts(props.id);
+    setParts(partsData);
 
-    //Abort fetch and pause track on ComponentWillUnmount
+    //Pause track on ComponentWillUnmount
     return () => {
-      abortController.abort();
       Object.values(sourceNodes).forEach(node => node.stop())
     };
   // eslint-disable-next-line

@@ -1,5 +1,4 @@
 
-
 1. Remove all network requests to separate modules
   - Test, baby, test
 
@@ -9,7 +8,7 @@
 
 4. Fix Safari
 
+5. Take advantage of makeRequest error sophistication
 
-ok: obvs
 
-network error: 
+

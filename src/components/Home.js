@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Link, useParams } from "react-router-dom";
 import Song from "./Song.js";
 import SongBtn from "./SongBtn.js";
-import {apiUrl} from "../apiUrl.js";
+import getChoir from "../network/getChoir";
 import { AudioContext } from 'standardized-audio-context';
 import stripTrailingSlash from "../helpers/stripTrailingSlash.js";
 
@@ -39,20 +39,13 @@ function Home(props) {
   
   useEffect(() => {
     //On ComponentDidMount fetch the choir resource
-    const abortController = new AbortController();
-    const fetchChoir = async function() {
-      try {
-        const response = await fetch(`${apiUrl}/choirs/${choirId}`)
-        if (response.status === 200) {
-          const choirData = await response.json();
-          setSongs(choirData["songs"]);
-        }
-      } catch(err) {
-        console.log(err);
-      }
+    try {
+      const choirData = await getChoir(choirId);
+      setSongs(choirData["songs"])
+    } catch (err) {
+      console.log(err)
     }
-    fetchChoir();
-    return () => abortController.abort();
+    
   }, [])
   
   return (

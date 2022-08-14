@@ -1,8 +1,7 @@
-import {apiUrl} from "../apiUrl.js";
 import fetchWithTimeout from "./fetchWithTimeout";
 
 
-async function makeRequest(resource, options = {}) {
+async function makeRequest(resource, parser, options = {}) {
 
 
   let response;
@@ -22,7 +21,7 @@ async function makeRequest(resource, options = {}) {
   }
  
 
-  const body = await response.json();
+  const body = await response[parser]();
 
   if (response.ok) {
     return body;

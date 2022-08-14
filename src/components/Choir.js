@@ -1,7 +1,7 @@
 import "../style/Home.css";
 import { Route } from "react-router-dom";
-import { Switch, useHistory } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Switch } from "react-router-dom";
+import { useState } from "react";
 import Home from "./Home";
 import AdminFilter from "./AdminFilter.js";
 import Login from "./Login.js";
@@ -20,9 +20,7 @@ function Choir(props) {
   }
 
   const [token, setToken] = useState(findLocalToken());
-  const history = useHistory();
   
-  //useEffect(() => history.push(`/${props.choirId}`), []);
   
   return (
     

@@ -29,7 +29,7 @@ function Song(props) {
   const updaterRef = useRef();
 
   const getData = async function(part) {
-    const buffer = await getPartBuffer(part.recording);
+    const buffer = await getPartBuffer(part.recording_url);
     return ctxRef.current.ctx.decodeAudioData(buffer, decodedData => {
       audioRef.current.loaded[part.name] = true;
       console.log(part.name, "loaded");
@@ -160,11 +160,15 @@ function Song(props) {
     return capitalizedArray.join(", ")
   }
 
-  //Load parts on ComponentDidMount
-  useEffect(async () => {
-    const sourceNodes = audioRef.current.sourceNodes;
+  const loadParts = async function() {
     const partsData = await getParts(props.id);
     setParts(partsData);
+  }
+
+  //Load parts on ComponentDidMount
+  useEffect(() => {
+    const sourceNodes = audioRef.current.sourceNodes;
+    loadParts();
 
     //Pause track on ComponentWillUnmount
     return () => {

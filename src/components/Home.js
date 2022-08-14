@@ -36,16 +36,20 @@ function Home(props) {
       )
     }
   }
-  
-  useEffect(() => {
-    //On ComponentDidMount fetch the choir resource
+
+  const loadChoir = async function() {
     try {
       const choirData = await getChoir(choirId);
       setSongs(choirData["songs"])
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-    
+  }
+  
+  useEffect(() => {
+    //On ComponentDidMount fetch the choir resource
+    loadChoir();
+  // eslint-disable-next-line
   }, [])
   
   return (

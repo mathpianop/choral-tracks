@@ -2,7 +2,13 @@
 --Revise CurrentCollection to not include parts info
 --COMPLETELY revise how editableSong gets selected :/
 
+--Finish extacting network logic
 
+
+1. Change routing and urls: 
+  - choir/:id/admin should become choir/:id/edit
+  - choir/:id/login should become login
+  - Login should redirect to targetUrl
 
 2. Remove logic to separate modules when possible (especially when connected to or processing data)
 

@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Link, useParams } from "react-router-dom";
 import Song from "./Song.js";
 import SongBtn from "./SongBtn.js";
-import getChoir from "../network/getChoir";
 import { AudioContext } from 'standardized-audio-context';
 import stripTrailingSlash from "../helpers/stripTrailingSlash.js";
 
@@ -10,7 +9,6 @@ import stripTrailingSlash from "../helpers/stripTrailingSlash.js";
 function Home(props) {
   //Store id of selected song
   const [selectedSong, setSelectedSong] = useState(null);
-  const [songs, setSongs] = useState([])
   const { choirId } = useParams();
 
   const [audioContext] = useState(new AudioContext());
@@ -37,20 +35,8 @@ function Home(props) {
     }
   }
 
-  const loadChoir = async function() {
-    try {
-      const choirData = await getChoir(choirId);
-      setSongs(choirData["songs"])
-    } catch (err) {
-      console.log(err);
-    }
-  }
   
-  useEffect(() => {
-    //On ComponentDidMount fetch the choir resource
-    loadChoir();
-  // eslint-disable-next-line
-  }, [])
+  
   
   return (
     <div className="Home">
@@ -73,7 +59,7 @@ function Home(props) {
         </p>
       </section>
 
-      {songs.map(song => {
+      {props.songs.map(song => {
         return songContent(song);
       })}
     </div>

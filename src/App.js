@@ -9,7 +9,7 @@ function App() {
   return (
     <HashRouter>
       <Switch>
-        <Route path={"/choir"} component={Choir}/>
+        <Route path={"/choir/:choirId"} component={Choir}/>
       </Switch>
     </HashRouter>
   )

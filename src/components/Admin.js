@@ -4,10 +4,10 @@ import SongFactory from "./SongFactory.js";
 import CurrentCollection from "./CurrentCollection.js"
 import { apiUrl } from "../apiUrl.js";
 import "../style/Admin.css"
+import getAdminSongs from "../network/getAdminSongs.js";
 
 function Admin(props) {
   const [songs, setSongs] = useState([]);
-  const [parts, setParts] = useState([]);
   const [factoryMode, setFactoryMode] = useState("idle");
   //jobStatus can be: none, assembly, creating, created, updating, updated
   //destroying, destroyed, failedToCreate, failedToUpdate, or failedToDestroy
@@ -23,20 +23,12 @@ function Admin(props) {
     setJobStatus("assembly");
   }
 
-  const loadSongs = async function(abortControllerSignal) {
-    //fetch songs/parts from Rails API
+  const loadSongs = async function() {
     try {
-      const response = await fetch(`${apiUrl}/admin`, {
-        headers: { Authorization: `Bearer ${props.token}` },
-        signal: abortControllerSignal
-      })
-      const songsAndParts = await response.json();
-      setSongs(songsAndParts.songs);
-      setParts(songsAndParts.parts);
+      const songs = await getAdminSongs(props.adminId, props.token);
+      setSongs(songs)
     } catch(err) {
-      if (!abortControllerSignal.aborted) {
-        console.log(err)
-      }
+      console.log(err);
     }
   }
 
@@ -49,9 +41,7 @@ function Admin(props) {
       !(jobStatus === "updating") &&
       !(jobStatus === "destroying") 
       ) {
-      const abortController = new AbortController()
-      loadSongs(abortController.signal);
-      return () => abortController.abort();
+      loadSongs();
     }
     //When Admin unmounts, cancel all of the Axios requests from SongForm
     return () => cancelSources.forEach(source => source.cancel())

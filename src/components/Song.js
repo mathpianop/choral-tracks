@@ -29,7 +29,7 @@ function Song(props) {
   const updaterRef = useRef();
 
   const getData = async function(part) {
-    const buffer = await getPartBuffer(part.recording_url);
+  const buffer = await getPartBuffer(part.recording_url);
     return ctxRef.current.ctx.decodeAudioData(buffer, decodedData => {
       audioRef.current.loaded[part.name] = true;
       console.log(part.name, "loaded");
@@ -256,7 +256,7 @@ function Song(props) {
           </span>
           {/* Display preferences only if there is more than one part */}
           {preferences()}
-          </LoadingMask>
+        </LoadingMask>
         
       </div>
   )

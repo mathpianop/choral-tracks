@@ -1,4 +1,5 @@
 import PartFormlet from "./PartFormlet.js"
+import getParts from "../network/getParts";
 import { useEffect, useState } from "react";
 import { apiUrl } from "../apiUrl.js";
 import uniqid from "uniqid";
@@ -289,6 +290,17 @@ function SongForm(props) {
       props.setJobStatus("updating")
     }
   }
+
+  const loadParts = async function() {
+    const parts = await getParts(props.editableSong);
+    setParts(parts);
+  }
+
+  useEffect(() => {
+    if (props.factoryMode === "edit") {
+      loadParts();
+    }
+  }, [props.factoryMode]);
 
 
   useEffect(() => {

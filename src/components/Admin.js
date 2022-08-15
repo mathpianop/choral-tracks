@@ -13,12 +13,10 @@ function Admin(props) {
   //destroying, destroyed, failedToCreate, failedToUpdate, or failedToDestroy
   const [jobStatus, setJobStatus] = useState("none");
   const [editableSong, setEditableSong] = useState(null);
-  const [editableParts, setEditableParts] = useState(null);
   const [cancelSources, setCancelSources] = useState([]);
 
   const editSong = function(song) {
     setEditableSong(song);
-    setEditableParts(parts[song.id.toString()]);
     setFactoryMode("edit");
     setJobStatus("assembly");
   }
@@ -56,7 +54,6 @@ function Admin(props) {
       <div className="layout-container">
         <CurrentCollection
           songs={songs}
-          parts={parts}
           editSong={editSong}
           jobStatus={jobStatus}
         />
@@ -66,7 +63,6 @@ function Admin(props) {
           factoryMode={factoryMode}
           setFactoryMode={setFactoryMode}
           editableSong={editableSong}
-          editableParts={editableParts}
           token={props.token}
           setCancelSources={setCancelSources}
         />

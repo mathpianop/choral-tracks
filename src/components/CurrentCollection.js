@@ -10,7 +10,6 @@ function CurrentCollection(props) {
         return (
           <SongInfo
             song={song}
-            songParts={props.parts[song.id.toString()]}
             editSong={props.editSong}
             key={song.id}
             jobStatus={props.jobStatus}

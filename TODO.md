@@ -1,7 +1,3 @@
---Finish getAdminSongs
---Revise CurrentCollection to not include parts info
---COMPLETELY revise how editableSong gets selected :/
-
 --Finish extacting network logic
 
 

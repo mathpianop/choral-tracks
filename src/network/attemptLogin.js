@@ -7,9 +7,11 @@ async function attemptLogin(username, password) {
    params.append("password", password)
    params.append("username", username)
 
+   //Timeout after 4 seconds
    return await makeRequest(`${apiUrl}/admins/login`, "json", {
      method: "post",
-     body: params
+     body: params,
+     timeout: 4000
    });
 }
 

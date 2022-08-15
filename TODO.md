@@ -1,6 +1,8 @@
+--Finish getAdminSongs
+--Revise CurrentCollection to not include parts info
+--COMPLETELY revise how editableSong gets selected :/
 
-1. Remove all network requests to separate modules
-  - Test, baby, test
+
 
 2. Remove logic to separate modules when possible (especially when connected to or processing data)
 

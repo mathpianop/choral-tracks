@@ -40,7 +40,7 @@ function SongFactory(props) {
             editableSong={props.editableSong}
             editableParts={props.editableParts}
             factoryMode="edit"
-            setCancelSources={props.setCancelSources}
+            setAbortControllers={props.setAbortControllers}
           />
         );
       //If we are submitting the SongForm, or if we are destroying a song,

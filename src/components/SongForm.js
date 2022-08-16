@@ -5,6 +5,10 @@ import { apiUrl } from "../apiUrl.js";
 import uniqid from "uniqid";
 import axios from "axios";
 import "../style/SongForm.css";
+import destroySong from "../network/destroySong.js";
+import destroyPart from "../network/destroyPart.js";
+import deliverPart from "../network/deliverPart.js";
+import deliverSong from "../network/deliverSong.js";
 
 function SongForm(props) {
 
@@ -135,20 +139,18 @@ function SongForm(props) {
 
 
 
-  const destroyExistingSong = async function(cancelSources) {
+  const destroyExistingSong = async function(abortControllers) {
     props.setFactoryMode("destruction");
+
     try {
-      const response = await axios({
-        method: "delete",
-        url: `${apiUrl}/songs/${props.editableSong.id}`,
-        headers: { Authorization: `Bearer ${props.token}` },
-        cancelToken: cancelSources[0].token,
-        timeout: 3000
-      })
-      if (response.status === 200) {
-        props.setJobStatus("destroyed");
-        props.setFactoryMode("idle");
-      }
+      await destroySong(
+        props.editableSong.id, 
+        props.token, 
+        abortControllers[0].signal
+      );
+
+      props.setJobStatus("destroyed");
+      props.setFactoryMode("idle");
     } catch(err) {
       props.setJobStatus("failedToDestroy");
     }
@@ -156,39 +158,24 @@ function SongForm(props) {
   
   const destroyExistingPart = async function(songId, part) {
     try {
-      const response = await axios({
-        method: "delete",
-        url: `${apiUrl}/songs/${songId}/parts/${part.id}`,
-        headers: { Authorization: `Bearer ${props.token}` },
-        timeout: 3000
-      })    
+      await destroyPart(songId, part.id, props.token);
       //If the part destroys succesfully, update loadings object
-      if (response.status === 200) {
-        indicateSuccess(part);
-      }
+      indicateSuccess(part);
+
     } catch(err) {
       console.log(err)
     }
   }
 
-  const sendPart = async function(songId, part, partData, cancelSource) {
-    //Assemble Axios request 
-    const method = (part.mode === "new" ? "post" : "patch")
-    const id = (part.mode === "new" ? "" : part.id)
+  const sendPart = async function(songId, part, partData, abortController) {
     try {
-      const response = await axios({
-        method: method,
-        url: `${apiUrl}/songs/${songId}/parts/${id}`,
-        data: partData,
-        headers: { Authorization: `Bearer ${props.token}` },
-        cancelToken: cancelSource.token,
-        timeout: 60000
-      })
-      //If the part uploads succesfully, update loadings object
-      //functionize
-      if (response.status === 200) {
-        indicateSuccess(part);
+      if (part.mode === "new") {
+        deliverPart.post("", songId, partData, props.token, abortController.signal);
+      } else {
+        deliverPart.patch(part.id, songId, partData, props.token, abortController.signal);
       }
+      //If the part uploads succesfully, update loadings object
+      indicateSuccess(part);
     } catch (err) {
       if (props.factoryMode === "new") {
         props.setJobStatus("failedToCreate");
@@ -198,7 +185,7 @@ function SongForm(props) {
     }
   }
 
-  const submitPart = function(part, songId, cancelSource) {
+  const submitPart = function(part, songId, abortController) {
     //Create a FormData object and append the Part params
     const partData = new FormData();
     partData.append("name", part.name);
@@ -207,22 +194,16 @@ function SongForm(props) {
     partData.append("song_id", songId);
     partData.append("pitch_order", parts.indexOf(part))
     //POST/PATCH the Part
-    sendPart(songId, part, partData, cancelSource)
+    sendPart(songId, part, partData, abortController)
   }
 
-  const sendSong = async function(songData, cancelSource) {
-    //Assemble axios request
-    const method = (props.factoryMode === "new" ? "post" : "patch")
-    const id = (props.factoryMode === "new" ? "" : props.editableSong.id)
+  const sendSong = async function(songData, abortController) {
     try {
-      return await axios({
-        method: method,
-        url: `${apiUrl}/songs/${id}`, 
-        data: songData,
-        headers: { Authorization: `Bearer ${props.token}` },
-        cancelToken: cancelSource.token,
-        timeout: 3000
-      })
+      if (props.factoryMode === "new") {
+        return deliverSong.post("", songData, props.token, abortController.signal);
+      } else {
+        return deliverSong.patch(props.editableSong.id, songData, props.token, abortController.signal);
+      }
       //If request fails, set jobStatus to appropriate failure status
     } catch (err) {
       if (props.jobStatus === "creating") {
@@ -234,7 +215,7 @@ function SongForm(props) {
     }
   }
 
-  const submitSong = async function(cancelSources) {
+  const submitSong = async function(abortControllers) {
     ///Add a loading object for each part to loadings
     assembleLoadingsObject(parts)
     //If this is a PATCH and there any parts being removed, delete them
@@ -251,11 +232,11 @@ function SongForm(props) {
     songData.append("choir_id", 1)
     console.log("Hello World");
     //POST or PATCH the new Song
-    const response = await sendSong(songData, cancelSources[0])
+    const response = await sendSong(songData, abortControllers[0])
     //After sending the Song, submit each of the Song's Parts
     if (response) {
       parts.forEach((part, index) => {
-        submitPart(part, response.data.id, cancelSources[index + 1])
+        submitPart(part, response.data.id, abortControllers[index + 1])
       })
     }
   }
@@ -306,16 +287,16 @@ function SongForm(props) {
   useEffect(() => {
   
     if (props.jobStatus === "creating" || props.jobStatus === "updating") {
-      //Fill an array with one Axios Cancel Token source per part request
-      const cancelSources = parts.map(() => axios.CancelToken.source())
+      //Fill an array with one AbortController per part request
+      const abortControllers = parts.map(() => new AbortController());
       //Add in one more for the song request itself
-      cancelSources.push(axios.CancelToken.source())
-      props.setCancelSources([...cancelSources])
-      submitSong(cancelSources)
+      abortControllers.push(new AbortController());
+      props.setAbortControllers([...abortControllers])
+      submitSong(abortControllers)
     } else if (props.jobStatus === "destroying") {
-      const cancelSources = [axios.CancelToken.source()];
-      props.setCancelSources([...cancelSources])
-      destroyExistingSong(cancelSources)
+      const abortControllers = [new AbortController()];
+      props.setAbortControllers([...abortControllers])
+      destroyExistingSong(abortControllers);
     }
     //eslint-disable-next-line
   }, [props.jobStatus])

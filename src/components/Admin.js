@@ -13,7 +13,7 @@ function Admin(props) {
   //destroying, destroyed, failedToCreate, failedToUpdate, or failedToDestroy
   const [jobStatus, setJobStatus] = useState("none");
   const [editableSong, setEditableSong] = useState(null);
-  const [cancelSources, setCancelSources] = useState([]);
+  const [abortControllers, setAbortControllers] = useState([]);
 
   const editSong = function(song) {
     setEditableSong(song);
@@ -41,8 +41,8 @@ function Admin(props) {
       ) {
       loadSongs();
     }
-    //When Admin unmounts, cancel all of the Axios requests from SongForm
-    return () => cancelSources.forEach(source => source.cancel())
+    //When Admin unmounts, cancel all of the fetch requests from SongForm
+    return () => abortControllers.forEach(controller => controller.abort());
   // eslint-disable-next-line 
   }, [jobStatus])
 
@@ -64,7 +64,7 @@ function Admin(props) {
           setFactoryMode={setFactoryMode}
           editableSong={editableSong}
           token={props.token}
-          setCancelSources={setCancelSources}
+          setAbortControllers={setAbortControllers}
         />
       </div>
     </div>

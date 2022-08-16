@@ -283,7 +283,6 @@ function SongForm(props) {
     }
   }, [props.factoryMode]);
 
-
   useEffect(() => {
   
     if (props.jobStatus === "creating" || props.jobStatus === "updating") {

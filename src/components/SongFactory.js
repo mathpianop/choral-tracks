@@ -26,7 +26,7 @@ function SongFactory(props) {
             setJobStatus={props.setJobStatus}
             jobStatus={props.jobStatus}   
             factoryMode="new"
-            setCancelSources={props.setCancelSources}
+            setAbortControllers={props.setAbortControllers}
           />
         );
       case "edit":

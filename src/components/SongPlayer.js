@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import LoadingMask from "react-loadingmask";
 import "react-loadingmask/dist/react-loadingmask.css";
-import Preferences from "././Preferences.js"
+import Preferences from "./Preferences.js"
 import Controls from "./Controls.js";
 import "../style/Song.css";
 import getParts from "../network/getParts";
 import getPartBuffer from "../network/getPartBuffer.js";
 
-function Song(props) {
+function SongPlayer(props) {
   //Set duration to an arbitrarily long amount of time until song loads
   const [duration, setDuration] = useState(10000);
   const [timestamp, setTimestamp] = useState(0);
@@ -262,4 +262,4 @@ function Song(props) {
   )
 }
 
-export default Song;
+export default SongPlayer;

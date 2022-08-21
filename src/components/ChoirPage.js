@@ -8,7 +8,7 @@ import Login from "./Login.js";
 import getChoir from "../network/getChoir";
 
 
-function Choir() {
+function ChoirPage() {
 
   const findLocalToken = function() {
     try {
@@ -54,4 +54,4 @@ function Choir() {
   )
 }
 
-export default Choir
+export default ChoirPage;

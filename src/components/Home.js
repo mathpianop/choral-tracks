@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link, useParams } from "react-router-dom";
-import Song from "./Song.js";
+import SongPlayer from "./SongPlayer.js";
 import SongBtn from "./SongBtn.js";
 import { AudioContext } from 'standardized-audio-context';
 import stripTrailingSlash from "../helpers/stripTrailingSlash.js";
@@ -9,14 +9,13 @@ import stripTrailingSlash from "../helpers/stripTrailingSlash.js";
 function Home(props) {
   //Store id of selected song
   const [selectedSong, setSelectedSong] = useState(null);
-  const { choirId } = useParams();
 
   const [audioContext] = useState(new AudioContext());
 
   const songContent = function(song) {
     if (song.id === selectedSong) {
       return (
-        <Song 
+        <SongPlayer 
         title={song.title}
         id={song.id}
         key={song.id}
@@ -59,7 +58,7 @@ function Home(props) {
         </p>
       </section>
 
-      {props.songs.map(song => {
+      {props.songsPlayers.map(song => {
         return songContent(song);
       })}
     </div>

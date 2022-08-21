@@ -1,8 +1,9 @@
 
 
---Finish extacting network logic
---Yikes! Figure out how to work canceltokens into fetch/makerequest
----Maybe turn awful deliverPart module into an object for more elegance? More likely use options object. Better yet, hand the whole bunch of methods off to a big module
+--Implement models????
+
+
+
 0. Change routing and urls: 
   - choir/:id/admin should become choir/:id/edit
   - choir/:id/login should become login

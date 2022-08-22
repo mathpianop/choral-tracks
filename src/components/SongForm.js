@@ -1,14 +1,11 @@
 import PartFormlet from "./PartFormlet.js"
 import getParts from "../network/getParts";
 import { useEffect, useState } from "react";
-import { apiUrl } from "../apiUrl.js";
 import uniqid from "uniqid";
-import axios from "axios";
 import "../style/SongForm.css";
 import destroySong from "../network/destroySong.js";
 import destroyPart from "../network/destroyPart.js";
-import deliverPart from "../network/deliverPart.js";
-import deliverSong from "../network/deliverSong.js";
+import SongSender from "../network/SongSender.js";
 
 function SongForm(props) {
 
@@ -139,14 +136,13 @@ function SongForm(props) {
 
 
 
-  const destroyExistingSong = async function(abortControllers) {
+  const destroyExistingSong = async function() {
     props.setFactoryMode("destruction");
 
     try {
       await destroySong(
         props.editableSong.id, 
-        props.token, 
-        abortControllers[0].signal
+        props.token
       );
 
       props.setJobStatus("destroyed");
@@ -167,15 +163,71 @@ function SongForm(props) {
     }
   }
 
-  const sendPart = async function(songId, part, partData, abortController) {
+  const preparePartData = function(part) {
+    const partData = new FormData();
+    partData.append("name", part.name);
+    partData.append("initial", part.initial);
+    partData.append("recording", part.recording);
+    partData.append("pitch_order", parts.indexOf(part))
+  }
+
+  const prepareSongData = function() {
+    const songData = new FormData();
+    songData.append("title", title)
+    songData.append("parts_promised", parts.length)
+    //Hard-coded as HT choir for now
+    songData.append("choir_id", 1)
+    return songData;
+  }
+
+  const createOrUpdateSong = function(sender) {
+    //POST or PATCH the Song
+    const songData = prepareSongData();
+    const abortControllers = [];
+    const songController = sender.addSong(songData, props.editableSong.id);
+    abortControllers.push(songController);
+    props.setAbortControllers([...abortControllers]);
+    return sender.sendSong();
+  }
+
+  const createOrUpdateParts = function(sender) {
+    const abortControllers = [];
+    parts.forEach((part) => {
+      const partData = preparePartData(part)
+      abortControllers.push(sender.addPart(partData, part.id));
+      sender.sendNextPart();
+    });
+
+    props.setAbortControllers([...abortControllers]);
+  }
+
+
+  // !!!
+  const submitSong = async function() {
+    ///Add a loading object for each part to loadings
+    assembleLoadingsObject(parts)
+    //If this is a PATCH and there any parts being removed, delete them
+    if (props.editableParts) {
+      deleteObsoleteParts();
+    }
+    props.setFactoryMode("delivery");
+
+    const sender = SongSender(props.token);
+
     try {
-      if (part.mode === "new") {
-        deliverPart.post("", songId, partData, props.token, abortController.signal);
-      } else {
-        deliverPart.patch(part.id, songId, partData, props.token, abortController.signal);
+      await createOrUpdateSong()
+    } catch (err) {
+      if (props.jobStatus === "creating") {
+        props.setJobStatus("failedToCreate");
+      } else if (props.jobStatus === "updating") {
+        props.setJobStatus("failedToUpdate");
       }
-      //If the part uploads succesfully, update loadings object
-      indicateSuccess(part);
+      console.log(err);
+    }
+  
+    //After sending the Song, send each of the Song's Parts
+    try {
+      createOrUpdateParts(sender)
     } catch (err) {
       if (props.factoryMode === "new") {
         props.setJobStatus("failedToCreate");
@@ -185,63 +237,8 @@ function SongForm(props) {
     }
   }
 
-  const submitPart = function(part, songId, abortController) {
-    //Create a FormData object and append the Part params
-    const partData = new FormData();
-    partData.append("name", part.name);
-    partData.append("initial", part.initial);
-    partData.append("recording", part.recording)
-    partData.append("song_id", songId);
-    partData.append("pitch_order", parts.indexOf(part))
-    //POST/PATCH the Part
-    sendPart(songId, part, partData, abortController)
-  }
-
-  const sendSong = async function(songData, abortController) {
-    try {
-      if (props.factoryMode === "new") {
-        return deliverSong.post("", songData, props.token, abortController.signal);
-      } else {
-        return deliverSong.patch(props.editableSong.id, songData, props.token, abortController.signal);
-      }
-      //If request fails, set jobStatus to appropriate failure status
-    } catch (err) {
-      if (props.jobStatus === "creating") {
-        props.setJobStatus("failedToCreate");
-      } else if (props.jobStatus === "updating") {
-        props.setJobStatus("failedToUpdate");
-      }
-      console.log(err);
-    }
-  }
-
-  const submitSong = async function(abortControllers) {
-    ///Add a loading object for each part to loadings
-    assembleLoadingsObject(parts)
-    //If this is a PATCH and there any parts being removed, delete them
-    if (props.editableParts) {
-      deleteObsoleteParts();
-    }
-    props.setFactoryMode("delivery");
-
-    //Assemble the FormData object
-    const songData = new FormData();
-    songData.append("title", title)
-    songData.append("parts_promised", parts.length)
-    //Hard-coded as HT choir for now
-    songData.append("choir_id", 1)
-    console.log("Hello World");
-    //POST or PATCH the new Song
-    const response = await sendSong(songData, abortControllers[0])
-    //After sending the Song, submit each of the Song's Parts
-    if (response) {
-      parts.forEach((part, index) => {
-        submitPart(part, response.data.id, abortControllers[index + 1])
-      })
-    }
-  }
-
-  const submitValue = function() {
+  const submitValue = function() 
+  {
     return (props.factoryMode === "new" ? "Submit Song" : "Update Song")
   }
 
@@ -284,17 +281,9 @@ function SongForm(props) {
   }, [props.factoryMode]);
 
   useEffect(() => {
-  
     if (props.jobStatus === "creating" || props.jobStatus === "updating") {
-      //Fill an array with one AbortController per part request
-      const abortControllers = parts.map(() => new AbortController());
-      //Add in one more for the song request itself
-      abortControllers.push(new AbortController());
-      props.setAbortControllers([...abortControllers])
-      submitSong(abortControllers)
+      submitSong()
     } else if (props.jobStatus === "destroying") {
-      const abortControllers = [new AbortController()];
-      props.setAbortControllers([...abortControllers])
       destroyExistingSong(abortControllers);
     }
     //eslint-disable-next-line

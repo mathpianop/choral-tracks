@@ -1,11 +1,14 @@
 import {apiUrl} from "../apiUrl";
+import makeRequest from "./makeRequest"
 
 
-async function getAdminSongs(adminId, token) {
+async function getAdminSongs(choirId, token) {
   //fetch songs from Rails API
-    return  await makeRequest(`${apiUrl}/admins/${adminId}`, {
-      headers: { Authorization: `Bearer ${token}` },
+    const choirEdit = await makeRequest(`${apiUrl}/choirs/${choirId}/edit`, "json", {
+      headers: { Authorization: `Bearer ${token}` }
     });
+
+    return choirEdit.songs
 }
 
 export default getAdminSongs;

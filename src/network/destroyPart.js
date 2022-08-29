@@ -1,7 +1,7 @@
 import { apiUrl } from "../apiUrl";
 import makeRequest from "./makeRequest";
 
-function destroyPart(songId, partId, authToken) {
+async function destroyPart(songId, partId, authToken) {
   return await makeRequest({
     method: "delete",
     url: `${apiUrl}/songs/${songId}/parts/${partId}`,

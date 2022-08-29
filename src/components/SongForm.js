@@ -201,8 +201,6 @@ function SongForm(props) {
     props.setAbortControllers([...abortControllers]);
   }
 
-
-  // !!!
   const submitSong = async function() {
     ///Add a loading object for each part to loadings
     assembleLoadingsObject(parts)
@@ -278,13 +276,14 @@ function SongForm(props) {
     if (props.factoryMode === "edit") {
       loadParts();
     }
+     //eslint-disable-next-line
   }, [props.factoryMode]);
 
   useEffect(() => {
     if (props.jobStatus === "creating" || props.jobStatus === "updating") {
       submitSong()
     } else if (props.jobStatus === "destroying") {
-      destroyExistingSong(abortControllers);
+      destroyExistingSong();
     }
     //eslint-disable-next-line
   }, [props.jobStatus])

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SongFactory from "./SongFactory.js";
 import CurrentCollection from "./CurrentCollection.js"
-import { apiUrl } from "../apiUrl.js";
 import "../style/Admin.css"
 import getAdminSongs from "../network/getAdminSongs.js";
 
@@ -21,17 +20,22 @@ function Admin(props) {
     setJobStatus("assembly");
   }
 
-  const loadSongs = async function() {
-    try {
-      const songs = await getAdminSongs(props.adminId, props.token);
-      setSongs(songs)
-    } catch(err) {
-      console.log(err);
-    }
-  }
+  // const loadSongs = async function() {
+  //   try {
+  //     console.log(songs);
+  //     const songs = await getAdminSongs(props.adminId, props.token);
+  //     setSongs(songs)
+  //   } catch(err) {
+  //     console.log(err);
+  //   }
+  // }
 
-  //Execute on ComponentDidMount and when the CurrentCollection might changes
+  //Execute on ComponentDidMount and when the CurrentCollection might change
   useEffect(() => {
+    const loadSongs = async function() {
+      const songs = await getAdminSongs(props.choirId, props.token);
+      setSongs(songs)
+    }
     //If the jobStatus changes and a job isn't in progress, reload the CurrentCollection
     if (
       !(jobStatus === "assembly") &&
@@ -39,12 +43,16 @@ function Admin(props) {
       !(jobStatus === "updating") &&
       !(jobStatus === "destroying") 
       ) {
-      loadSongs();
+        if (props.choirId) {
+          
+          loadSongs();
+        }
+      
     }
     //When Admin unmounts, cancel all of the fetch requests from SongForm
     return () => abortControllers.forEach(controller => controller.abort());
   // eslint-disable-next-line 
-  }, [jobStatus])
+  }, [jobStatus, props.adminId])
 
   return (
     <div className="Admin">

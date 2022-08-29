@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Redirect } from "react-router";
-import { apiUrl } from "../apiUrl.js"
 import attemptLogin from "../network/attemptLogin.js";
 import "../style/Login.css";
 

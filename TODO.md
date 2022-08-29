@@ -1,3 +1,5 @@
+rethink information flow in Admin: when to fetch parts????
+
 
 --Test, baby, test
 

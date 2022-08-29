@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import SongPlayer from "./SongPlayer.js";
 import SongBtn from "./SongBtn.js";
 import { AudioContext } from 'standardized-audio-context';
@@ -35,7 +35,13 @@ function Home(props) {
   }
 
   
-  
+  const songPlayers = function() {
+    if (props.songs) {
+      return props.songs.map(song => {
+        return songContent(song);
+      })
+    }
+  }
   
   return (
     <div className="Home">
@@ -58,9 +64,7 @@ function Home(props) {
         </p>
       </section>
 
-      {props.songsPlayers.map(song => {
-        return songContent(song);
-      })}
+      {songPlayers()}
     </div>
   );
 }

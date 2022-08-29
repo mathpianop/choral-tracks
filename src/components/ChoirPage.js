@@ -1,7 +1,6 @@
 import "../style/Home.css";
-import { Route } from "react-router-dom";
-import { Switch } from "react-router-dom";
-import { useState } from "react";
+import { Route, Switch, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Home from "./Home";
 import AdminFilter from "./AdminFilter.js";
 import Login from "./Login.js";
@@ -21,7 +20,6 @@ function ChoirPage() {
   }
 
   const [token, setToken] = useState(findLocalToken());
-  const [adminId, setAdminId] = useState();
   const [songs, setSongs] = useState();
   const { choirId } = useParams(); 
   
@@ -29,14 +27,13 @@ function ChoirPage() {
     try {
       const choirData = await getChoir(choirId);
       setSongs(choirData.songs);
-      setAdminId(choirData.choir_details.admin_id);
     } catch (err) {
       console.log(err);
     }
   }
   
   useEffect(() => {
-    //On ComponentDidMount fetch the choir resource
+    //On ComponentDidMount fetch the choir resources
     loadChoir();
   // eslint-disable-next-line
   }, [])
@@ -46,7 +43,7 @@ function ChoirPage() {
     <div className="Choir">
         <Switch>
           <Route exact path="/choir/:choirId" render={(props) => <Home {...props} songs={songs} />} />
-          <Route path="/choir/:choirId/admin" render={(props) => <AdminFilter {...props} token={token} adminId={adminId}/>}/>
+          <Route path="/choir/:choirId/admin" render={(props) => <AdminFilter {...props} token={token} choirId={choirId}/>}/>
           <Route path="/choir/:choirId/login" render={(props) => <Login {...props} setToken={setToken}/>} />
         </Switch>
     </div>

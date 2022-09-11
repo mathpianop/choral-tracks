@@ -14,6 +14,7 @@ function SongFactory(props) {
     props.setJobStatus("assembly");
   }
 
+ 
   const content = function() {
     switch (props.factoryMode) {
       //If we are creating or updating a song, render the SongForm
@@ -23,6 +24,7 @@ function SongFactory(props) {
             token={props.token}
             setFactoryMode={props.setFactoryMode}
             setLoadings={setLoadings}
+            loadings={loadings}
             setJobStatus={props.setJobStatus}
             jobStatus={props.jobStatus}   
             factoryMode="new"
@@ -35,6 +37,7 @@ function SongFactory(props) {
             token={props.token}
             setFactoryMode={props.setFactoryMode}
             setLoadings={setLoadings}
+            loadings={loadings}
             setJobStatus={props.setJobStatus}
             jobStatus={props.jobStatus}
             editableSong={props.editableSong}
@@ -95,8 +98,7 @@ function SongFactory(props) {
       }
     }
     //eslint-disable-next-line
-  }, [loadings])
-
+  }, [loadings]);
 
   return (
     <div className="SongFactory">

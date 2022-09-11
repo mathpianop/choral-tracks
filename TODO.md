@@ -1,9 +1,13 @@
-rethink information flow in Admin: when to fetch parts????
 
 
---Test, baby, test
+-- SongForm 203
 
---Implement models????
+--Cancel "loading" message when error encountered or when song submitted succesfully
+--Move SongForm useEffect into event handlers
+
+--Combine factoryMode, jobStatus, and loadings into a single factory object (name TBD)
+
+--Implement models, baby
 
 
 

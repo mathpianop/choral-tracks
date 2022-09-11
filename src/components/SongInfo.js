@@ -3,6 +3,7 @@ import "../style/SongInfo.css"
 
 function SongInfo(props) {
 
+
   const editButton = function() {
     //If a job not currently being assembled or executed, display edit button
     switch (props.jobStatus) {
@@ -12,17 +13,19 @@ function SongInfo(props) {
       case "assembly":
         return "";
       default: 
-        return (
-          <button type="button" className="edit-btn" onClick={handleEdit}>
-            <EditIcon />
-          </button>
-        )
+          return (
+            <button type="button" className="edit-btn" onClick={handleEdit}>
+              <EditIcon />
+            </button>
+          );
     }
   }
 
   const handleEdit = function() {
     props.editSong(props.song)
   }
+
+  
   
   return (
     <div className="SongInfo">

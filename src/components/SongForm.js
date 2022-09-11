@@ -1,5 +1,4 @@
 import PartFormlet from "./PartFormlet.js"
-import getParts from "../network/getParts";
 import { useEffect, useState } from "react";
 import uniqid from "uniqid";
 import "../style/SongForm.css";
@@ -34,23 +33,10 @@ function SongForm(props) {
   const initializeParts = function() {
     //If the SongForm is for a new song or for one without any fulfilled parts,
     //return an array with a single newPart
-    if (!props.editableParts) {
+    if (props.factoryMode === "new") {
       return [newPart()];
     } else {
-      let initialParts = [...props.editableParts];
-      //Pad initialParts with blank part objects wherever pitch order
-      //does not correspond to a fulfilled parts
-      for (let i = 0; i < props.editableSong["parts_promised"]; i++) {
-        if (initialParts[i] && i === initialParts[i]["pitch_order"]) {
-          //if the index corresonds to a pitch order that has been fulfilled,  
-          //replace Rails Part with the React Part
-          initialParts.splice(i, 1, railsToJs(initialParts[i]));      
-        } else {
-          //If not, add a new part at that index
-          initialParts.splice(i, 0, newPart());
-        }
-      }
-      return initialParts;
+      return props.editableParts.map(railsToJs);
     }
   }
 
@@ -105,9 +91,10 @@ function SongForm(props) {
     });
   }
 
-  const indicateSuccess = function(part) {
+  const indicateSuccess = function(partName) {
+    console.log(partName, props.loadings);
     props.setLoadings(loadings => {
-      loadings[part.name].success = true;
+      loadings[partName].success = true;
       return {...loadings};
     });
   }
@@ -168,7 +155,8 @@ function SongForm(props) {
     partData.append("name", part.name);
     partData.append("initial", part.initial);
     partData.append("recording", part.recording);
-    partData.append("pitch_order", parts.indexOf(part))
+    partData.append("pitch_order", parts.indexOf(part));
+    return partData;
   }
 
   const prepareSongData = function() {
@@ -184,7 +172,8 @@ function SongForm(props) {
     //POST or PATCH the Song
     const songData = prepareSongData();
     const abortControllers = [];
-    const songController = sender.addSong(songData, props.editableSong.id);
+    const songId = (props.editableParts ? props.editableParts.id : null)
+    const songController = sender.addSong(songData, songId);
     abortControllers.push(songController);
     props.setAbortControllers([...abortControllers]);
     return sender.sendSong();
@@ -192,18 +181,25 @@ function SongForm(props) {
 
   const createOrUpdateParts = function(sender) {
     const abortControllers = [];
-    parts.forEach((part) => {
+    // For each part, prepare the data and send the part,
+    // storing the abortController in state, and returning an
+    // array of the requests
+    const partRequests = parts.reduce((requestArray, part) => {
       const partData = preparePartData(part)
       abortControllers.push(sender.addPart(partData, part.id));
-      sender.sendNextPart();
-    });
+      requestArray.push(sender.sendNextPart());
+      return requestArray;
+    }, []);
 
     props.setAbortControllers([...abortControllers]);
+
+    return partRequests
   }
 
   const submitSong = async function() {
     ///Add a loading object for each part to loadings
-    assembleLoadingsObject(parts)
+    assembleLoadingsObject(parts);
+    console.log(props.loadings);
     //If this is a PATCH and there any parts being removed, delete them
     if (props.editableParts) {
       deleteObsoleteParts();
@@ -212,8 +208,9 @@ function SongForm(props) {
 
     const sender = SongSender(props.token);
 
+    //Send the song
     try {
-      await createOrUpdateSong()
+      await createOrUpdateSong(sender)
     } catch (err) {
       if (props.jobStatus === "creating") {
         props.setJobStatus("failedToCreate");
@@ -225,7 +222,7 @@ function SongForm(props) {
   
     //After sending the Song, send each of the Song's Parts
     try {
-      createOrUpdateParts(sender)
+      var partRequests = createOrUpdateParts(sender)
     } catch (err) {
       if (props.factoryMode === "new") {
         props.setJobStatus("failedToCreate");
@@ -233,10 +230,13 @@ function SongForm(props) {
        props.setJobStatus("failedToUpdate");
      }
     }
+
+    partRequests.forEach(async partRequest => {
+      indicateSuccess((await partRequest).name);
+    })
   }
 
-  const submitValue = function() 
-  {
+  const submitValue = function() {
     return (props.factoryMode === "new" ? "Submit Song" : "Update Song")
   }
 
@@ -267,17 +267,7 @@ function SongForm(props) {
     }
   }
 
-  const loadParts = async function() {
-    const parts = await getParts(props.editableSong);
-    setParts(parts);
-  }
-
-  useEffect(() => {
-    if (props.factoryMode === "edit") {
-      loadParts();
-    }
-     //eslint-disable-next-line
-  }, [props.factoryMode]);
+  
 
   useEffect(() => {
     if (props.jobStatus === "creating" || props.jobStatus === "updating") {
@@ -289,7 +279,9 @@ function SongForm(props) {
   }, [props.jobStatus])
 
   return (
+    
     <form className="SongForm" onSubmit={handleSubmit}>
+  
       <div className="title-bar">
         <input 
           type="text" 

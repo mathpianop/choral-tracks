@@ -4,6 +4,7 @@ import SongFactory from "./SongFactory.js";
 import CurrentCollection from "./CurrentCollection.js"
 import "../style/Admin.css"
 import getAdminSongs from "../network/getAdminSongs.js";
+import getParts from "../network/getParts.js";
 
 function Admin(props) {
   const [songs, setSongs] = useState([]);
@@ -12,23 +13,17 @@ function Admin(props) {
   //destroying, destroyed, failedToCreate, failedToUpdate, or failedToDestroy
   const [jobStatus, setJobStatus] = useState("none");
   const [editableSong, setEditableSong] = useState(null);
+  const [editableParts, setEditableParts] = useState([]);
   const [abortControllers, setAbortControllers] = useState([]);
 
-  const editSong = function(song) {
+  const editSong = async function(song) {
     setEditableSong(song);
+    const parts = await getParts(song.id);
+    setEditableParts(parts);
     setFactoryMode("edit");
     setJobStatus("assembly");
   }
 
-  // const loadSongs = async function() {
-  //   try {
-  //     console.log(songs);
-  //     const songs = await getAdminSongs(props.adminId, props.token);
-  //     setSongs(songs)
-  //   } catch(err) {
-  //     console.log(err);
-  //   }
-  // }
 
   //Execute on ComponentDidMount and when the CurrentCollection might change
   useEffect(() => {
@@ -71,6 +66,7 @@ function Admin(props) {
           factoryMode={factoryMode}
           setFactoryMode={setFactoryMode}
           editableSong={editableSong}
+          editableParts={editableParts}
           token={props.token}
           setAbortControllers={setAbortControllers}
         />

@@ -40,29 +40,29 @@ function SongSender(token) {
   function recordOptions(record, timeout) {
     return {
       method: method(record.id),
-      data: record.data,
+      body: record.data,
       headers: { Authorization: `Bearer ${token}` },
       signal: songController.signal,
       timeout: timeout
     };
   }
 
-  
+
 
   async function sendSong() {
     if (song === undefined) {
       throw new Error("Song not registered");
     }
 
-    
+    recordOptions(song, 3000)
     const songResponse = await makeRequest(songUrl(), "json", recordOptions(song, 3000));
     if (!song.id) {
-      // If this is a new song, then get and store the 
+      // If this is a new song, then get and store the
       // newly created song id to use for the parts requests
       song.id = songResponse.id;
 
     }
-    
+
     return songResponse;
 
 
@@ -77,17 +77,19 @@ function SongSender(token) {
       throw new Error("No parts registered");
     } else if (parts.every(part => part.sent)) {
       throw new Error("Cannot send part: all parts already sent");
-    } 
+    }
 
     const unsentParts = parts.filter(part => !part.sent);
     const nextPart = unsentParts[0];
     nextPart.sent = true;
+
+    
     return await makeRequest(partUrl(nextPart), "json", recordOptions(nextPart, 15000));
   }
 
   return {
-    addSong, 
-    addPart, 
+    addSong,
+    addPart,
     sendSong,
     sendNextPart,
     get hasNextPart() {

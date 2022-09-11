@@ -253,7 +253,8 @@ function SongForm(props) {
   const handleDestroySong = function() {
     const confirmation = window.confirm("Do you really want to delete this song?");
     if (confirmation) {
-     props.setJobStatus("destroying")
+     props.setJobStatus("destroying");
+     destroyExistingSong();
     }
   }
 
@@ -265,18 +266,19 @@ function SongForm(props) {
     } else {
       props.setJobStatus("updating")
     }
+    submitSong();
   }
 
   
 
-  useEffect(() => {
-    if (props.jobStatus === "creating" || props.jobStatus === "updating") {
-      submitSong()
-    } else if (props.jobStatus === "destroying") {
-      destroyExistingSong();
-    }
-    //eslint-disable-next-line
-  }, [props.jobStatus])
+  // useEffect(() => {
+  //   if (props.jobStatus === "creating" || props.jobStatus === "updating") {
+  //     submitSong()
+  //   } else if (props.jobStatus === "destroying") {
+  //     destroyExistingSong();
+  //   }
+  //   //eslint-disable-next-line
+  // }, [props.jobStatus])
 
   return (
     

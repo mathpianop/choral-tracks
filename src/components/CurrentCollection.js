@@ -11,7 +11,7 @@ function CurrentCollection(props) {
           song={song}
           editSong={props.editSong}
           key={song.id}
-          jobStatus={props.jobStatus}
+          statusInfo={props.statusInfo}
         />
       )
     })

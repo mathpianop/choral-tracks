@@ -10,24 +10,24 @@ function SongFactory(props) {
   const [loadings, setLoadings] = useState({});
  
   const handleNewSong = function() {
-    props.setFactoryMode("new");
-    props.setJobStatus("assembly");
+    props.setStatusInfo(statusInfo => {
+      statusInfo.jobStatus = "assembly";
+      statusInfo.factoryMode = "new";
+    })
   }
 
  
   const content = function() {
-    switch (props.factoryMode) {
+    switch (props.statusInfo.factoryMode) {
       //If we are creating or updating a song, render the SongForm
       case "new":
         return (
           <SongForm
             token={props.token}
-            setFactoryMode={props.setFactoryMode}
+            statusInfo={props.statusInfo}
+            setStatusInfo={props.setStatusInfo}
             setLoadings={setLoadings}
             loadings={loadings}
-            setJobStatus={props.setJobStatus}
-            jobStatus={props.jobStatus}   
-            factoryMode="new"
             setAbortControllers={props.setAbortControllers}
           />
         );
@@ -35,14 +35,12 @@ function SongFactory(props) {
         return (
           <SongForm
             token={props.token}
-            setFactoryMode={props.setFactoryMode}
+            statusInfo={props.statusInfo}
+            setStatusInfo={props.setStatusInfo}
             setLoadings={setLoadings}
             loadings={loadings}
-            setJobStatus={props.setJobStatus}
-            jobStatus={props.jobStatus}
             editableSong={props.editableSong}
             editableParts={props.editableParts}
-            factoryMode="edit"
             setAbortControllers={props.setAbortControllers}
           />
         );
@@ -53,8 +51,7 @@ function SongFactory(props) {
         return (
           <SubmitProgress 
             loadings={loadings}
-            setJobStatus={props.setJobStatus}
-            jobStatus={props.jobStatus}
+            statusInfo={props.statusInfo}
           />
         );
       default:
@@ -68,12 +65,8 @@ function SongFactory(props) {
 
   const button = function() {
     //If a job isn't in progress, show the new song button
-    if (
-      !(props.jobStatus === "assembly") &&
-      !(props.jobStatus === "creating") &&
-      !(props.jobStatus === "updating") &&
-      !(props.jobStatus === "destroying") 
-      ) {
+    console.log(props.statusInfo.jobStatus, props.statusInfo.isInProgress(), props.statusInfo.factoryMode);
+    if (!props.statusInfo.isInProgress()) {
       return (
         <button 
           className="pseudo-btn" 
@@ -88,14 +81,9 @@ function SongFactory(props) {
 
   useEffect(() => {
     //If all parts are loading, mark job as finished
-    if (Object.values(loadings).every(loading => loading.success)) {
-      if (props.jobStatus === "creating") {
-        props.setJobStatus("created");
-        props.setFactoryMode("idle");
-      } else if (props.jobStatus === "updating") {
-        props.setJobStatus("updated");
-        props.setFactoryMode("idle");
-      }
+    if (Object.values(loadings).every(loading => loading.success) &&
+        Object.values(loadings).length > 0) {
+        props.setStatusInfo(statusInfo => statusInfo.setSuccess())
     }
     //eslint-disable-next-line
   }, [loadings]);

@@ -6,18 +6,14 @@ function SongInfo(props) {
 
   const editButton = function() {
     //If a job not currently being assembled or executed, display edit button
-    switch (props.jobStatus) {
-      case "creating":
-      case "updating":
-      case "destroying":
-      case "assembly":
-        return "";
-      default: 
-          return (
-            <button type="button" className="edit-btn" onClick={handleEdit}>
-              <EditIcon />
-            </button>
-          );
+    if(props.statusInfo.isInProgress()) {
+      return "";
+    } else {
+      return (
+        <button type="button" className="edit-btn" onClick={handleEdit}>
+          <EditIcon />
+        </button>
+      );
     }
   }
 
@@ -25,8 +21,7 @@ function SongInfo(props) {
     props.editSong(props.song)
   }
 
-  
-  
+
   return (
     <div className="SongInfo">
       <div className="song-info-title-bar">

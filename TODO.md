@@ -1,4 +1,5 @@
---Combine factoryMode, jobStatus, and loadings into a single factory object (name TBD)
+--Combine factoryMode, jobStatus, and (NOT) loadings into a single 
+StatusInfo object
 
 --Implement models, baby
 
@@ -9,7 +10,9 @@
   - choir/:id/login should become login
   - Login should redirect to targetUrl
 
-1. Add unauthorized possibilities to SongForm actions
+1. 
+  - Add unauthorized possibilities to SongForm actions
+  - Add networkError possibilities to SongForm actions
 
 2. Remove logic to separate modules when possible (especially when connected to or processing data)
 

@@ -4,7 +4,7 @@ import "../style/SubmitProgress.css"
 function SubmitProgress(props) {
  
   const topMessage = function() {
-    switch (props.jobStatus) {
+    switch (props.statusInfo.jobStatus) {
       case "creating":
        return "Creating song...";
       case "updating":
@@ -17,7 +17,7 @@ function SubmitProgress(props) {
   }
 
   const progressStatus = function() {
-    if (props.jobStatus === "creating" || props.jobStatus === "updating") {
+    if (props.factoryMode === "delivery") {
       return Object.entries(props.loadings).map(partLoadingEntry => {
         return (
           <PartLoadingEntry
@@ -33,7 +33,7 @@ function SubmitProgress(props) {
   }
 
   const responseMessage = function() {
-    switch (props.jobStatus) {
+    switch (props.statusInfo.jobStatus) {
       case "submitted":
         return "Song successfully created!";
       case "updated":

@@ -5,13 +5,12 @@ import CurrentCollection from "./CurrentCollection.js"
 import "../style/Admin.css"
 import getAdminSongs from "../network/getAdminSongs.js";
 import getParts from "../network/getParts.js";
+import useShallowMutation from "../helpers/useShallowMutation.js";
+import StatusInfo from "../helpers/StatusInfo.js";
 
 function Admin(props) {
   const [songs, setSongs] = useState([]);
-  const [factoryMode, setFactoryMode] = useState("idle");
-  //jobStatus can be: none, assembly, creating, created, updating, updated
-  //destroying, destroyed, failedToCreate, failedToUpdate, or failedToDestroy
-  const [jobStatus, setJobStatus] = useState("none");
+  const [statusInfo, setStatusInfo] = useShallowMutation(StatusInfo());
   const [editableSong, setEditableSong] = useState(null);
   const [editableParts, setEditableParts] = useState([]);
   const [abortControllers, setAbortControllers] = useState([]);
@@ -20,8 +19,10 @@ function Admin(props) {
     setEditableSong(song);
     const parts = await getParts(song.id);
     setEditableParts(parts);
-    setFactoryMode("edit");
-    setJobStatus("assembly");
+    setStatusInfo(statusInfo => {
+      statusInfo.factoryMode = "edit";
+      statusInfo.jobStatus = "assembly";
+    });
   }
 
 
@@ -32,22 +33,13 @@ function Admin(props) {
       setSongs(songs)
     }
     //If the jobStatus changes and a job isn't in progress, reload the CurrentCollection
-    if (
-      !(jobStatus === "assembly") &&
-      !(jobStatus === "creating") &&
-      !(jobStatus === "updating") &&
-      !(jobStatus === "destroying") 
-      ) {
-        if (props.choirId) {
-          
-          loadSongs();
-        }
-      
+    if (!statusInfo.isInProgress() && props.choirId) {
+        loadSongs();
     }
     //When Admin unmounts, cancel all of the fetch requests from SongForm
     return () => abortControllers.forEach(controller => controller.abort());
   // eslint-disable-next-line 
-  }, [jobStatus, props.adminId])
+  }, [statusInfo, props.adminId])
 
   return (
     <div className="Admin">
@@ -58,13 +50,11 @@ function Admin(props) {
         <CurrentCollection
           songs={songs}
           editSong={editSong}
-          jobStatus={jobStatus}
+          statusInfo={statusInfo}
         />
         <SongFactory 
-          jobStatus={jobStatus}
-          setJobStatus={setJobStatus}
-          factoryMode={factoryMode}
-          setFactoryMode={setFactoryMode}
+          statusInfo={statusInfo}
+          setStatusInfo={setStatusInfo}
           editableSong={editableSong}
           editableParts={editableParts}
           token={props.token}

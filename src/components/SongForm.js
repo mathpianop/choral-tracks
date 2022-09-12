@@ -1,5 +1,5 @@
 import PartFormlet from "./PartFormlet.js"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import uniqid from "uniqid";
 import "../style/SongForm.css";
 import destroySong from "../network/destroySong.js";
@@ -33,7 +33,7 @@ function SongForm(props) {
   const initializeParts = function() {
     //If the SongForm is for a new song or for one without any fulfilled parts,
     //return an array with a single newPart
-    if (props.factoryMode === "new") {
+    if (props.statusInfo.factoryMode === "new") {
       return [newPart()];
     } else {
       return props.editableParts.map(railsToJs);
@@ -43,15 +43,14 @@ function SongForm(props) {
   const initializeTitle = function() {
     //If we are editing the song, initialize with existing title; 
     //otherwise intialize with a blank title
-    return (props.factoryMode === "edit" ? props.editableSong.title : "")
+    return (props.statusInfo.factoryMode === "edit" ? props.editableSong.title : "")
   }
 
   const [parts, setParts] = useState(() => initializeParts());
   const [title, setTitle] = useState(() => initializeTitle());
   
   const closeForm = function() {
-    props.setFactoryMode("idle")
-    props.setJobStatus("none")
+    props.setStatusInfo(statusInfo => statusInfo.reset());
   }
 
   const handleChange = function(e) {
@@ -85,14 +84,13 @@ function SongForm(props) {
     props.setLoadings(loadings => {
       loadings = {}
       loadingParts.forEach(part => {
-        loadings[part.name] = {success: false, mode: part.mode, progressEvent: {}}
+        loadings[part.name] = {success: false, mode: part.mode}
       });
       return {...loadings}
     });
   }
 
   const indicateSuccess = function(partName) {
-    console.log(partName, props.loadings);
     props.setLoadings(loadings => {
       loadings[partName].success = true;
       return {...loadings};
@@ -121,10 +119,9 @@ function SongForm(props) {
     });
   }
 
-
-
   const destroyExistingSong = async function() {
-    props.setFactoryMode("destruction");
+    
+    props.setStatusInfo(statusInfo => statusInfo.setDestroy());
 
     try {
       await destroySong(
@@ -132,10 +129,11 @@ function SongForm(props) {
         props.token
       );
 
-      props.setJobStatus("destroyed");
-      props.setFactoryMode("idle");
+      props.setStatusInfo(statusInfo => statusInfo.setSuccess());
+
     } catch(err) {
-      props.setJobStatus("failedToDestroy");
+      console.log(err);
+      props.setStatusInfo(statusInfo => statusInfo.setFailure());
     }
   }
   
@@ -199,12 +197,10 @@ function SongForm(props) {
   const submitSong = async function() {
     ///Add a loading object for each part to loadings
     assembleLoadingsObject(parts);
-    console.log(props.loadings);
     //If this is a PATCH and there any parts being removed, delete them
     if (props.editableParts) {
       deleteObsoleteParts();
     }
-    props.setFactoryMode("delivery");
 
     const sender = SongSender(props.token);
 
@@ -212,11 +208,7 @@ function SongForm(props) {
     try {
       await createOrUpdateSong(sender)
     } catch (err) {
-      if (props.jobStatus === "creating") {
-        props.setJobStatus("failedToCreate");
-      } else if (props.jobStatus === "updating") {
-        props.setJobStatus("failedToUpdate");
-      }
+      props.setStatusInfo(statusInfo => statusInfo.setFailure());
       console.log(err);
     }
   
@@ -224,11 +216,8 @@ function SongForm(props) {
     try {
       var partRequests = createOrUpdateParts(sender)
     } catch (err) {
-      if (props.factoryMode === "new") {
-        props.setJobStatus("failedToCreate");
-     } else if (props.factoryMode === "edit") {
-       props.setJobStatus("failedToUpdate");
-     }
+      props.setStatusInfo(statusInfo => statusInfo.setFailure());
+      console.log(err);
     }
 
     partRequests.forEach(async partRequest => {
@@ -237,13 +226,12 @@ function SongForm(props) {
   }
 
   const submitValue = function() {
-    return (props.factoryMode === "new" ? "Submit Song" : "Update Song")
+    return (props.statusInfo.factoryMode === "new" ? "Submit Song" : "Update Song")
   }
-
 
   const deleteBtn = function() {
     //If we are editing an existing song, display button to delete Song
-    if (props.factoryMode === "edit") {
+    if (props.statusInfo.factoryMode === "edit") {
       return (
         <button type="button" className="pseudo-btn" onClick={handleDestroySong}>Delete Song</button>
       )
@@ -251,34 +239,17 @@ function SongForm(props) {
   }
 
   const handleDestroySong = function() {
-    const confirmation = window.confirm("Do you really want to delete this song?");
-    if (confirmation) {
-     props.setJobStatus("destroying");
-     destroyExistingSong();
+    if(window.confirm("Do you really want to delete this song?")) {
+      destroyExistingSong();
     }
   }
 
   const handleSubmit = function(e) {
     e.preventDefault();
     //set jobStatus to the appropriate delivery status
-    if (props.factoryMode === "new") {
-      props.setJobStatus("creating")
-    } else {
-      props.setJobStatus("updating")
-    }
+    props.setStatusInfo(statusInfo => statusInfo.setDelivery());
     submitSong();
   }
-
-  
-
-  // useEffect(() => {
-  //   if (props.jobStatus === "creating" || props.jobStatus === "updating") {
-  //     submitSong()
-  //   } else if (props.jobStatus === "destroying") {
-  //     destroyExistingSong();
-  //   }
-  //   //eslint-disable-next-line
-  // }, [props.jobStatus])
 
   return (
     

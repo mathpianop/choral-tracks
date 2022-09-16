@@ -1,9 +1,12 @@
---Combine factoryMode, jobStatus, and (NOT) loadings into a single 
-StatusInfo object
+--Fix bug that allows form to be submitted without a songtitle
 
---Implement models, baby
+--Implement immutable SongsList object (make pitch_order update part of this)
 
+--Implement Song model
 
+--PartsList object (to help trim a lot of the stuff from SongForm)
+
+--implement drag and drop (react-dnd looks good)
 
 0. Change routing and urls: 
   - choir/:id/admin should become choir/:id/edit
@@ -16,11 +19,11 @@ StatusInfo object
 
 2. Remove logic to separate modules when possible (especially when connected to or processing data)
 
+**** At this point, push to production
+
 3. Get the choir abstraction thing going!
 
 4. Fix Safari
-
-5. Take advantage of makeRequest isNetwork error sophistication
 
 
 

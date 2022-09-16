@@ -1,42 +1,23 @@
 import PartFormlet from "./PartFormlet.js"
 import { useState } from "react";
-import uniqid from "uniqid";
+import Part from "../models/Part";
 import "../style/SongForm.css";
 import destroySong from "../network/destroySong.js";
 import destroyPart from "../network/destroyPart.js";
 import SongSender from "../network/SongSender.js";
 
 function SongForm(props) {
-
-  const newPart = function() {
-    return {
-      name: "",
-      initial: "",
-      recording: "",
-      mode: "new",
-      key: uniqid()
-    }
-  }
-
-  const railsToJs = function(railsPart) {
-     //Take Rails Part object and return the React equivalent
-     return {
-       id: railsPart.id,
-       name: railsPart.name,
-       initial: railsPart.initial,
-       recording: "existing",
-       mode: "edit",
-       key: uniqid()
-     }
-  }
    
   const initializeParts = function() {
     //If the SongForm is for a new song or for one without any fulfilled parts,
-    //return an array with a single newPart
-    if (props.statusInfo.factoryMode === "new") {
-      return [newPart()];
+    //return an array with a single blank Part
+    console.log(props.editableParts)
+    if (props.editableParts.length > 0) {
+      console.log("Hello")
+      return props.editableParts.map(Part);
     } else {
-      return props.editableParts.map(railsToJs);
+      console.log("World")
+      return [Part()];
     }
   }
 
@@ -59,9 +40,9 @@ function SongForm(props) {
 
   const addPart = function() {
     //Create a new part object and add it to the parts array
-    const additionalPart = newPart();
+    const additionalPart = Part();
     setParts(parts => [...parts, additionalPart]);
-    return newPart
+    return additionalPart;
   }
 
   const removePart = function(index) {
@@ -73,11 +54,18 @@ function SongForm(props) {
     }
   }
 
-  const updatePart = function(index, property, newValue) {
-    const oldParts = parts;
-    //Select part/property and assign the new value
-    oldParts[index][property] = newValue;
-    setParts([...oldParts]);
+  const updatePart = function(partIndex, prop, newValue) {
+    setParts(parts => {
+      return parts.map((part, i) => {
+        if(i === partIndex)  {
+          const updatedPart = {...part}
+          updatedPart[prop] = newValue
+          return updatedPart;
+        } else {
+          return part
+        }
+      });
+    });
   }
 
   const assembleLoadingsObject = function(loadingParts) {
@@ -149,12 +137,8 @@ function SongForm(props) {
   }
 
   const preparePartData = function(part) {
-    const partData = new FormData();
-    partData.append("name", part.name);
-    partData.append("initial", part.initial);
-    partData.append("recording", part.recording);
-    partData.append("pitch_order", parts.indexOf(part));
-    return partData;
+    part.pitch_order = parts.indexOf(part);
+    return part.data();
   }
 
   const prepareSongData = function() {

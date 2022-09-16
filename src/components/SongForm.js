@@ -1,69 +1,37 @@
 import PartFormlet from "./PartFormlet.js"
-import { useEffect, useState } from "react";
-import { apiUrl } from "../apiUrl.js";
-import uniqid from "uniqid";
-import axios from "axios";
+import { useState } from "react";
+import Part from "../models/Part";
 import "../style/SongForm.css";
+import destroySong from "../network/destroySong.js";
+import destroyPart from "../network/destroyPart.js";
+import SongSender from "../network/SongSender.js";
 
 function SongForm(props) {
-
-  const newPart = function() {
-    return {
-      name: "",
-      initial: "",
-      recording: "",
-      mode: "new",
-      key: uniqid()
-    }
-  }
-
-  const railsToJs = function(railsPart) {
-     //Take Rails Part object and return the React equivalent
-     return {
-       id: railsPart.id,
-       name: railsPart.name,
-       initial: railsPart.initial,
-       recording: "existing",
-       mode: "edit",
-       key: uniqid()
-     }
-  }
    
   const initializeParts = function() {
     //If the SongForm is for a new song or for one without any fulfilled parts,
-    //return an array with a single newPart
-    if (!props.editableParts) {
-      return [newPart()];
+    //return an array with a single blank Part
+    console.log(props.editableParts)
+    if (props.editableParts.length > 0) {
+      console.log("Hello")
+      return props.editableParts.map(Part);
     } else {
-      let initialParts = [...props.editableParts];
-      //Pad initialParts with blank part objects wherever pitch order
-      //does not correspond to a fulfilled parts
-      for (let i = 0; i < props.editableSong["parts_promised"]; i++) {
-        if (initialParts[i] && i === initialParts[i]["pitch_order"]) {
-          //if the index corresonds to a pitch order that has been fulfilled,  
-          //replace Rails Part with the React Part
-          initialParts.splice(i, 1, railsToJs(initialParts[i]));      
-        } else {
-          //If not, add a new part at that index
-          initialParts.splice(i, 0, newPart());
-        }
-      }
-      return initialParts;
+      console.log("World")
+      return [Part()];
     }
   }
 
   const initializeTitle = function() {
     //If we are editing the song, initialize with existing title; 
     //otherwise intialize with a blank title
-    return (props.factoryMode === "edit" ? props.editableSong.title : "")
+    return (props.statusInfo.factoryMode === "edit" ? props.editableSong.title : "")
   }
 
   const [parts, setParts] = useState(() => initializeParts());
   const [title, setTitle] = useState(() => initializeTitle());
   
   const closeForm = function() {
-    props.setFactoryMode("idle")
-    props.setJobStatus("none")
+    props.setStatusInfo(statusInfo => statusInfo.reset());
   }
 
   const handleChange = function(e) {
@@ -72,9 +40,9 @@ function SongForm(props) {
 
   const addPart = function() {
     //Create a new part object and add it to the parts array
-    const additionalPart = newPart();
+    const additionalPart = Part();
     setParts(parts => [...parts, additionalPart]);
-    return newPart
+    return additionalPart;
   }
 
   const removePart = function(index) {
@@ -86,26 +54,33 @@ function SongForm(props) {
     }
   }
 
-  const updatePart = function(index, property, newValue) {
-    const oldParts = parts;
-    //Select part/property and assign the new value
-    oldParts[index][property] = newValue;
-    setParts([...oldParts]);
+  const updatePart = function(partIndex, prop, newValue) {
+    setParts(parts => {
+      return parts.map((part, i) => {
+        if(i === partIndex)  {
+          const updatedPart = {...part}
+          updatedPart[prop] = newValue
+          return updatedPart;
+        } else {
+          return part
+        }
+      });
+    });
   }
 
   const assembleLoadingsObject = function(loadingParts) {
     props.setLoadings(loadings => {
       loadings = {}
       loadingParts.forEach(part => {
-        loadings[part.name] = {success: false, mode: part.mode, progressEvent: {}}
+        loadings[part.name] = {success: false, mode: part.mode}
       });
       return {...loadings}
     });
   }
 
-  const indicateSuccess = function(part) {
+  const indicateSuccess = function(partName) {
     props.setLoadings(loadings => {
-      loadings[part.name].success = true;
+      loadings[partName].success = true;
       return {...loadings};
     });
   }
@@ -132,141 +107,115 @@ function SongForm(props) {
     });
   }
 
+  const destroyExistingSong = async function() {
+    
+    props.setStatusInfo(statusInfo => statusInfo.setDestroy());
 
-
-  const destroyExistingSong = async function(cancelSources) {
-    props.setFactoryMode("destruction");
     try {
-      const response = await axios({
-        method: "delete",
-        url: `${apiUrl}/songs/${props.editableSong.id}`,
-        headers: { Authorization: `Bearer ${props.token}` },
-        cancelToken: cancelSources[0].token,
-        timeout: 3000
-      })
-      if (response.status === 200) {
-        props.setJobStatus("destroyed");
-        props.setFactoryMode("idle");
-      }
+      await destroySong(
+        props.editableSong.id, 
+        props.token
+      );
+
+      props.setStatusInfo(statusInfo => statusInfo.setSuccess());
+
     } catch(err) {
-      props.setJobStatus("failedToDestroy");
+      console.log(err);
+      props.setStatusInfo(statusInfo => statusInfo.setFailure());
     }
   }
   
   const destroyExistingPart = async function(songId, part) {
     try {
-      const response = await axios({
-        method: "delete",
-        url: `${apiUrl}/songs/${songId}/parts/${part.id}`,
-        headers: { Authorization: `Bearer ${props.token}` },
-        timeout: 3000
-      })    
+      await destroyPart(songId, part.id, props.token);
       //If the part destroys succesfully, update loadings object
-      if (response.status === 200) {
-        indicateSuccess(part);
-      }
+      indicateSuccess(part);
+
     } catch(err) {
       console.log(err)
     }
   }
 
-  const sendPart = async function(songId, part, partData, cancelSource) {
-    //Assemble Axios request 
-    const method = (part.mode === "new" ? "post" : "patch")
-    const id = (part.mode === "new" ? "" : part.id)
-    try {
-      const response = await axios({
-        method: method,
-        url: `${apiUrl}/songs/${songId}/parts/${id}`,
-        data: partData,
-        headers: { Authorization: `Bearer ${props.token}` },
-        cancelToken: cancelSource.token,
-        timeout: 60000
-      })
-      //If the part uploads succesfully, update loadings object
-      //functionize
-      if (response.status === 200) {
-        indicateSuccess(part);
-      }
-    } catch (err) {
-      if (props.factoryMode === "new") {
-        props.setJobStatus("failedToCreate");
-     } else if (props.factoryMode === "edit") {
-       props.setJobStatus("failedToUpdate");
-     }
-    }
+  const preparePartData = function(part) {
+    part.pitch_order = parts.indexOf(part);
+    return part.data();
   }
 
-  const submitPart = function(part, songId, cancelSource) {
-    //Create a FormData object and append the Part params
-    const partData = new FormData();
-    partData.append("name", part.name);
-    partData.append("initial", part.initial);
-    partData.append("recording", part.recording)
-    partData.append("song_id", songId);
-    partData.append("pitch_order", parts.indexOf(part))
-    //POST/PATCH the Part
-    sendPart(songId, part, partData, cancelSource)
-  }
-
-  const sendSong = async function(songData, cancelSource) {
-    //Assemble axios request
-    const method = (props.factoryMode === "new" ? "post" : "patch")
-    const id = (props.factoryMode === "new" ? "" : props.editableSong.id)
-    try {
-      return await axios({
-        method: method,
-        url: `${apiUrl}/songs/${id}`, 
-        data: songData,
-        headers: { Authorization: `Bearer ${props.token}` },
-        cancelToken: cancelSource.token,
-        timeout: 3000
-      })
-      //If request fails, set jobStatus to appropriate failure status
-    } catch (err) {
-      if (props.jobStatus === "creating") {
-        props.setJobStatus("failedToCreate");
-      } else if (props.jobStatus === "updating") {
-        props.setJobStatus("failedToUpdate");
-      }
-      console.log(err);
-    }
-  }
-
-  const submitSong = async function(cancelSources) {
-    ///Add a loading object for each part to loadings
-    assembleLoadingsObject(parts)
-    //If this is a PATCH and there any parts being removed, delete them
-    if (props.editableParts) {
-      deleteObsoleteParts();
-    }
-    props.setFactoryMode("delivery");
-
-    //Assemble the FormData object
+  const prepareSongData = function() {
     const songData = new FormData();
     songData.append("title", title)
     songData.append("parts_promised", parts.length)
     //Hard-coded as HT choir for now
     songData.append("choir_id", 1)
-    console.log("Hello World");
-    //POST or PATCH the new Song
-    const response = await sendSong(songData, cancelSources[0])
-    //After sending the Song, submit each of the Song's Parts
-    if (response) {
-      parts.forEach((part, index) => {
-        submitPart(part, response.data.id, cancelSources[index + 1])
-      })
+    return songData;
+  }
+
+  const createOrUpdateSong = function(sender) {
+    //POST or PATCH the Song
+    const songData = prepareSongData();
+    const abortControllers = [];
+    const songId = (props.editableParts ? props.editableParts.id : null)
+    const songController = sender.addSong(songData, songId);
+    abortControllers.push(songController);
+    props.setAbortControllers([...abortControllers]);
+    return sender.sendSong();
+  }
+
+  const createOrUpdateParts = function(sender) {
+    const abortControllers = [];
+    // For each part, prepare the data and send the part,
+    // storing the abortController in state, and returning an
+    // array of the requests
+    const partRequests = parts.reduce((requestArray, part) => {
+      const partData = preparePartData(part)
+      abortControllers.push(sender.addPart(partData, part.id));
+      requestArray.push(sender.sendNextPart());
+      return requestArray;
+    }, []);
+
+    props.setAbortControllers([...abortControllers]);
+
+    return partRequests
+  }
+
+  const submitSong = async function() {
+    ///Add a loading object for each part to loadings
+    assembleLoadingsObject(parts);
+    //If this is a PATCH and there any parts being removed, delete them
+    if (props.editableParts) {
+      deleteObsoleteParts();
     }
+
+    const sender = SongSender(props.token);
+
+    //Send the song
+    try {
+      await createOrUpdateSong(sender)
+    } catch (err) {
+      props.setStatusInfo(statusInfo => statusInfo.setFailure());
+      console.log(err);
+    }
+  
+    //After sending the Song, send each of the Song's Parts
+    try {
+      var partRequests = createOrUpdateParts(sender)
+    } catch (err) {
+      props.setStatusInfo(statusInfo => statusInfo.setFailure());
+      console.log(err);
+    }
+
+    partRequests.forEach(async partRequest => {
+      indicateSuccess((await partRequest).name);
+    })
   }
 
   const submitValue = function() {
-    return (props.factoryMode === "new" ? "Submit Song" : "Update Song")
+    return (props.statusInfo.factoryMode === "new" ? "Submit Song" : "Update Song")
   }
-
 
   const deleteBtn = function() {
     //If we are editing an existing song, display button to delete Song
-    if (props.factoryMode === "edit") {
+    if (props.statusInfo.factoryMode === "edit") {
       return (
         <button type="button" className="pseudo-btn" onClick={handleDestroySong}>Delete Song</button>
       )
@@ -274,42 +223,22 @@ function SongForm(props) {
   }
 
   const handleDestroySong = function() {
-    const confirmation = window.confirm("Do you really want to delete this song?");
-    if (confirmation) {
-     props.setJobStatus("destroying")
+    if(window.confirm("Do you really want to delete this song?")) {
+      destroyExistingSong();
     }
   }
 
   const handleSubmit = function(e) {
     e.preventDefault();
     //set jobStatus to the appropriate delivery status
-    if (props.factoryMode === "new") {
-      props.setJobStatus("creating")
-    } else {
-      props.setJobStatus("updating")
-    }
+    props.setStatusInfo(statusInfo => statusInfo.setDelivery());
+    submitSong();
   }
 
-
-  useEffect(() => {
-  
-    if (props.jobStatus === "creating" || props.jobStatus === "updating") {
-      //Fill an array with one Axios Cancel Token source per part request
-      const cancelSources = parts.map(() => axios.CancelToken.source())
-      //Add in one more for the song request itself
-      cancelSources.push(axios.CancelToken.source())
-      props.setCancelSources([...cancelSources])
-      submitSong(cancelSources)
-    } else if (props.jobStatus === "destroying") {
-      const cancelSources = [axios.CancelToken.source()];
-      props.setCancelSources([...cancelSources])
-      destroyExistingSong(cancelSources)
-    }
-    //eslint-disable-next-line
-  }, [props.jobStatus])
-
   return (
+    
     <form className="SongForm" onSubmit={handleSubmit}>
+  
       <div className="title-bar">
         <input 
           type="text" 

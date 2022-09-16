@@ -2,61 +2,44 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SongFactory from "./SongFactory.js";
 import CurrentCollection from "./CurrentCollection.js"
-import { apiUrl } from "../apiUrl.js";
 import "../style/Admin.css"
+import getAdminSongs from "../network/getAdminSongs.js";
+import getParts from "../network/getParts.js";
+import useShallowMutation from "../helpers/useShallowMutation.js";
+import StatusInfo from "../helpers/StatusInfo.js";
 
 function Admin(props) {
   const [songs, setSongs] = useState([]);
-  const [parts, setParts] = useState([]);
-  const [factoryMode, setFactoryMode] = useState("idle");
-  //jobStatus can be: none, assembly, creating, created, updating, updated
-  //destroying, destroyed, failedToCreate, failedToUpdate, or failedToDestroy
-  const [jobStatus, setJobStatus] = useState("none");
+  const [statusInfo, setStatusInfo] = useShallowMutation(StatusInfo());
   const [editableSong, setEditableSong] = useState(null);
-  const [editableParts, setEditableParts] = useState(null);
-  const [cancelSources, setCancelSources] = useState([]);
+  const [editableParts, setEditableParts] = useState([]);
+  const [abortControllers, setAbortControllers] = useState([]);
 
-  const editSong = function(song) {
+  const editSong = async function(song) {
     setEditableSong(song);
-    setEditableParts(parts[song.id.toString()]);
-    setFactoryMode("edit");
-    setJobStatus("assembly");
+    const parts = await getParts(song.id);
+    setEditableParts(parts);
+    setStatusInfo(statusInfo => {
+      statusInfo.factoryMode = "edit";
+      statusInfo.jobStatus = "assembly";
+    });
   }
 
-  const loadSongs = async function(abortControllerSignal) {
-    //fetch songs/parts from Rails API
-    try {
-      const response = await fetch(`${apiUrl}/admin`, {
-        headers: { Authorization: `Bearer ${props.token}` },
-        signal: abortControllerSignal
-      })
-      const songsAndParts = await response.json();
-      setSongs(songsAndParts.songs);
-      setParts(songsAndParts.parts);
-    } catch(err) {
-      if (!abortControllerSignal.aborted) {
-        console.log(err)
-      }
-    }
-  }
 
-  //Execute on ComponentDidMount and when the CurrentCollection might changes
+  //Execute on ComponentDidMount and when the CurrentCollection might change
   useEffect(() => {
-    //If the jobStatus changes and a job isn't in progress, reload the CurrentCollection
-    if (
-      !(jobStatus === "assembly") &&
-      !(jobStatus === "creating") &&
-      !(jobStatus === "updating") &&
-      !(jobStatus === "destroying") 
-      ) {
-      const abortController = new AbortController()
-      loadSongs(abortController.signal);
-      return () => abortController.abort();
+    const loadSongs = async function() {
+      const songs = await getAdminSongs(props.choirId, props.token);
+      setSongs(songs)
     }
-    //When Admin unmounts, cancel all of the Axios requests from SongForm
-    return () => cancelSources.forEach(source => source.cancel())
+    //If the jobStatus changes and a job isn't in progress, reload the CurrentCollection
+    if (!statusInfo.isInProgress() && props.choirId) {
+        loadSongs();
+    }
+    //When Admin unmounts, cancel all of the fetch requests from SongForm
+    return () => abortControllers.forEach(controller => controller.abort());
   // eslint-disable-next-line 
-  }, [jobStatus])
+  }, [statusInfo, props.adminId])
 
   return (
     <div className="Admin">
@@ -66,19 +49,16 @@ function Admin(props) {
       <div className="layout-container">
         <CurrentCollection
           songs={songs}
-          parts={parts}
           editSong={editSong}
-          jobStatus={jobStatus}
+          statusInfo={statusInfo}
         />
         <SongFactory 
-          jobStatus={jobStatus}
-          setJobStatus={setJobStatus}
-          factoryMode={factoryMode}
-          setFactoryMode={setFactoryMode}
+          statusInfo={statusInfo}
+          setStatusInfo={setStatusInfo}
           editableSong={editableSong}
           editableParts={editableParts}
           token={props.token}
-          setCancelSources={setCancelSources}
+          setAbortControllers={setAbortControllers}
         />
       </div>
     </div>

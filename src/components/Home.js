@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react"
-import { Link, useParams } from "react-router-dom";
-import Song from "./Song.js";
+import { useState } from "react"
+import { Link } from "react-router-dom";
+import SongPlayer from "./SongPlayer.js";
 import SongBtn from "./SongBtn.js";
-import getChoir from "../network/getChoir";
 import { AudioContext } from 'standardized-audio-context';
 import stripTrailingSlash from "../helpers/stripTrailingSlash.js";
 
@@ -10,15 +9,13 @@ import stripTrailingSlash from "../helpers/stripTrailingSlash.js";
 function Home(props) {
   //Store id of selected song
   const [selectedSong, setSelectedSong] = useState(null);
-  const [songs, setSongs] = useState([])
-  const { choirId } = useParams();
 
   const [audioContext] = useState(new AudioContext());
 
   const songContent = function(song) {
     if (song.id === selectedSong) {
       return (
-        <Song 
+        <SongPlayer 
         title={song.title}
         id={song.id}
         key={song.id}
@@ -37,20 +34,14 @@ function Home(props) {
     }
   }
 
-  const loadChoir = async function() {
-    try {
-      const choirData = await getChoir(choirId);
-      setSongs(choirData["songs"])
-    } catch (err) {
-      console.log(err);
+  
+  const songPlayers = function() {
+    if (props.songs) {
+      return props.songs.map(song => {
+        return songContent(song);
+      })
     }
   }
-  
-  useEffect(() => {
-    //On ComponentDidMount fetch the choir resource
-    loadChoir();
-  // eslint-disable-next-line
-  }, [])
   
   return (
     <div className="Home">
@@ -73,9 +64,7 @@ function Home(props) {
         </p>
       </section>
 
-      {songs.map(song => {
-        return songContent(song);
-      })}
+      {songPlayers()}
     </div>
   );
 }

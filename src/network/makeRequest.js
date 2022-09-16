@@ -3,7 +3,6 @@ import fetchWithTimeout from "./fetchWithTimeout";
 
 async function makeRequest(resource, parser, options = {}) {
 
-
   let response;
   const timeout = (options ? options.timeout : null);
 
@@ -12,7 +11,7 @@ async function makeRequest(resource, parser, options = {}) {
     if (timeout > 0) {
       response = await fetchWithTimeout(resource, options);
     } else {
-      response = await fetch(resource);
+      response = await fetch(resource, options);
     }
   } catch(err) {
     //attach isNetworkError flag for fetch error
@@ -31,7 +30,7 @@ async function makeRequest(resource, parser, options = {}) {
     throw err
     //For all other non-2xx responses, throw error and log response to console for debugging
   } else {
-    response.body = body;
+    response.bodyContent = body;
     console.log(response);
     throw new Error("Software Bug");
   }

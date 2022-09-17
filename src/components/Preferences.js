@@ -9,8 +9,8 @@ function Preferences(props) {
   });
   
   const isSelected = function(role, partName) {
-    return selectedPreference.role === "full-choir" && role === "full-choir" ||
-          selectedPreference.role === role && selectedPreference.partName === partName;
+    return (selectedPreference.role === "full-choir" && role === "full-choir") ||
+          (selectedPreference.role === role && selectedPreference.partName === partName);
   }
   
   return (

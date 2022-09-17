@@ -12,7 +12,7 @@ function SongForm(props) {
     //If the SongForm is for a new song or for one without any fulfilled parts,
     //return an array with a single blank Part
     console.log(props.editableParts)
-    if (props.editableParts.length > 0) {
+    if (props.editableParts && props.editableParts.length > 0) {
       console.log("Hello")
       return props.editableParts.map(Part);
     } else {
@@ -247,6 +247,7 @@ function SongForm(props) {
           placeholder="Song Title"
           value={title} 
           onChange={handleChange}
+          required
         />
       </div>
       {parts.map((part, index) => {

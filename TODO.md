@@ -1,6 +1,5 @@
---Fix bug that allows form to be submitted without a songtitle
-
---Implement immutable SongsList object (make pitch_order update part of this)
+--Implement immutable PartsList object (make pitch_order update part of this)
+      --finish implementing get
 
 --Implement Song model
 

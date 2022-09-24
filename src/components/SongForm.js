@@ -11,7 +11,6 @@ function SongForm(props) {
   const initializeParts = function() {
     //If the SongForm is for a new song or for one without any fulfilled parts,
     //return an array with a single blank Part
-    console.log(props.editableParts)
     if (props.editableParts && props.editableParts.length > 0) {
       console.log("Hello")
       return props.editableParts.map(Part);

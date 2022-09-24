@@ -1,9 +1,9 @@
---Implement immutable PartsList object (make pitch_order update part of this)
-      --finish implementing get
+--Look for other applications of useShallowMutation (such as loadings)
+
 
 --Implement Song model
 
---PartsList object (to help trim a lot of the stuff from SongForm)
+--Reorganize SongForm
 
 --implement drag and drop (react-dnd looks good)
 

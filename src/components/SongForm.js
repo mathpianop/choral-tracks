@@ -5,20 +5,9 @@ import "../style/SongForm.css";
 import destroySong from "../network/destroySong.js";
 import destroyPart from "../network/destroyPart.js";
 import SongSender from "../network/SongSender.js";
+import ImmutableList from "../helpers/ImmutableList.js";
 
 function SongForm(props) {
-   
-  const initializeParts = function() {
-    //If the SongForm is for a new song or for one without any fulfilled parts,
-    //return an array with a single blank Part
-    if (props.editableParts && props.editableParts.length > 0) {
-      console.log("Hello")
-      return props.editableParts.map(Part);
-    } else {
-      console.log("World")
-      return [Part()];
-    }
-  }
 
   const initializeTitle = function() {
     //If we are editing the song, initialize with existing title; 
@@ -26,45 +15,21 @@ function SongForm(props) {
     return (props.statusInfo.factoryMode === "edit" ? props.editableSong.title : "")
   }
 
-  const [parts, setParts] = useState(() => initializeParts());
+  //If the SongForm is for a new song or for one without any fulfilled parts,
+    //return an ImmutableList with a single blank Part
+  const [parts, setParts] = useState(() => ImmutableList(props.editableParts, Part));
   const [title, setTitle] = useState(() => initializeTitle());
   
-  const closeForm = function() {
-    props.setStatusInfo(statusInfo => statusInfo.reset());
-  }
+  const closeForm = () => props.setStatusInfo(statusInfo => statusInfo.reset());
 
-  const handleChange = function(e) {
-    setTitle(e.target.value);
-  }
+  const handleChange = e => setTitle(e.target.value);
 
-  const addPart = function() {
-    //Create a new part object and add it to the parts array
-    const additionalPart = Part();
-    setParts(parts => [...parts, additionalPart]);
-    return additionalPart;
-  }
+  const addPart = () => setParts(parts => parts.add(Part()));
 
-  const removePart = function(index) {
-    //Remove part form parts array if there is more than one part
-    if (parts.length > 1) {
-      const oldParts = parts;
-      oldParts.splice(index, 1);
-      setParts([...oldParts]);
-    }
-  }
+  const removePart = index => setParts(parts => parts.remove(index));
 
   const updatePart = function(partIndex, prop, newValue) {
-    setParts(parts => {
-      return parts.map((part, i) => {
-        if(i === partIndex)  {
-          const updatedPart = {...part}
-          updatedPart[prop] = newValue
-          return updatedPart;
-        } else {
-          return part
-        }
-      });
-    });
+     setParts(parts => parts.change(partIndex, prop, newValue));
   }
 
   const assembleLoadingsObject = function(loadingParts) {
@@ -88,8 +53,8 @@ function SongForm(props) {
     const oldParts = Object.values(props.editableParts);
     //Filter out the new parts (which don't have an id)
     //and get the ids of the remaining parts (which are being updated)
-    const UpdatingPartIds = parts.filter(part => part.id).map(part => part.id);
-    return oldParts.filter(part => !UpdatingPartIds.includes(part.id));
+    const updatingPartIds = parts.get().filter(part => part.id).map(part => part.id);
+    return oldParts.filter(part => !updatingPartIds.includes(part.id));
   }
 
   const deleteObsoleteParts = function() {
@@ -165,7 +130,7 @@ function SongForm(props) {
     // For each part, prepare the data and send the part,
     // storing the abortController in state, and returning an
     // array of the requests
-    const partRequests = parts.reduce((requestArray, part) => {
+    const partRequests = parts.get().reduce((requestArray, part) => {
       const partData = preparePartData(part)
       abortControllers.push(sender.addPart(partData, part.id));
       requestArray.push(sender.sendNextPart());
@@ -249,7 +214,7 @@ function SongForm(props) {
           required
         />
       </div>
-      {parts.map((part, index) => {
+      {parts.get().map((part, index) => {
         return (
           <PartFormlet
             index={index} 

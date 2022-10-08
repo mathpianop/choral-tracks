@@ -36,11 +36,26 @@ function ImmutableList(items, initializer) {
     return ImmutableList(updatedItems);
   }
 
+  const findIndex = function(key, value) {
+    items.findIndex(item => {
+      return item[key] === value
+    })
+  }
+
+  const move = function(fromIndex, toIndex) {
+    const movingItem = items[fromIndex];
+    items.splice(fromIndex, 1);
+    items.splice(toIndex, 0, movingItem)
+    return ImmutableList(items)
+  }
+
   return Object.freeze({
     get,
     add,
     remove,
-    change
+    change,
+    findIndex,
+    move
   });
 }
 

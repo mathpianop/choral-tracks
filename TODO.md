@@ -1,11 +1,6 @@
---Look for other applications of useShallowMutation (such as loadings)
+--Test, baby, test
 
-
---Implement Song model
-
---Reorganize SongForm
-
---implement drag and drop (react-dnd looks good)
+--Add move function to ImmutableList to enable reordering with dnd
 
 0. Change routing and urls: 
   - choir/:id/admin should become choir/:id/edit

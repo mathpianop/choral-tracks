@@ -1,6 +1,7 @@
 import RecordingInput from "./RecordingInput.js"
 import CancelIcon from "@material-ui/icons/Close";
 import "../style/PartFormlet.css"
+import { Draggable } from "react-beautiful-dnd";
 
 function PartFormlet(props) {
 
@@ -21,34 +22,44 @@ function PartFormlet(props) {
   }
 
   return (
-    <div className={className()}>
-      <h4 className="part-number">{`Part ${props.index + 1}`}</h4>
-      <input 
-        type="text" 
-        name="name" 
-        className="text-input"
-        placeholder="Name"
-        value={props.part.name} 
-        onChange={handleFormChange}
-        required
-      />
-      <input 
-        type="text" 
-        name="initial" 
-        className="text-input initial-input"
-        placeholder="Initial"
-        value={props.part.initial} 
-        onChange={handleFormChange}
-        required
-      />
-      <button type="button" className="remove-part-btn" onClick={removePart}>
-        <CancelIcon />
-      </button>
-      <RecordingInput
-        mode={props.part.mode}
-        handleFileUpload={handleFileUpload}
-      />
-    </div>
+    <Draggable>
+      {(provided) => {
+        return <li 
+          className={className()}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+        >
+          <h4 className="part-number">{`Part ${props.index + 1}`}</h4>
+          <input 
+            type="text" 
+            name="name" 
+            className="text-input"
+            placeholder="Name"
+            value={props.part.name} 
+            onChange={handleFormChange}
+            required
+          />
+          <input 
+            type="text" 
+            name="initial" 
+            className="text-input initial-input"
+            placeholder="Initial"
+            value={props.part.initial} 
+            onChange={handleFormChange}
+            required
+          />
+          <button type="button" className="remove-part-btn" onClick={removePart}>
+            <CancelIcon />
+          </button>
+          <RecordingInput
+            mode={props.part.mode}
+            handleFileUpload={handleFileUpload}
+          />
+        </li>
+      }}
+    </Draggable>
+    
   )
 }
 

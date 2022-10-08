@@ -104,4 +104,27 @@ describe("ImmutableList", () => {
       expect(newList.get()[1].key).toBe(newValue);
     });
   })
+
+  describe("move", () => {
+    it("moves the item at the fromIndex to the toIndex", () => {
+      const part1 = Part();
+      const part2 = Part();
+      const part3 = Part();
+      const parts = [part1, part2, part3];
+      const list = ImmutableList(parts);
+      const reorderedList = list.move(2,0).get()
+      expect(reorderedList[0]).toBe(part3);
+    })
+
+    it("shifts the items in between up or down accordingly", () => {
+      const part1 = Part();
+      const part2 = Part();
+      const part3 = Part();
+      const parts = [part1, part2, part3];
+      const list = ImmutableList(parts);
+      const reorderedList = list.move(2,0).get()
+      expect(reorderedList[1]).toBe(part1);
+      expect(reorderedList[2]).toBe(part2);
+    })
+  })
 })

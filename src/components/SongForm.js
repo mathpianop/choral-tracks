@@ -6,6 +6,7 @@ import destroySong from "../network/destroySong.js";
 import destroyPart from "../network/destroyPart.js";
 import SongSender from "../network/SongSender.js";
 import ImmutableList from "../helpers/ImmutableList.js";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 function SongForm(props) {
 
@@ -94,10 +95,7 @@ function SongForm(props) {
       await destroyPart(songId, part.id, props.token);
       //If the part destroys succesfully, update loadings object
       indicateSuccess(part);
-
-    } catch(err) {
-      console.log(err)
-    }
+    } catch(err) {console.log(err)}
   }
 
   const preparePartData = function(part) {
@@ -138,7 +136,6 @@ function SongForm(props) {
     }, []);
 
     props.setAbortControllers([...abortControllers]);
-
     return partRequests
   }
 
@@ -199,10 +196,12 @@ function SongForm(props) {
     submitSong();
   }
 
+  const onDragEnd = function(result) {
+
+  }
+
   return (
-    
     <form className="SongForm" onSubmit={handleSubmit}>
-  
       <div className="title-bar">
         <input 
           type="text" 
@@ -214,17 +213,33 @@ function SongForm(props) {
           required
         />
       </div>
-      {parts.get().map((part, index) => {
-        return (
-          <PartFormlet
-            index={index} 
-            key={part.key} 
-            part={part}
-            updatePart={updatePart}
-            removePart={removePart}
-          />
-        )
-    })}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="partsList">
+          {(provided) => {
+            return (
+              <ul 
+                id="parts-list"
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {parts.get().map((part, index) => {
+                  return (
+                    <PartFormlet
+                      index={index} 
+                      key={part.key} 
+                      part={part}
+                      updatePart={updatePart}
+                      removePart={removePart}
+                    />
+                  )
+                })}
+                {provided.placeholder}
+              </ul>
+            )
+          }}
+        </Droppable>
+      </DragDropContext>
+      
       <div className="main-form-btns">
         <button 
           type="button" 

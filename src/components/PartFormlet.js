@@ -22,7 +22,7 @@ function PartFormlet(props) {
   }
 
   return (
-    <Draggable>
+    <Draggable draggableId={props.part.key} index={props.index}>
       {(provided) => {
         return <li 
           className={className()}

@@ -18,7 +18,10 @@ function SongForm(props) {
 
   //If the SongForm is for a new song or for one without any fulfilled parts,
     //return an ImmutableList with a single blank Part
-  const [parts, setParts] = useState(() => ImmutableList(props.editableParts, Part));
+  const [parts, setParts] = useState(() => { 
+    return ImmutableList(props.editableParts.map(Part), Part)
+  });
+
   const [title, setTitle] = useState(() => initializeTitle());
   
   const closeForm = () => props.setStatusInfo(statusInfo => statusInfo.reset());
@@ -196,7 +199,12 @@ function SongForm(props) {
     submitSong();
   }
 
-  const onDragEnd = function(result) {
+  const onDragEnd = function({destination, source}) {
+    if(!destination || destination.index === source.index) {
+      return;
+    }
+
+    setParts(parts => parts.move(source.index, destination.index))
 
   }
 
@@ -223,15 +231,13 @@ function SongForm(props) {
                 {...provided.droppableProps}
               >
                 {parts.get().map((part, index) => {
-                  return (
-                    <PartFormlet
+                  return <PartFormlet
                       index={index} 
                       key={part.key} 
                       part={part}
                       updatePart={updatePart}
                       removePart={removePart}
                     />
-                  )
                 })}
                 {provided.placeholder}
               </ul>

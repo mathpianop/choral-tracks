@@ -26,6 +26,7 @@ function ChoirPage() {
   const loadChoir = async function() {
     try {
       const choirData = await getChoir(choirId);
+      console.log(choirData);
       setSongs(choirData.songs);
     } catch (err) {
       console.log(err);

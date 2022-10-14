@@ -1,6 +1,6 @@
 {
   "name": "choral-tracks",
-  "homepage": "http://localhost:3001",
+  "homepage": "https://mathpianop.github.io/choral-tracks-react",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

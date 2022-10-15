@@ -22,6 +22,7 @@ async function makeRequest(resource, parser, options = {}) {
   const body = await response[parser]();
 
   if (response.ok) {
+    console.log(body);
     return body;
     //For 401 unauthorized response, throw error with isUnauthorized flag
   } else if(response.status === 401) {

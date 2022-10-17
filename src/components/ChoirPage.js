@@ -12,8 +12,10 @@ function ChoirPage() {
   const findLocalToken = function() {
     try {
       //Try to return token from localStorage
+      console.log("Found Token", localStorage.getItem("token"))
       return localStorage.getItem("token");
     } catch (err) {
+      console.log("Couldn't find token");
       //If not permitted (becuase of Chrome Incognito 3rd-party, etc.), return null
       return null;
     }

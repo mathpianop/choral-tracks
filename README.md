@@ -52,6 +52,6 @@ yarn install
 
 If you seeded the database in the Rails backend, you should be able to see two sample songs on the page. You can also access the Admin section using the username "sample", and and the password "password". You can interact with the create/edit song form, but you won't be able to create or destroy songs without setting up your own Cloudinary account and info in an .env file.
 
-## License
-
+# License
+k
 Choral Tracks is released under the [MIT License](https://opensource.org/licenses/MIT)

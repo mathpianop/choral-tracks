@@ -65,7 +65,6 @@ function SongFactory(props) {
 
   const button = function() {
     //If a job isn't in progress, show the new song button
-    console.log(props.statusInfo.jobStatus, props.statusInfo.isInProgress(), props.statusInfo.factoryMode);
     if (!props.statusInfo.isInProgress()) {
       return (
         <button 

@@ -12,7 +12,6 @@ function ChoirPage() {
   const findLocalToken = function() {
     try {
       //Try to return token from localStorage
-      console.log("Found Token", localStorage.getItem("token"))
       return localStorage.getItem("token");
     } catch (err) {
       console.log("Couldn't find token");
@@ -28,7 +27,6 @@ function ChoirPage() {
   const loadChoir = async function() {
     try {
       const choirData = await getChoir(choirId);
-      console.log(choirData);
       setSongs(choirData.songs);
     } catch (err) {
       console.log(err);

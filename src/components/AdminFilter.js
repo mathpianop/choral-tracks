@@ -5,7 +5,6 @@ function AdminFilter(props) {
 
   //If the admin is authenticated by the presence of a token, render the Admin page.
   //Otherwise, redirect to Login.
-  console.log("Here's what AdminFilter got:", props.token);
   return (props.token ? <Admin token={props.token} choirId={props.choirId}/> : <Redirect to="./login" />)
   
 }

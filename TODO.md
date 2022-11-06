@@ -1,6 +1,9 @@
---Test, baby, test
+--Fix the single part drag thing / new song
+--Fix Submit bug
 
---Add move function to ImmutableList to enable reordering with dnd
+--Why is addPart requiring a double click?
+
+--Finish testing migration
 
 0. Change routing and urls: 
   - choir/:id/admin should become choir/:id/edit
@@ -9,6 +12,7 @@
 
 1. 
   - Add unauthorized possibilities to SongForm actions
+    * Recover from wrong token
   - Add networkError possibilities to SongForm actions
 
 2. Remove logic to separate modules when possible (especially when connected to or processing data)

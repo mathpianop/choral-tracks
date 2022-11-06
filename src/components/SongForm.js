@@ -19,7 +19,8 @@ function SongForm(props) {
   //If the SongForm is for a new song or for one without any fulfilled parts,
     //return an ImmutableList with a single blank Part
   const [parts, setParts] = useState(() => { 
-    return ImmutableList(props.editableParts.map(Part), Part)
+    const partsArray = (props.editableParts ? props.editableParts.map(Part) : []);
+    return ImmutableList(partsArray, Part)
   });
 
   const [title, setTitle] = useState(() => initializeTitle());
@@ -237,6 +238,7 @@ function SongForm(props) {
                       part={part}
                       updatePart={updatePart}
                       removePart={removePart}
+                      noDrag={parts.get().length === 0}
                     />
                 })}
                 {provided.placeholder}

@@ -1,11 +1,11 @@
 function ImmutableList(items, initializer) {
-  const simpleGet = () => Object.freeze(items.map(Object.freeze));
-  const initializerGet = () => Object.freeze([Object.freeze(initializer())]);
+  const processedGet = () => Object.freeze(items.map(Object.freeze));
   const get = function() {
     if(items && items.length > 0) {
-      return simpleGet();
+      return processedGet();
     } else if(initializer) {
-      return initializerGet();
+      items = [initializer()];
+      return processedGet();
     } else {
       return [];
     }

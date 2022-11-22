@@ -32,6 +32,8 @@ function EditSongs({ token, choirId, adminId}) {
 const loadSongs = async function() {
   const songs = await getAdminSongs(choirId, token);
   setSongs(songs);
+  setSelectedSongId(null);
+  console.log("Hello");
 }
 
 const handleAdd = function() {

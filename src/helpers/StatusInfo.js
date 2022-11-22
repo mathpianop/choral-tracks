@@ -109,6 +109,14 @@ function StatusInfo() {
     this.jobStatus = "none";
   }
 
+  const isSuccessful = function() {
+    return (
+      this.jobStatus === "created" ||
+      this.jobStatus === "updated" ||
+      this.jobStatus === "destroyed"
+    )
+  }
+
   return {
     get jobStatus() {
       return jobStatus;
@@ -124,13 +132,7 @@ function StatusInfo() {
       checkFactoryModeValidity(newValue);
       factoryMode = newValue;
     },
-    get isSuccessful() {
-      return (
-        jobStatus === "created" ||
-        jobStatus === "updated" ||
-        jobStatus === "destroyed"
-      )
-    },
+    isSuccessful,
     setFailure,
     setSuccess,
     setDelivery,

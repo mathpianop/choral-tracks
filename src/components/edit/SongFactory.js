@@ -36,11 +36,12 @@ function SongFactory({ song, setAbortControllers, loadSongs, token }) {
 
   //If factory results have changed the song list(s), reload songs
   useEffect(() => {
-    if (statusInfo.isSuccessful) {
+    console.log("statusInfo changed", statusInfo.isSuccessful(), statusInfo);
+    if (statusInfo.isSuccessful()) {
       loadSongs();
     }
     //eslint-disable-next-line
-  }, [])
+  }, [statusInfo])
 
  
   const content = function() {

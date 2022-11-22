@@ -125,25 +125,25 @@ describe("StatusInfo", () => {
     it("returns true when jobStatus is 'created'", () => {
       const statusInfo = StatusInfo();
       statusInfo.jobStatus = "created";
-      expect(statusInfo.isSuccessful).toBe(true);
+      expect(statusInfo.isSuccessful()).toBe(true);
     });
 
     it("returns true when jobStatus is 'updated'", () => {
       const statusInfo = StatusInfo();
       statusInfo.jobStatus = "updated";
-      expect(statusInfo.isSuccessful).toBe(true);
+      expect(statusInfo.isSuccessful()).toBe(true);
     });
 
     it("returns true when jobStatus is 'destroyed'", () => {
       const statusInfo = StatusInfo();
       statusInfo.jobStatus = "destroyed";
-      expect(statusInfo.isSuccessful).toBe(true);
+      expect(statusInfo.isSuccessful()).toBe(true);
     });
 
     it("returns false when jobStatus is something else", () => {
       const statusInfo = StatusInfo();
       statusInfo.jobStatus = "failedToCreate";
-      expect(statusInfo.isSuccessful).toBe(false);
+      expect(statusInfo.isSuccessful()).toBe(false);
     });
   });
 

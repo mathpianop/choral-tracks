@@ -71,11 +71,7 @@ function SongFactory({ song, setAbortControllers, loadSongs, token }) {
           />
         );
       default:
-        return (
-          <span className="prompt">
-            Nothing to Do
-          </span>
-        )
+        return;
     }
   }
 

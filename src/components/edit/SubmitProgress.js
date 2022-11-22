@@ -1,5 +1,5 @@
 import PartLoadingEntry from "./PartLoadingEntry.js";
-import "../style/SubmitProgress.css"
+import "../../style/edit/SubmitProgress.css"
 
 function SubmitProgress(props) {
  

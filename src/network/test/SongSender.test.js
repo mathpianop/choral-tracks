@@ -53,7 +53,7 @@ describe("SongSender", () => {
       
       expect(makeRequest.default).toHaveBeenCalledWith(`${apiUrl}/songs`, "json", {
         method: "post",
-        data: songData,
+        body: songData,
         headers: { Authorization: `Bearer fakeToken` },
         signal: songController.signal,
         timeout: 3000
@@ -101,7 +101,7 @@ describe("SongSender", () => {
       
       expect(makeRequest.default).toHaveBeenCalledWith(`${apiUrl}/songs/1/parts/2`, "json", {
         method: "patch",
-        data: partData1,
+        body: partData1,
         headers: { Authorization: `Bearer fakeToken` },
         signal: partController1.signal,
         timeout: 15000
@@ -109,7 +109,7 @@ describe("SongSender", () => {
 
       expect(makeRequest.default).toHaveBeenCalledWith(`${apiUrl}/songs/1/parts/3`, "json", {
         method: "patch",
-        data: partData2,
+        body: partData2,
         headers: { Authorization: `Bearer fakeToken` },
         signal: partController2.signal,
         timeout: 15000

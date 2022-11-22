@@ -1,11 +1,11 @@
 import PartFormlet from "./PartFormlet.js"
 import { useState } from "react";
-import Part from "../models/Part";
-import "../style/SongForm.css";
-import destroySong from "../network/destroySong.js";
-import destroyPart from "../network/destroyPart.js";
-import SongSender from "../network/SongSender.js";
-import ImmutableList from "../helpers/ImmutableList.js";
+import Part from "../../models/Part";
+import "../../style/edit/SongForm.css";
+import destroySong from "../../network/destroySong.js";
+import destroyPart from "../../network/destroyPart.js";
+import SongSender from "../../network/SongSender.js";
+import ImmutableList from "../../helpers/ImmutableList.js";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 function SongForm(props) {
@@ -16,6 +16,7 @@ function SongForm(props) {
     return (props.statusInfo.factoryMode === "edit" ? props.editableSong.title : "")
   }
 
+  //Move to Song Factory??
   //If the SongForm is for a new song or for one without any fulfilled parts,
     //return an ImmutableList with a single blank Part
   const [parts, setParts] = useState(() => { 
@@ -37,6 +38,8 @@ function SongForm(props) {
      setParts(parts => parts.change(partIndex, prop, newValue));
   }
 
+  
+  // Move this to SongFactory ????
   const assembleLoadingsObject = function(loadingParts) {
     props.setLoadings(loadings => {
       loadings = {}
@@ -103,7 +106,8 @@ function SongForm(props) {
   }
 
   const preparePartData = function(part) {
-    part.pitch_order = parts.indexOf(part);
+    console.log(part);
+    part.pitch_order = parts.findIndex("id", part.id);
     return part.data();
   }
 
@@ -132,7 +136,11 @@ function SongForm(props) {
     // For each part, prepare the data and send the part,
     // storing the abortController in state, and returning an
     // array of the requests
-    const partRequests = parts.get().reduce((requestArray, part) => {
+    const partRequests = 
+      parts.get()
+          //unfreeze the object
+            .map(part => Object.assign({}, part))
+            .reduce((requestArray, part) => {
       const partData = preparePartData(part)
       abortControllers.push(sender.addPart(partData, part.id));
       requestArray.push(sender.sendNextPart());
@@ -145,7 +153,7 @@ function SongForm(props) {
 
   const submitSong = async function() {
     ///Add a loading object for each part to loadings
-    assembleLoadingsObject(parts);
+    assembleLoadingsObject(parts.get());
     //If this is a PATCH and there any parts being removed, delete them
     if (props.editableParts) {
       deleteObsoleteParts();

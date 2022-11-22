@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../style/RecordingInput.css"
+import "../../style/edit/RecordingInput.css"
 
 function RecordingInput(props) {
   const [acceptNewRecording, setAcceptNewRecording] = useState(props.mode === "new");

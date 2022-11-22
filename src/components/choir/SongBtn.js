@@ -1,4 +1,4 @@
-import "../style/SongBtn.css";
+import "../../style/choir/SongBtn.css";
 
 function SongBtn(props) {
 

@@ -1,8 +1,9 @@
---Fix Submit bug
 
---Why is addPart requiring a double click?
+--extract loadings
+--loadSongs refresh
+  -- modify statusInfo
+--cancel song form should return editor to titlebar
 
---Finish testing migration
 
 0. Change routing and urls: 
   - choir/:id/admin should become choir/:id/edit
@@ -22,5 +23,30 @@
 
 4. Fix Safari
 
+
+
+
+1. Welcome page
+
+* Explanation
+* Big choir search bar (search for choir and admin)
+* Menu
+- Dashboard
+- Create an Account
+- Logout
+
+2. Dashboard
+
+* List of choirs (edit view)
+* Add a new choir
+- Choir form
+
+3. Edit 
+
+* EditSongs
+- List of SongEditors which all display TitleBars, when one is selected, replace that one with...
+- Song Factory
+* EditChoirDetails
+- Choir form (same as above)
 
 

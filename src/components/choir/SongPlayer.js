@@ -3,9 +3,9 @@ import LoadingMask from "react-loadingmask";
 import "react-loadingmask/dist/react-loadingmask.css";
 import Preferences from "./Preferences.js"
 import Controls from "./Controls.js";
-import "../style/Song.css";
-import getParts from "../network/getParts";
-import getPartBuffer from "../network/getPartBuffer.js";
+import "../../style/choir/SongPlayer.css";
+import getParts from "../../network/getParts";
+import getPartBuffer from "../../network/getPartBuffer.js";
 
 function SongPlayer(props) {
   //Set duration to an arbitrarily long amount of time until song loads

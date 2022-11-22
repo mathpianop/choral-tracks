@@ -42,6 +42,7 @@ function ImmutableList(items, initializer) {
     })
   }
 
+
   const move = function(fromIndex, toIndex) {
     const movingItem = items[fromIndex];
     items.splice(fromIndex, 1);

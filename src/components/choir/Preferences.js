@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PreferenceBtn from "./PreferenceBtn.js";
-import "../style/Preferences.css";
+import "../../style/choir/Preferences.css";
 
 function Preferences(props) {
   const [selectedPreference, setSelectedPreference] = useState({

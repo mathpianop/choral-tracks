@@ -2,7 +2,7 @@ import ProgressMeter from "./ProgressMeter.js";
 import PlayIcon from "@material-ui/icons/PlayArrowRounded";
 import PauseIcon from "@material-ui/icons/PauseRounded";
 import ResetIcon from "@material-ui/icons/ReplayRounded";
-import "../style/Controls.css";
+import "../../style/choir/Controls.css";
 
 function Controls(props) {
   const handleKeyUp = function(e) {

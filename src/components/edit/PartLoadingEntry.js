@@ -1,4 +1,4 @@
-import "../style/PartLoadingEntry.css";
+import "../../style/edit/PartLoadingEntry.css";
 
 function PartLoadedEntry(props) {
 

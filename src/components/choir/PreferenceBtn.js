@@ -1,4 +1,4 @@
-import "../style/PreferenceBtn.css";
+import "../../style/choir/PreferenceBtn.css";
 
 function PreferenceBtn(props) {
 

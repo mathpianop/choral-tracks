@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import SongPlayer from "./SongPlayer.js";
 import SongBtn from "./SongBtn.js";
 import { AudioContext } from 'standardized-audio-context';
-import stripTrailingSlash from "../helpers/stripTrailingSlash.js";
+import stripTrailingSlash from "../../helpers/stripTrailingSlash.js";
 
 
 function Home(props) {

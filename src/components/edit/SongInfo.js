@@ -1,5 +1,5 @@
 import EditIcon from "@material-ui/icons/Edit";
-import "../style/SongInfo.css"
+import "../../style/edit/SongInfo.css"
 
 function SongInfo(props) {
 

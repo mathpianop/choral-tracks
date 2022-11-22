@@ -1,1 +1,1 @@
-export const apiUrl = "https://choral-tracks-rails.up.railway.app/api"
+export const apiUrl = "http://localhost:3000/api"

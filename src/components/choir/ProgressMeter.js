@@ -1,5 +1,5 @@
 import {useRef, useState, useEffect} from "react";
-import "../style/ProgressMeter.css"
+import "../../style/choir/ProgressMeter.css"
 
 function ProgressMeter(props) {
   

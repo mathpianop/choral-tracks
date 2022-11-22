@@ -1,6 +1,6 @@
 import RecordingInput from "./RecordingInput.js"
 import CancelIcon from "@material-ui/icons/Close";
-import "../style/PartFormlet.css"
+import "../../style/edit/PartFormlet.css"
 import { Draggable } from "react-beautiful-dnd";
 
 function PartFormlet(props) {

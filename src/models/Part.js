@@ -36,12 +36,17 @@ function Part(params) {
       }
     }
   }
+
+  const addPitchOrder = function(order) {
+    this.pitch_order = order;
+  }
   
   const part = preparePart();
 
   return {
     ...part,
-    data
+    data,
+    addPitchOrder
   }
 }
 

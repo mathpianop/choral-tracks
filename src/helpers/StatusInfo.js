@@ -26,8 +26,8 @@ function StatusInfo() {
 
   const isValidFactoryMode = function(mode) {
     return (
-      mode === "idle" ||
       mode === "new" ||
+      mode === "idle" ||
       mode === "edit" ||
       mode === "delivery" ||
       mode === "destruction"
@@ -123,6 +123,13 @@ function StatusInfo() {
     set factoryMode(newValue) {
       checkFactoryModeValidity(newValue);
       factoryMode = newValue;
+    },
+    get isSuccessful() {
+      return (
+        jobStatus === "created" ||
+        jobStatus === "updated" ||
+        jobStatus === "destroyed"
+      )
     },
     setFailure,
     setSuccess,

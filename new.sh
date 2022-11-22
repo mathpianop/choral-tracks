@@ -8,4 +8,4 @@ echo "function $1() {
   )
 }
 
-export default $1;" >> src/components/$1.js
+export default $1;" >> src/components/$2/$1.js

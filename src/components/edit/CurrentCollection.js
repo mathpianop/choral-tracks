@@ -1,5 +1,5 @@
 import SongInfo from "./SongInfo.js";
-import "../style/CurrentCollection.css"
+import "../../style/edit/CurrentCollection.css"
 
 function CurrentCollection(props) {
 

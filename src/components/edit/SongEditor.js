@@ -42,6 +42,7 @@ function SongEditor({
                 setAbortControllers={setAbortControllers}
                 loadSongs={loadSongs}
                 token={token}
+                closeEditor={closeEditor}
               />
     } else {
       return <TitleBar title={song.title} />

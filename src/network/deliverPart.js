@@ -1,7 +1,7 @@
 import { apiUrl } from "../apiUrl";
 import makeRequest from "./makeRequest";
 
-function sendPartAbstract(method, songId, partId, partData, authToken, abortSignal) {
+async function sendPartAbstract(method, songId, partId, partData, authToken, abortSignal) {
   await makeRequest(`${apiUrl}/songs/${songId}/parts/${partId}`, {
     method: method,
     data: partData,

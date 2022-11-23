@@ -16,11 +16,14 @@ function SongFactory({ song, setAbortControllers, loadSongs, token, closeEditor 
   const [loadings, setLoadings] = useState({})
   const [statusInfo, setStatusInfo] = useShallowMutation(StatusInfo());
   const [editableParts, setEditableParts] = useState([]);
+  const [abortController, setAbortController] = useState(null);
   
 
 
   const loadParts = async function() {
-    setEditableParts(await getParts(song.id))
+    const abortController = new AbortController();
+    setAbortController(abortController);
+    setEditableParts(await getParts(song.id, abortController.signal))
     setStatusInfo(statusInfo => {
         statusInfo.factoryMode = (song.id === "new" ? "new" : "edit");
         statusInfo.jobStatus = "assembly";
@@ -31,6 +34,8 @@ function SongFactory({ song, setAbortControllers, loadSongs, token, closeEditor 
     if(song.id) {
       loadParts()
     }
+
+    return () => abortController.abort();
     //eslint-disable-next-line
   }, [])
 
@@ -39,7 +44,6 @@ function SongFactory({ song, setAbortControllers, loadSongs, token, closeEditor 
     if (statusInfo.isSuccessful()) {
       loadSongs();
     }
-
     //eslint-disable-next-line
   }, [statusInfo])
 
@@ -58,7 +62,6 @@ function SongFactory({ song, setAbortControllers, loadSongs, token, closeEditor 
             setLoadings={setLoadings}
             editableSong={song}
             editableParts={editableParts}
-            setAbortControllers={setAbortControllers}
           />
         );
       //If we are submitting the SongForm, or if we are destroying a song,

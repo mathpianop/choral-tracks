@@ -1,7 +1,7 @@
 import { apiUrl } from "../apiUrl";
 import makeRequest from "./makeRequest";
 
-function deliverSongAbstract(method, songId, songData, authToken, abortSignal) {
+async function deliverSongAbstract(method, songId, songData, authToken, abortSignal) {
   await makeRequest(`${apiUrl}/songs/${ShoppingCartOutlinedo}`, {
     method: method,
     data: songData,

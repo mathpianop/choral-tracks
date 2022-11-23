@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SongEditor from "./SongEditor";
-import getAdminSongs from "../../network/getAdminSongs.js";
+import getEditableSongs from "../../network/getEditableSongs.js";
 import styled from "styled-components";
 
 const List = styled.ul`
@@ -25,15 +25,15 @@ const AddButton = styled.li`
 function EditSongs({ token, choirId, adminId}) {
   const [songs, setSongs] = useState([]);
   const [selectedSongId, setSelectedSongId] = useState(null);
-
-  const [abortControllers, setAbortControllers] = useState([]);
+  const [abortController, setAbortController] = useState(null);
 
  
 const loadSongs = async function() {
-  const songs = await getAdminSongs(choirId, token);
+  const abortController = new AbortController();
+  setAbortController(abortController);
+  const songs = await getEditableSongs(choirId, token, abortController.signal);
   setSongs(songs);
   setSelectedSongId(null);
-  console.log("Hello");
 }
 
 const handleAdd = function() {
@@ -56,7 +56,7 @@ const handleAdd = function() {
     //     loadSongs();
     // }
     //When Admin unmounts, cancel all of the fetch requests from SongForm
-    return () => abortControllers.forEach(controller => controller.abort());
+    return () => abortController.abort();
   // eslint-disable-next-line 
   }, [])
 
@@ -74,8 +74,6 @@ const handleAdd = function() {
             token={token}
             selectedSongId={selectedSongId}
             setSelectedSongId={setSelectedSongId}
-            adminId={adminId}
-            setAbortControllers={setAbortControllers}
             loadSongs={loadSongs}
           />
           )

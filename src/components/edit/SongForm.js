@@ -1,5 +1,5 @@
 import PartFormlet from "./PartFormlet.js"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Part from "../../models/Part";
 import "../../style/edit/SongForm.css";
 import destroySong from "../../network/destroySong.js";
@@ -25,6 +25,7 @@ function SongForm(props) {
   });
 
   const [title, setTitle] = useState(() => initializeTitle());
+  const [abortControllers, setAbortControllers] = useState([]);
   
   //const closeForm = () => props.setStatusInfo(statusInfo => statusInfo.reset());
 
@@ -84,9 +85,12 @@ function SongForm(props) {
     props.setStatusInfo(statusInfo => statusInfo.setDestroy());
 
     try {
+      const newController = new AbortController();
+      setAbortControllers(abortControllers => [...abortControllers, newController])
       await destroySong(
         props.editableSong.id, 
-        props.token
+        props.token,
+        newController.signal
       );
 
       props.setStatusInfo(statusInfo => statusInfo.setSuccess());
@@ -99,6 +103,8 @@ function SongForm(props) {
   
   const destroyExistingPart = async function(songId, part) {
     try {
+      const newController = new AbortController();
+      setAbortControllers(abortControllers => [...abortControllers, newController])
       await destroyPart(songId, part.id, props.token);
       //If the part destroys succesfully, update loadings object
       indicateSuccess(part);
@@ -123,16 +129,14 @@ function SongForm(props) {
   const createOrUpdateSong = function(sender) {
     //POST or PATCH the Song
     const songData = prepareSongData();
-    const abortControllers = [];
     const songId = (props.editableParts ? props.editableParts.id : null)
     const songController = sender.addSong(songData, songId);
-    abortControllers.push(songController);
-    props.setAbortControllers([...abortControllers]);
+    setAbortControllers(abortControllers => [...abortControllers, songController]);
     return sender.sendSong();
   }
 
   const createOrUpdateParts = function(sender) {
-    const abortControllers = [];
+    const newControllers = [];
     // For each part, prepare the data and send the part,
     // storing the abortController in state, and returning an
     // array of the requests
@@ -142,12 +146,13 @@ function SongForm(props) {
             .map(part => Object.assign({}, part))
             .reduce((requestArray, part) => {
       const partData = preparePartData(part)
-      abortControllers.push(sender.addPart(partData, part.id));
+      newControllers.push(sender.addPart(partData, part.id));
+      
       requestArray.push(sender.sendNextPart());
       return requestArray;
     }, []);
 
-    props.setAbortControllers([...abortControllers]);
+    setAbortControllers(newControllers);
     return partRequests
   }
 
@@ -216,6 +221,10 @@ function SongForm(props) {
     setParts(parts => parts.move(source.index, destination.index))
 
   }
+
+  useEffect(() => {
+    return () => abortControllers.forEach(controlller => controlller.abort());
+  })
 
   return (
     <form className="SongForm" onSubmit={handleSubmit}>

@@ -1,6 +1,5 @@
 
 --extract loadings
---cancel song form should return editor to titlebar
 
 
 0. Change routing and urls: 
@@ -12,8 +11,6 @@
   - Add unauthorized possibilities to SongForm actions
     * Recover from wrong token
   - Add networkError possibilities to SongForm actions
-
-2. Remove logic to separate modules when possible (especially when connected to or processing data)
 
 **** At this point, push to production
 

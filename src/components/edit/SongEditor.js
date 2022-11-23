@@ -16,7 +16,6 @@ function SongEditor({
   song, 
   selectedSongId, 
   setSelectedSongId, 
-  adminId, 
   setAbortControllers,
   loadSongs,
   token
@@ -41,8 +40,6 @@ function SongEditor({
     if (editorIsOpen()) {
       return <SongFactory 
                 song={song} 
-                adminId={adminId} 
-                setAbortControllers={setAbortControllers}
                 loadSongs={loadSongs}
                 token={token}
                 closeEditor={closeEditor}

@@ -7,7 +7,7 @@ import StatusInfo from "../../helpers/StatusInfo";
 import getParts from "../../network/getParts";
 
 
-function SongFactory({ song, setAbortControllers, loadSongs, token }) {
+function SongFactory({ song, setAbortControllers, loadSongs, token, closeEditor }) {
 
 
   //loadings is an object of loading objects
@@ -52,7 +52,7 @@ function SongFactory({ song, setAbortControllers, loadSongs, token }) {
         return (
           <SongForm
             token={token}
-            
+            closeEditor={closeEditor}
             statusInfo={statusInfo}
             setStatusInfo={setStatusInfo}
             setLoadings={setLoadings}

@@ -24,14 +24,17 @@ function SongEditor({
 
   const editorIsOpen = () => selectedSongId === song.id;
   const openEditor = () => setSelectedSongId(song.id);
-  const closeEditor = () => setSelectedSongId(null);
+  const closeEditor = () => {
+    console.log("Closing");
+    console.log(selectedSongId);
+    setSelectedSongId(null)
+  };
   
   const handleClick = function(e) {
-    if (editorIsOpen() && e.target.classList.contains("SongEditor")) {
-      closeEditor();
-     } else {
-      openEditor();
-     }
+    // Filter out child elements from click event
+    if (e.target.classList.contains("SongEditor")) {
+      editorIsOpen() ? closeEditor() : openEditor();
+    }
   }
 
   const content = function() {

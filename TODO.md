@@ -1,7 +1,5 @@
 
 --extract loadings
---loadSongs refresh
-  -- modify statusInfo
 --cancel song form should return editor to titlebar
 
 

@@ -26,7 +26,7 @@ function SongForm(props) {
 
   const [title, setTitle] = useState(() => initializeTitle());
   
-  const closeForm = () => props.setStatusInfo(statusInfo => statusInfo.reset());
+  //const closeForm = () => props.setStatusInfo(statusInfo => statusInfo.reset());
 
   const handleChange = e => setTitle(e.target.value);
 
@@ -265,7 +265,7 @@ function SongForm(props) {
         >
           Add Part
         </button>
-        <button type="button" className="song-form-cancel pseudo-btn" onClick={closeForm}>
+        <button type="button" className="song-form-cancel pseudo-btn" onClick={props.closeEditor}>
           Cancel
         </button>
         {deleteBtn()}

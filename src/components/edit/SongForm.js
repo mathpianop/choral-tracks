@@ -8,6 +8,7 @@ import SongSender from "../../network/SongSender.js";
 import ImmutableList from "../../helpers/ImmutableList.js";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import TokenContext from "../TokenContext.js";
+import ChoirIdContext from "../ChoirIdContext.js";
 
 function SongForm(props) {
 
@@ -28,6 +29,7 @@ function SongForm(props) {
   const [title, setTitle] = useState(() => initializeTitle());
   const [abortControllers, setAbortControllers] = useState([]);
   const token = useContext(TokenContext);
+  const choirId = useContext(ChoirIdContext);
   
   //const closeForm = () => props.setStatusInfo(statusInfo => statusInfo.reset());
 
@@ -123,8 +125,7 @@ function SongForm(props) {
     const songData = new FormData();
     songData.append("title", title)
     songData.append("parts_promised", parts.length)
-    //Hard-coded as HT choir for now
-    songData.append("choir_id", 1)
+    songData.append("choir_id", choirId)
     return songData;
   }
 

@@ -6,6 +6,7 @@ import AdminFilter from "./AdminFilter.js";
 import Login from "./Login.js";
 import getChoir from "../network/getChoir";
 import EditSongs from "./edit/EditSongs";
+import ChoirIdContext from "./ChoirIdContext";
 
 
 function ChoirPage() {
@@ -22,35 +23,25 @@ function ChoirPage() {
   }
 
   const [token, setToken] = useState(findLocalToken());
-  const [songs, setSongs] = useState();
   const { choirId } = useParams(); 
   
-  const loadChoir = async function() {
-    try {
-      const choirData = await getChoir(choirId);
-      setSongs(choirData.songs);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  
-  useEffect(() => {
-    //On ComponentDidMount fetch the choir resources
-    loadChoir();
-  // eslint-disable-next-line
-  }, [])
+ 
+
 
   return (
     <div className="Choir">
+      <ChoirIdContext.Provider value={choirId}>
         <Switch>
-          <Route exact path="/choir/:choirId" render={(props) => <Home {...props} songs={songs} />} />
-          <Route path="/choir/:choirId/edit" render={(props) => 
-              <AdminFilter {...props} token={token}>
-                <EditSongs choirId={choirId} />
-              </AdminFilter>
-            }/>
+          <Route exact path="/choir/:choirId" component={Home} />
+            <Route path="/choir/:choirId/edit" render={(props) => 
+                <AdminFilter {...props} token={token}>
+                  <EditSongs choirId={choirId} />
+                </AdminFilter>
+              }/>
           <Route path="/choir/:choirId/login" render={(props) => <Login {...props} setToken={setToken}/>} />
         </Switch>
+      </ChoirIdContext.Provider>
+        
     </div>
     
   )

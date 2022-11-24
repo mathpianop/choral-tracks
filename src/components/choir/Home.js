@@ -1,16 +1,26 @@
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Link } from "react-router-dom";
 import SongPlayer from "./SongPlayer.js";
 import SongBtn from "./SongBtn.js";
 import { AudioContext } from 'standardized-audio-context';
 import stripTrailingSlash from "../../helpers/stripTrailingSlash.js";
-
+import ChoirIdContext from "../ChoirIdContext.js";
+import getChoir from "../../network/getChoir.js";
 
 function Home(props) {
   //Store id of selected song
+  const [choir, setChoir] = useState({})
   const [selectedSong, setSelectedSong] = useState(null);
-
   const [audioContext] = useState(new AudioContext());
+
+  const loadChoir = async function() {
+    try {
+      const choirData = await getChoir(useContext(ChoirIdContext));
+      setChoir(choirData);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const songContent = function(song) {
     if (song.id === selectedSong) {
@@ -36,26 +46,28 @@ function Home(props) {
 
   
   const songPlayers = function() {
-    if (props.songs) {
-      return props.songs.map(song => {
+    if (choir.songs) {
+      return choir.songs.map(song => {
         return songContent(song);
       })
     }
   }
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    loadChoir(abortController);
+    return () => abortController.abort();
+  }, [])
   
   return (
     <div className="Home">
-      <Link to={`${stripTrailingSlash(props.match.url)}/admin`}>
-        <button className="nav-btn">Admin</button>
+      <Link to={`${stripTrailingSlash(props.match.url)}/edit`}>
+        <button className="nav-btn">Edit</button>
       </Link>
-      <h1>Holy Transfiguration Choir</h1>
+      <h1>{choir.choir_details.name}</h1>
       <section id="overview">
         <p >
-          Welcome to the HT choral resources!
-          Hopefully, there will be a lot more to come, but for right now,
-          check out the song player below. If you click on one of the titles,
-          you can play the song with options to hear your part by itself ("isolate"),
-          or with the other parts softer ("emphasize").
+          {choir.choir_details.message}
         </p>
         <p id="disclaimer">
           NB: &ensp; This player may not work on a mobile device. &nbsp;

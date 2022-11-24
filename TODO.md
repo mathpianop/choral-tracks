@@ -1,6 +1,4 @@
 --Cut down on SongForm props
-  --eliminate token with Context API (add to 
-  Admin Filter)
   --add choirId with Context API
   --eliminate closeEditor by moving form cancel button up to SongEditor
   --eliminate song with composition (or maybe Context)

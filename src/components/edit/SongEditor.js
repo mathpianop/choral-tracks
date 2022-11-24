@@ -15,8 +15,7 @@ const ListElement = styled.li`
 function SongEditor({ 
   song, 
   selectedSongId, 
-  setSelectedSongId, 
-  setAbortControllers,
+  setSelectedSongId,
   loadSongs,
   token
 }) {
@@ -24,8 +23,6 @@ function SongEditor({
   const editorIsOpen = () => selectedSongId === song.id;
   const openEditor = () => setSelectedSongId(song.id);
   const closeEditor = () => {
-    console.log("Closing");
-    console.log(selectedSongId);
     setSelectedSongId(null)
   };
   

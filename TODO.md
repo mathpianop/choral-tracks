@@ -1,5 +1,10 @@
+--Cut down on SongForm props
+  --eliminate token with Context API (add to 
+  Admin Filter)
+  --add choirId with Context API
+  --eliminate closeEditor by moving form cancel button up to SongEditor
+  --eliminate song with composition (or maybe Context)
 
---extract loadings
 
 
 0. Change routing and urls: 
@@ -26,22 +31,22 @@
 * Explanation
 * Big choir search bar (search for choir and admin)
 * Menu
-- Dashboard
-- Create an Account
-- Logout
+  - Dashboard
+  - Create an Account
+  - Logout
 
 2. Dashboard
 
 * List of choirs (edit view)
 * Add a new choir
-- Choir form
+  - Choir form
 
 3. Edit 
 
 * EditSongs
-- List of SongEditors which all display TitleBars, when one is selected, replace that one with...
-- Song Factory
+  - List of SongEditors which all display TitleBars, when one is selected, replace that one with...
+  - Song Factory
 * EditChoirDetails
-- Choir form (same as above)
+  - Choir form (same as above)
 
 

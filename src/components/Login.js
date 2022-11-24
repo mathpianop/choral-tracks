@@ -47,7 +47,8 @@ function Login(props) {
   }
 
   if (isAuthed) {
-    return <Redirect to="./admin"></Redirect>
+    // Hard-coded redirect to edit for now
+    return <Redirect to="./edit"></Redirect>
   } else {
     return (
       <div className="Login central-container">

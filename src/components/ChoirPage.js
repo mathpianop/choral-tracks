@@ -5,6 +5,7 @@ import Home from "./choir/Home";
 import AdminFilter from "./AdminFilter.js";
 import Login from "./Login.js";
 import getChoir from "../network/getChoir";
+import EditSongs from "./edit/EditSongs";
 
 
 function ChoirPage() {
@@ -40,11 +41,14 @@ function ChoirPage() {
   }, [])
 
   return (
-    
     <div className="Choir">
         <Switch>
           <Route exact path="/choir/:choirId" render={(props) => <Home {...props} songs={songs} />} />
-          <Route path="/choir/:choirId/admin" render={(props) => <AdminFilter {...props} token={token} choirId={choirId}/>}/>
+          <Route path="/choir/:choirId/edit" render={(props) => 
+              <AdminFilter {...props} token={token}>
+                <EditSongs choirId={choirId} />
+              </AdminFilter>
+            }/>
           <Route path="/choir/:choirId/login" render={(props) => <Login {...props} setToken={setToken}/>} />
         </Switch>
     </div>

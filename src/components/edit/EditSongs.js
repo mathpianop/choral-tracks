@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import TokenContext from "../TokenContext";
 import { Link } from "react-router-dom";
 import SongEditor from "./SongEditor";
 import getEditableSongs from "../../network/getEditableSongs.js";
@@ -22,15 +23,13 @@ const AddButton = styled.li`
   `;
 
 
-function EditSongs({ token, choirId, adminId}) {
+function EditSongs({ choirId}) {
   const [songs, setSongs] = useState([]);
   const [selectedSongId, setSelectedSongId] = useState(null);
-  const [abortController, setAbortController] = useState(null);
+  const token = useContext(TokenContext);
 
  
-const loadSongs = async function() {
-  const abortController = new AbortController();
-  setAbortController(abortController);
+const loadSongs = async function(abortController) {
   const songs = await getEditableSongs(choirId, token, abortController.signal);
   setSongs(songs);
   setSelectedSongId(null);
@@ -44,21 +43,11 @@ const handleAdd = function() {
 
   //Execute when component mounts
   useEffect(() => {
-    loadSongs();
+    const abortController = new AbortController();
+    loadSongs(abortController);
+    return () => abortController.abort();
     // eslint-disable-next-line
   }, []);
-
-
-  useEffect(() => {
-    
-    //If the jobStatus changes and a job isn't in progress, reload the CurrentCollection
-    // if (!statusInfo.isInProgress() && choirId) {
-    //     loadSongs();
-    // }
-    //When Admin unmounts, cancel all of the fetch requests from SongForm
-    return () => abortController.abort();
-  // eslint-disable-next-line 
-  }, [])
 
   return (
     <div className="EditSongs">

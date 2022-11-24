@@ -184,7 +184,7 @@ function SongForm(props) {
 
     partRequests.forEach(async partRequest => {
       indicateSuccess((await partRequest).name);
-    })
+    });
   }
 
   const submitValue = function() {

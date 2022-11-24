@@ -1,11 +1,26 @@
+import TokenContext from "./TokenContext";
 import { Redirect } from "react-router-dom";
-import EditSongs from "./edit/EditSongs.js";
 
-function AdminFilter(props) {
+function AdminFilter({token, children}) {
 
-  //If the admin is authenticated by the presence of a token, render the Admin page.
-  //Otherwise, redirect to Login.
-  return (props.token ? <EditSongs token={props.token} choirId={props.choirId}/> : <Redirect to="./login" />)
+
+  // If the admin is authenticated by the presence of a token, 
+  // render the admin-restricted child component.
+  // Otherwise, redirect to Login.
+
+  const content = function() {
+    if (token) {
+      return (
+        <TokenContext.Provider value={token}>
+          {children}
+        </TokenContext.Provider>
+      )
+    } else {
+      return <Redirect to="./login" />
+    }
+  }
+
+  return content();
   
 }
 

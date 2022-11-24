@@ -7,7 +7,7 @@ import StatusInfo from "../../helpers/StatusInfo";
 import getParts from "../../network/getParts";
 
 
-function SongFactory({ song, setAbortControllers, loadSongs, token, closeEditor }) {
+function SongFactory({ song, loadSongs, token, closeEditor }) {
 
 
   //loadings is an object of loading objects
@@ -16,13 +16,10 @@ function SongFactory({ song, setAbortControllers, loadSongs, token, closeEditor 
   const [loadings, setLoadings] = useState({})
   const [statusInfo, setStatusInfo] = useShallowMutation(StatusInfo());
   const [editableParts, setEditableParts] = useState([]);
-  const [abortController, setAbortController] = useState(null);
   
 
 
-  const loadParts = async function() {
-    const abortController = new AbortController();
-    setAbortController(abortController);
+  const loadParts = async function(abortController) {
     setEditableParts(await getParts(song.id, abortController.signal))
     setStatusInfo(statusInfo => {
         statusInfo.factoryMode = (song.id === "new" ? "new" : "edit");
@@ -31,8 +28,9 @@ function SongFactory({ song, setAbortControllers, loadSongs, token, closeEditor 
   }
 
   useEffect(() => {
+    const abortController = new AbortController();
     if(song.id) {
-      loadParts()
+      loadParts(abortController)
     }
 
     return () => abortController.abort();
@@ -41,9 +39,12 @@ function SongFactory({ song, setAbortControllers, loadSongs, token, closeEditor 
 
   //If factory results have changed the song list(s), reload songs
   useEffect(() => {
+    const abortController = new AbortController();
     if (statusInfo.isSuccessful()) {
-      loadSongs();
+      loadSongs(abortController);
     }
+
+    return () => abortController.abort();
     //eslint-disable-next-line
   }, [statusInfo])
 

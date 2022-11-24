@@ -49,6 +49,8 @@ const handleAdd = function() {
     // eslint-disable-next-line
   }, []);
 
+  //Remove unsubmitted songs when they are closed
+
   return (
     <div className="EditSongs">
       <Link to=".">
@@ -60,7 +62,6 @@ const handleAdd = function() {
           <SongEditor 
             song={song}  
             key={song.id}
-            token={token}
             selectedSongId={selectedSongId}
             setSelectedSongId={setSelectedSongId}
             loadSongs={loadSongs}

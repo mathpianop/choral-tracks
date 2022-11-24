@@ -7,7 +7,7 @@ import StatusInfo from "../../helpers/StatusInfo";
 import getParts from "../../network/getParts";
 
 
-function SongFactory({ song, loadSongs, token, closeEditor }) {
+function SongFactory({ song, loadSongs, closeEditor }) {
 
 
   //loadings is an object of loading objects
@@ -56,7 +56,6 @@ function SongFactory({ song, loadSongs, token, closeEditor }) {
       case "edit":
         return (
           <SongForm
-            token={token}
             closeEditor={closeEditor}
             statusInfo={statusInfo}
             setStatusInfo={setStatusInfo}

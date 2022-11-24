@@ -1,5 +1,5 @@
 import PartFormlet from "./PartFormlet.js"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Part from "../../models/Part";
 import "../../style/edit/SongForm.css";
 import destroySong from "../../network/destroySong.js";
@@ -7,6 +7,7 @@ import destroyPart from "../../network/destroyPart.js";
 import SongSender from "../../network/SongSender.js";
 import ImmutableList from "../../helpers/ImmutableList.js";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import TokenContext from "../TokenContext.js";
 
 function SongForm(props) {
 
@@ -26,6 +27,7 @@ function SongForm(props) {
 
   const [title, setTitle] = useState(() => initializeTitle());
   const [abortControllers, setAbortControllers] = useState([]);
+  const token = useContext(TokenContext);
   
   //const closeForm = () => props.setStatusInfo(statusInfo => statusInfo.reset());
 
@@ -89,7 +91,7 @@ function SongForm(props) {
       setAbortControllers(abortControllers => [...abortControllers, newController])
       await destroySong(
         props.editableSong.id, 
-        props.token,
+        token,
         newController.signal
       );
 
@@ -105,7 +107,7 @@ function SongForm(props) {
     try {
       const newController = new AbortController();
       setAbortControllers(abortControllers => [...abortControllers, newController])
-      await destroyPart(songId, part.id, props.token);
+      await destroyPart(songId, part.id, token);
       //If the part destroys succesfully, update loadings object
       indicateSuccess(part);
     } catch(err) {console.log(err)}
@@ -164,7 +166,7 @@ function SongForm(props) {
       deleteObsoleteParts();
     }
 
-    const sender = SongSender(props.token);
+    const sender = SongSender(token);
 
     //Send the song
     try {

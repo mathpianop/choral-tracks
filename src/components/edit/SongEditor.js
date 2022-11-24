@@ -16,8 +16,7 @@ function SongEditor({
   song, 
   selectedSongId, 
   setSelectedSongId,
-  loadSongs,
-  token
+  loadSongs
 }) {
 
   const editorIsOpen = () => selectedSongId === song.id;
@@ -38,7 +37,6 @@ function SongEditor({
       return <SongFactory 
                 song={song} 
                 loadSongs={loadSongs}
-                token={token}
                 closeEditor={closeEditor}
               />
     } else {

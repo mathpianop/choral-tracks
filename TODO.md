@@ -1,12 +1,6 @@
---Cut down on SongForm props
-  --add choirId with Context API
-  --eliminate closeEditor by moving form cancel button up to SongEditor
-  --eliminate song with composition (or maybe Context)
-
 --Fix discarded drafts problem
 
 0. Change routing and urls: 
-  - choir/:id/admin should become choir/:id/edit
   - choir/:id/login should become login
   - Login should redirect to targetUrl
 
@@ -48,3 +42,4 @@
   - Choir form (same as above)
 
 
+--Style, baby, style

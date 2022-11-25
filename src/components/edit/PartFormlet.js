@@ -1,7 +1,13 @@
 import RecordingInput from "./RecordingInput.js"
-import CancelIcon from "@material-ui/icons/Close";
+import CancelButton from "../general/CancelButton.js";
 import "../../style/edit/PartFormlet.css"
 import { Draggable } from "react-beautiful-dnd";
+import styled from "styled-components";
+
+const ButtonWrapper = styled.div`
+  position: absolute;
+  right: 5px;
+`
 
 function PartFormlet(props) {
 
@@ -34,32 +40,35 @@ function PartFormlet(props) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <h4 className="part-number">{`Part ${props.index + 1}`}</h4>
-          <input 
-            type="text" 
-            name="name" 
-            className="text-input"
-            placeholder="Name"
-            value={props.part.name} 
-            onChange={handleFormChange}
-            required
-          />
-          <input 
-            type="text" 
-            name="initial" 
-            className="text-input initial-input"
-            placeholder="Initial"
-            value={props.part.initial} 
-            onChange={handleFormChange}
-            required
-          />
-          <button type="button" className="remove-part-btn" onClick={removePart}>
-            <CancelIcon />
-          </button>
-          <RecordingInput
-            mode={props.part.mode}
-            handleFileUpload={handleFileUpload}
-          />
+          <ButtonWrapper>
+            <CancelButton className="remove-part-btn" onClick={removePart} />
+          </ButtonWrapper>
+          <div className="part-formlet-content">
+            <h4 className="part-number">{`Part ${props.index + 1}`}</h4>
+            <input 
+              type="text" 
+              name="name" 
+              className="text-input"
+              placeholder="Name"
+              value={props.part.name} 
+              onChange={handleFormChange}
+              required
+            />
+            <input 
+              type="text" 
+              name="initial" 
+              className="text-input initial-input"
+              placeholder="Initial"
+              value={props.part.initial} 
+              onChange={handleFormChange}
+              required
+            />
+            
+            <RecordingInput
+              mode={props.part.mode}
+              handleFileUpload={handleFileUpload}
+            />
+          </div>
         </li>
       }}
     </Draggable>

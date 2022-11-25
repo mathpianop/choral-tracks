@@ -56,7 +56,6 @@ function SongFactory({ song, loadSongs, closeEditor }) {
       case "edit":
         return (
           <SongForm
-            closeEditor={closeEditor}
             statusInfo={statusInfo}
             setStatusInfo={setStatusInfo}
             setLoadings={setLoadings}

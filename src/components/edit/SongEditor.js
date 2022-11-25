@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import SongFactory from "./SongFactory";
 import TitleBar from "./TitleBar";
+import CancelButton from "../general/CancelButton";
 
 const ListElement = styled.li`
     list-style: none;
@@ -12,6 +13,11 @@ const ListElement = styled.li`
     cursor: pointer;
   `;
 
+const ButtonWrapper = styled.div`
+  float: right;
+`
+
+
 function SongEditor({ 
   song, 
   selectedSongId, 
@@ -22,6 +28,7 @@ function SongEditor({
   const editorIsOpen = () => selectedSongId === song.id;
   const openEditor = () => setSelectedSongId(song.id);
   const closeEditor = () => {
+    console.log("closing")
     setSelectedSongId(null)
   };
   
@@ -37,16 +44,26 @@ function SongEditor({
       return <SongFactory 
                 song={song} 
                 loadSongs={loadSongs}
-                closeEditor={closeEditor}
               />
     } else {
       return <TitleBar title={song.title} />
+    }
+  }
+
+  const closeButton = function() {
+    if (editorIsOpen()) {
+      return (
+        <ButtonWrapper onClick={closeEditor}>
+          <CancelButton />
+        </ButtonWrapper>
+      );
     }
   }
   
 
   return (
     <ListElement className="SongEditor" onClick={handleClick}>
+          {closeButton()}
           {content()}
     </ListElement>
   )

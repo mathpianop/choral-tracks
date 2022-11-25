@@ -12,10 +12,11 @@ function Home(props) {
   const [choir, setChoir] = useState({})
   const [selectedSong, setSelectedSong] = useState(null);
   const [audioContext] = useState(new AudioContext());
+  const [choirId] = useContext(ChoirIdContext)
 
-  const loadChoir = async function() {
+  const loadChoir = async function(abortController) {
     try {
-      const choirData = await getChoir(useContext(ChoirIdContext));
+      const choirData = await getChoir(choirId, abortController.signal);
       setChoir(choirData);
     } catch (err) {
       console.log(err);
@@ -53,10 +54,14 @@ function Home(props) {
     }
   }
 
+  const choirName = () => choir.choir_details ? choir.choir_details.name: "" ;
+  const choirMessage = () => choir.choir_details ? choir.choir_details.message: "" ;
+
   useEffect(() => {
     const abortController = new AbortController();
     loadChoir(abortController);
     return () => abortController.abort();
+    // eslint-disable-next-line
   }, [])
   
   return (
@@ -64,10 +69,10 @@ function Home(props) {
       <Link to={`${stripTrailingSlash(props.match.url)}/edit`}>
         <button className="nav-btn">Edit</button>
       </Link>
-      <h1>{choir.choir_details.name}</h1>
+      <h1>{choirName()}</h1>
       <section id="overview">
         <p >
-          {choir.choir_details.message}
+          {choirMessage()}
         </p>
         <p id="disclaimer">
           NB: &ensp; This player may not work on a mobile device. &nbsp;

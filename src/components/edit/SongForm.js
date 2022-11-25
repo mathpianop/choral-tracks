@@ -116,7 +116,6 @@ function SongForm(props) {
   }
 
   const preparePartData = function(part) {
-    console.log(part);
     part.pitch_order = parts.findIndex("id", part.id);
     return part.data();
   }
@@ -276,9 +275,6 @@ function SongForm(props) {
           onClick={addPart}
         >
           Add Part
-        </button>
-        <button type="button" className="song-form-cancel pseudo-btn" onClick={props.closeEditor}>
-          Cancel
         </button>
         {deleteBtn()}
         <input type="submit" className="pseudo-btn" value={submitValue()}/>

@@ -1,10 +1,9 @@
 import "../style/Home.css";
 import { Route, Switch, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Home from "./choir/Home";
 import AdminFilter from "./AdminFilter.js";
 import Login from "./Login.js";
-import getChoir from "../network/getChoir";
 import EditSongs from "./edit/EditSongs";
 import ChoirIdContext from "./ChoirIdContext";
 

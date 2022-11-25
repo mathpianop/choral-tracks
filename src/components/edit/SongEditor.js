@@ -20,40 +20,31 @@ const ButtonWrapper = styled.div`
 
 function SongEditor({ 
   song, 
-  selectedSongId, 
-  setSelectedSongId,
+  isOpen,
+  openCloseSwitch,
   loadSongs
 }) {
 
-  const editorIsOpen = () => selectedSongId === song.id;
-  const openEditor = () => setSelectedSongId(song.id);
-  const closeEditor = () => {
-    console.log("closing")
-    setSelectedSongId(null)
-  };
   
   const handleClick = function(e) {
     // Filter out child elements from click event
     if (e.target.classList.contains("SongEditor")) {
-      editorIsOpen() ? closeEditor() : openEditor();
+      openCloseSwitch(song.id)
     }
   }
 
   const content = function() {
-    if (editorIsOpen()) {
-      return <SongFactory 
-                song={song} 
-                loadSongs={loadSongs}
-              />
+    if (isOpen(song.id)) {
+      return <SongFactory song={song} loadSongs={loadSongs} />
     } else {
       return <TitleBar title={song.title} />
     }
   }
 
   const closeButton = function() {
-    if (editorIsOpen()) {
+    if (isOpen()) {
       return (
-        <ButtonWrapper onClick={closeEditor}>
+        <ButtonWrapper onClick={() => openCloseSwitch(song.id)}>
           <CancelButton />
         </ButtonWrapper>
       );

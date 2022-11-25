@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import SongEditor from "./SongEditor";
 import getEditableSongs from "../../network/getEditableSongs.js";
 import styled from "styled-components";
+import removeFromObjectArray from "../../helpers/removeFromObjectArray";
 
 const List = styled.ul`
 width: 400px;
@@ -41,6 +42,21 @@ const handleAdd = function() {
   setSongs(songs => [...songs, newSong]);
 }
 
+const closeEditor = () => setSelectedSongId(null);
+const openEditor = id => setSelectedSongId(id);
+const isOpen = (songId) => selectedSongId === songId;
+
+const openCloseSwitch = function(songId) {
+  // If open editor is a new draft, remove from the songs list
+  if (selectedSongId === "new") {
+    setSongs(songs => removeFromObjectArray(songs, songId, "new"))
+  }
+
+  isOpen(songId) ? closeEditor() : openEditor(songId);
+}
+
+
+
   //Execute when component mounts
   useEffect(() => {
     const abortController = new AbortController();
@@ -62,8 +78,8 @@ const handleAdd = function() {
           <SongEditor 
             song={song}  
             key={song.id}
-            selectedSongId={selectedSongId}
-            setSelectedSongId={setSelectedSongId}
+            isOpen={isOpen}
+            openCloseSwitch={openCloseSwitch}
             loadSongs={loadSongs}
           />
           )

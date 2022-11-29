@@ -1,8 +1,5 @@
 --Fix unresponse part cancel button
-
-0. Change routing and urls: 
-  - choir/:id/login should become login
-  - Login should redirect to targetUrl
+--Figure out unmounted component on login
 
 1. 
   - Add unauthorized possibilities to SongForm actions

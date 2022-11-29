@@ -12,6 +12,7 @@ const ButtonWrapper = styled.div`
 function PartFormlet(props) {
 
   const removePart = function() {
+    console.log("removing");
     props.removePart(props.index)
   }
 
@@ -40,7 +41,7 @@ function PartFormlet(props) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <ButtonWrapper>
+          <ButtonWrapper >
             <CancelButton className="remove-part-btn" onClick={removePart} />
           </ButtonWrapper>
           <div className="part-formlet-content">

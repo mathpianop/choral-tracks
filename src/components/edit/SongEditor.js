@@ -42,7 +42,7 @@ function SongEditor({
   }
 
   const closeButton = function() {
-    if (isOpen()) {
+    if (isOpen(song.id)) {
       return (
         <ButtonWrapper onClick={() => openCloseSwitch(song.id)}>
           <CancelButton />

@@ -33,10 +33,11 @@ function Login(props) {
       //If login successful, set the token in the App component
       // and in localStorage, and indicate that the admin is authed
       setLocalToken(decodedResponse.token)
-      props.setToken(decodedResponse.token);
+      props.location.state.setToken(decodedResponse.token);
       setIsAuthed(true);
     })
     .catch(err => {
+      console.log(props.location)
       //If the response is 401 Unauthorized, indicate incorrectCredentials
       err.isUnauthorized ? setIncorrectCredentials(true) : console.log(err)
     })
@@ -47,8 +48,7 @@ function Login(props) {
   }
 
   if (isAuthed) {
-    // Hard-coded redirect to edit for now
-    return <Redirect to="./edit"></Redirect>
+    return <Redirect to={props.location.state.targetPath} />
   } else {
     return (
       <div className="Login central-container">

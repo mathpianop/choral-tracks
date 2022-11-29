@@ -1,7 +1,7 @@
 import TokenContext from "./TokenContext";
 import { Redirect } from "react-router-dom";
 
-function AdminFilter({token, children}) {
+function AdminFilter({token, setToken, targetPath, children}) {
 
 
   // If the admin is authenticated by the presence of a token, 
@@ -16,7 +16,13 @@ function AdminFilter({token, children}) {
         </TokenContext.Provider>
       )
     } else {
-      return <Redirect to="./login" />
+      return <Redirect to={{
+        pathname: "../../login",
+        state: {
+          setToken: setToken,
+          targetPath: targetPath
+        }
+      }} />
     }
   }
 

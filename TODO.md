@@ -1,4 +1,4 @@
---Fix discarded drafts problem
+--Fix unresponse part cancel button
 
 0. Change routing and urls: 
   - choir/:id/login should become login

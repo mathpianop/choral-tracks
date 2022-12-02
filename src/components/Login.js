@@ -7,7 +7,7 @@ function Login(props) {
   
   //Even if token is present, set isAuthed to false
   const [isAuthed, setIsAuthed] = useState(false)
-  const [incorrectCredentials, setIncorrectCredentials] = useState(false)
+  const [incorrectCredentials, setIncorrectCredentials] = useState(false);
 
   const [formData, setFormData] = useState({
     username: "",

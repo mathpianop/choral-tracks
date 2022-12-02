@@ -1,7 +1,7 @@
 import { apiUrl } from "../apiUrl";
 import makeRequest from "./makeRequest";
 
-async function attemptLogin(username, password) {
+async function attemptLogin(username, password, abortSignal) {
    //Create, fill, and post Login FormData
    const params = new FormData();
    params.append("password", password)
@@ -11,7 +11,8 @@ async function attemptLogin(username, password) {
    return await makeRequest(`${apiUrl}/admins/login`, "json", {
      method: "post",
      body: params,
-     timeout: 4000
+     timeout: 4000,
+     abortSignal: abortSignal
    });
 }
 

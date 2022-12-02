@@ -1,5 +1,4 @@
---Fix part cancel button unresponsive
---Figure out unmounted component on login
+
 
 1. 
   - Add unauthorized possibilities to SongForm actions
@@ -11,6 +10,9 @@
 3. Get the choir abstraction thing going!
 
 4. Fix Safari
+
+--Figure out unmounted component on login
+--Fix lack of target when /login visited directly
 
 
 

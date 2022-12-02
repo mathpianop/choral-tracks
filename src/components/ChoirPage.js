@@ -31,11 +31,11 @@ function ChoirPage() {
       <ChoirIdContext.Provider value={choirId}>
         <Switch>
           <Route exact path="/choir/:choirId" component={Home} />
-            <Route path="/choir/:choirId/edit" render={(props) => 
-                <AdminFilter {...props} token={token} setToken={setToken} targetPath={`./choir/${choirId}/edit`}>
-                  <EditSongs choirId={choirId} />
-                </AdminFilter>
-              }/>
+          <Route path="/choir/:choirId/edit" render={(props) => 
+              <AdminFilter {...props} token={token} setToken={setToken} targetPath={`./choir/${choirId}/edit`}>
+                <EditSongs choirId={choirId} />
+              </AdminFilter>
+            }/>
         </Switch>
       </ChoirIdContext.Provider>
         

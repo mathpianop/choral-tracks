@@ -11,9 +11,9 @@ const Button = styled.button`
   color: #fff;
   cursor: pointer;
 `
-function CancelButton() {
+function CancelButton({ onClick }) {
   return (
-    <Button>
+    <Button type="button" onClick={onClick}>
       <CancelIcon />
     </Button>
   )

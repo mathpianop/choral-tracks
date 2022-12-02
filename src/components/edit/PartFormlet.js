@@ -12,7 +12,6 @@ const ButtonWrapper = styled.div`
 function PartFormlet(props) {
 
   const removePart = function() {
-    console.log("removing");
     props.removePart(props.index)
   }
 

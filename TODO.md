@@ -1,4 +1,4 @@
---Fix unresponse part cancel button
+--Fix part cancel button unresponsive
 --Figure out unmounted component on login
 
 1. 

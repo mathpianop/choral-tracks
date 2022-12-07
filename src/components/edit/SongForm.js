@@ -122,8 +122,7 @@ function SongForm(props) {
 
   const prepareSongData = function() {
     const songData = new FormData();
-    songData.append("title", title)
-    songData.append("parts_promised", parts.length)
+    songData.append("title", title);
     songData.append("choir_id", choirId)
     return songData;
   }

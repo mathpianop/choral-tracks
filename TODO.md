@@ -1,15 +1,13 @@
-
-
+--Debug ErrorBoundar
 1. 
   - Add unauthorized possibilities to SongForm actions
-    * Recover from wrong token
   - Add networkError possibilities to SongForm actions
 
 **** At this point, push to production
 
-3. Get the choir abstraction thing going!
+2. Add option to publish
 
-4. Fix Safari
+
 
 --Figure out unmounted component on login
 --Fix lack of target when /login visited directly

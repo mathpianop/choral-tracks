@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "https://mathpianop.github.io/choral-tracks-react/static/css/main.1e41fd30.chunk.css",
-    "main.js": "https://mathpianop.github.io/choral-tracks-react/static/js/main.e6635426.chunk.js",
-    "main.js.map": "https://mathpianop.github.io/choral-tracks-react/static/js/main.e6635426.chunk.js.map",
+    "main.js": "https://mathpianop.github.io/choral-tracks-react/static/js/main.cb238a54.chunk.js",
+    "main.js.map": "https://mathpianop.github.io/choral-tracks-react/static/js/main.cb238a54.chunk.js.map",
     "runtime-main.js": "https://mathpianop.github.io/choral-tracks-react/static/js/runtime-main.d32a9129.js",
     "runtime-main.js.map": "https://mathpianop.github.io/choral-tracks-react/static/js/runtime-main.d32a9129.js.map",
     "static/css/2.68828720.chunk.css": "https://mathpianop.github.io/choral-tracks-react/static/css/2.68828720.chunk.css",
-    "static/js/2.c0c043a3.chunk.js": "https://mathpianop.github.io/choral-tracks-react/static/js/2.c0c043a3.chunk.js",
-    "static/js/2.c0c043a3.chunk.js.map": "https://mathpianop.github.io/choral-tracks-react/static/js/2.c0c043a3.chunk.js.map",
+    "static/js/2.d01d74bd.chunk.js": "https://mathpianop.github.io/choral-tracks-react/static/js/2.d01d74bd.chunk.js",
+    "static/js/2.d01d74bd.chunk.js.map": "https://mathpianop.github.io/choral-tracks-react/static/js/2.d01d74bd.chunk.js.map",
     "index.html": "https://mathpianop.github.io/choral-tracks-react/index.html",
     "static/css/2.68828720.chunk.css.map": "https://mathpianop.github.io/choral-tracks-react/static/css/2.68828720.chunk.css.map",
     "static/css/main.1e41fd30.chunk.css.map": "https://mathpianop.github.io/choral-tracks-react/static/css/main.1e41fd30.chunk.css.map",
-    "static/js/2.c0c043a3.chunk.js.LICENSE.txt": "https://mathpianop.github.io/choral-tracks-react/static/js/2.c0c043a3.chunk.js.LICENSE.txt"
+    "static/js/2.d01d74bd.chunk.js.LICENSE.txt": "https://mathpianop.github.io/choral-tracks-react/static/js/2.d01d74bd.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.d32a9129.js",
     "static/css/2.68828720.chunk.css",
-    "static/js/2.c0c043a3.chunk.js",
+    "static/js/2.d01d74bd.chunk.js",
     "static/css/main.1e41fd30.chunk.css",
-    "static/js/main.e6635426.chunk.js"
+    "static/js/main.cb238a54.chunk.js"
   ]
 }

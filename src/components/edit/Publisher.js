@@ -2,24 +2,27 @@ import { useState, useEffect, useContext } from "react";
 import publishSong from "../../network/publishSong";
 import TokenContext from "../TokenContext";
 
-export default function Publisher({
-  song
-}) {
+export default function Publisher({song}) {
+
   const [publish, setPublish] = useState();
   const token = useContext(TokenContext);
 
   const handleChange = function(e) {
+    console.log(e.target.checked);
     setPublish(e.target.checked);
   }
 
   const calculatePublish = function() {
-    return publish || song.publish
+    console.log(publish === undefined ? song.publish : publish);
+    return publish === undefined ? song.publish : publish
   }
 
   
   useEffect(() => {
-    if (publish) {
+    console.log("publish changed to: ", publish);
+    if (publish !== undefined) {
       const abortController = new AbortController();
+      console.log(publish);
       const modifyRecord = async function() {
         await publishSong(song.id, publish, token, abortController.signal);
       }
@@ -29,6 +32,6 @@ export default function Publisher({
   }, [publish, song.id, token])
 
   return (
-    <input onChange={handleChange} checked={calculatePublish()} type="checkbox"/>
+    <input onChange={handleChange} defaultChecked={calculatePublish()} type="checkbox"/>
   )
 }

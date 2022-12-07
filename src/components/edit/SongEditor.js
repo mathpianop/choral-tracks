@@ -2,6 +2,7 @@ import styled from "styled-components";
 import SongFactory from "./SongFactory";
 import TitleBar from "./TitleBar";
 import CancelButton from "../general/CancelButton";
+import Publisher from "./Publisher";
 
 const ListElement = styled.li`
     list-style: none;
@@ -50,12 +51,19 @@ function SongEditor({
       );
     }
   }
+
+  const publishButton = function() {
+    if (!isOpen(song.id)) {
+      return <Publisher song={song} />
+    }
+  }
   
 
   return (
     <ListElement className="SongEditor" onClick={handleClick}>
           {closeButton()}
           {content()}
+          {publishButton()}
     </ListElement>
   )
 }

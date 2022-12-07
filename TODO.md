@@ -1,17 +1,5 @@
---Debug ErrorBoundar
-1. 
-  - Add unauthorized possibilities to SongForm actions
-  - Add networkError possibilities to SongForm actions
-
-**** At this point, push to production
-
+--Debug update (and then publish)
 2. Add option to publish
-
-
-
---Figure out unmounted component on login
---Fix lack of target when /login visited directly
-
 
 
 
@@ -37,6 +25,12 @@
   - Song Factory
 * EditChoirDetails
   - Choir form (same as above)
+
+
+--Figure out unmounted component on login
+--Fix lack of target when /login visited directly
+--Add response to networkError
+
 
 
 --Style, baby, style

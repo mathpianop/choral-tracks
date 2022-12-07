@@ -48,7 +48,8 @@ function Home(props) {
   
   const songPlayers = function() {
     if (choir.songs) {
-      return choir.songs.map(song => {
+      const publishedSongs = choir.songs.filter(song => song.publish);
+      return publishedSongs.map(song => {
         return songContent(song);
       })
     }

@@ -6,7 +6,7 @@ export default async function publishSong(songId, publish, authToken, abortSigna
   publishData.append("publish", publish);
 
   
-  await makeRequest(`${apiUrl}/songs/${songId}`, "json", {
+  return await makeRequest(`${apiUrl}/songs/${songId}`, "json", {
     method: "PATCH",
     body: publishData,
     headers: { Authorization: `Bearer ${authToken}` },

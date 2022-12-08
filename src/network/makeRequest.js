@@ -5,12 +5,13 @@ async function makeRequest(resource, parser, options = {}) {
 
   let response;
   const timeout = (options ? options.timeout : null);
-  console.log(options);
-  if(options.body) {
-    for (var pair of options.body.entries()) {
-      console.log(pair[0]+ ', ' + pair[1]); 
-    }
-  }
+  
+  // console.log(options);
+  // if(options.body) {
+  //   for (var pair of options.body.entries()) {
+  //     console.log(pair[0]+ ', ' + pair[1]); 
+  //   }
+  // }
  
   try {
     //fetch the resource 

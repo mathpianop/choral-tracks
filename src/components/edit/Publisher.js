@@ -2,13 +2,12 @@ import { useState, useEffect, useContext } from "react";
 import publishSong from "../../network/publishSong";
 import TokenContext from "../TokenContext";
 
-export default function Publisher({song}) {
+export default function Publisher({song, setPublishResponse, setPublishing}) {
 
   const [publish, setPublish] = useState();
   const token = useContext(TokenContext);
 
   const handleChange = function(e) {
-    console.log(e.target.checked);
     setPublish(e.target.checked);
   }
 
@@ -19,16 +18,18 @@ export default function Publisher({song}) {
 
   
   useEffect(() => {
-    console.log("publish changed to: ", publish);
     if (publish !== undefined) {
       const abortController = new AbortController();
-      console.log(publish);
       const modifyRecord = async function() {
-        await publishSong(song.id, publish, token, abortController.signal);
+        setPublishing(true);
+        const publishResponse = await publishSong(song.id, publish, token, abortController.signal);
+        setPublishing(false);
+        setPublishResponse(publishResponse);
       }
       modifyRecord();
       return () => abortController.abort();
     }
+  // eslint-disable-next-line
   }, [publish, song.id, token])
 
   return (

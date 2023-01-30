@@ -4,7 +4,7 @@ import Part from "../../models/Part";
 import "../../style/edit/SongForm.css";
 import destroySong from "../../network/destroySong.js";
 import destroyPart from "../../network/destroyPart.js";
-import SongSender from "../../network/SongSender.js";
+import {SongSender, prepareAbortControllers} from "../../network/SongSender.js";
 import ImmutableList from "../../helpers/ImmutableList.js";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import TokenContext from "../TokenContext.js";
@@ -27,7 +27,7 @@ function SongForm(props) {
   });
 
   const [title, setTitle] = useState(() => initializeTitle());
-  const [abortControllers, setAbortControllers] = useState([]);
+  const [submit, setSubmit] = useState(false);
   const token = useContext(TokenContext);
   const choirId = useContext(ChoirIdContext);
   
@@ -89,12 +89,9 @@ function SongForm(props) {
     props.setStatusInfo(statusInfo => statusInfo.setDestroy());
 
     try {
-      const newController = new AbortController();
-      setAbortControllers(abortControllers => [...abortControllers, newController])
       await destroySong(
         props.editableSong.id, 
-        token,
-        newController.signal
+        token
       );
 
       props.setStatusInfo(statusInfo => statusInfo.setSuccess());
@@ -107,8 +104,6 @@ function SongForm(props) {
   
   const destroyExistingPart = async function(songId, part) {
     try {
-      const newController = new AbortController();
-      setAbortControllers(abortControllers => [...abortControllers, newController])
       await destroyPart(songId, part.id, token);
       //If the part destroys succesfully, update loadings object
       indicateSuccess(part);
@@ -127,49 +122,44 @@ function SongForm(props) {
     return songData;
   }
 
-  const createOrUpdateSong = function(sender) {
+  const createOrUpdateSong = function(sender, songController) {
     //POST or PATCH the Song
     const songData = prepareSongData();
-    const songId = (props.editableParts ? props.editableParts.id : null)
-    const songController = sender.addSong(songData, songId);
-    setAbortControllers(abortControllers => [...abortControllers, songController]);
+    //const songId = (props.editableSong ? props.editableSong.id : null);
+    sender.addSong(songData, props.editableSong.id, songController);
     return sender.sendSong();
   }
 
-  const createOrUpdateParts = function(sender) {
-    const newControllers = [];
+  const createOrUpdateParts = function(sender, partControllers) {
     // For each part, prepare the data and send the part,
-    // storing the abortController in state, and returning an
-    // array of the requests
+    // returning an array of the requests
     const partRequests = 
       parts.get()
           //unfreeze the object
             .map(part => Object.assign({}, part))
-            .reduce((requestArray, part) => {
-      const partData = preparePartData(part)
-      newControllers.push(sender.addPart(partData, part.id));
-      
-      requestArray.push(sender.sendNextPart());
-      return requestArray;
-    }, []);
-
-    setAbortControllers(newControllers);
+            .reduce((requestArray, part, index) => {
+              const partData = preparePartData(part)
+              sender.addPart(partData, part.id, partControllers[index])
+              
+              requestArray.push(sender.sendNextPart());
+              return requestArray;
+            }, []);
     return partRequests
   }
 
-  const submitSong = async function() {
+  const submitSong = async function(abortControllers) {
     ///Add a loading object for each part to loadings
     assembleLoadingsObject(parts.get());
     //If this is a PATCH and there any parts being removed, delete them
     if (props.editableParts) {
       deleteObsoleteParts();
     }
-
+    
     const sender = SongSender(token);
 
     //Send the song
     try {
-      await createOrUpdateSong(sender)
+      await createOrUpdateSong(sender, abortControllers.song)
     } catch (err) {
       props.setStatusInfo(statusInfo => statusInfo.setFailure());
       console.log(err);
@@ -177,7 +167,7 @@ function SongForm(props) {
   
     //After sending the Song, send each of the Song's Parts
     try {
-      var partRequests = createOrUpdateParts(sender)
+      var partRequests = createOrUpdateParts(sender, abortControllers.parts)
     } catch (err) {
       props.setStatusInfo(statusInfo => statusInfo.setFailure());
       console.log(err);
@@ -209,9 +199,9 @@ function SongForm(props) {
 
   const handleSubmit = function(e) {
     e.preventDefault();
-    //set jobStatus to the appropriate delivery status
-    props.setStatusInfo(statusInfo => statusInfo.setDelivery());
-    submitSong();
+    setSubmit(true);
+    
+    console.log("Here");
   }
 
   const onDragEnd = function({destination, source}) {
@@ -224,8 +214,23 @@ function SongForm(props) {
   }
 
   useEffect(() => {
-    return () => abortControllers.forEach(controlller => controlller.abort());
-  })
+    const abortControllers = prepareAbortControllers(parts.length);
+
+    console.log("Submit", submit);
+
+    if (submit) {
+      submitSong(abortControllers);
+      setSubmit(false);
+      //set jobStatus to the appropriate delivery status
+      props.setStatusInfo(statusInfo => statusInfo.setDelivery());
+    }
+
+    return () => {
+      abortControllers.song.abort()
+      abortControllers.parts.forEach(controlller => controlller.abort())
+    };
+    // eslint-disable-next-line
+  }, [submit])
 
   return (
     <form className="SongForm" onSubmit={handleSubmit}>

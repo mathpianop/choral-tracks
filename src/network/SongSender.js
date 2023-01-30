@@ -8,21 +8,18 @@ function SongSender(token) {
   const parts = [];
 
 
-  function packageRecord(data, id) {
-    const abortController = new AbortController();
+  function packageRecord(data, id, abortController) {
     return {data, id, abortController, sent: false}
   }
 
-  function addSong(data, id) {
+  function addSong(data, id, abortController) {
     if (song) {throw new Error("Song already registered")}
-    song = packageRecord(data, id);
-    return song.abortController;
+    song = packageRecord(data, id, abortController);
   }
 
-  function addPart(data, id) {
-    const partPackage = packageRecord(data, id);
+  function addPart(data, id, abortController) {
+    const partPackage = packageRecord(data, id, abortController);
     parts.push(partPackage);
-    return partPackage.abortController
   }
 
   function songUrl() {
@@ -34,7 +31,7 @@ function SongSender(token) {
   }
 
   function method(id) {
-    return (id ? "patch" : "post");
+    return (id ? "PATCH" : "POST");
   }
 
   function recordOptions(record, timeout) {
@@ -54,7 +51,6 @@ function SongSender(token) {
       throw new Error("Song not registered");
     }
 
-    recordOptions(song, 3000)
     const songResponse = await makeRequest(songUrl(), "json", recordOptions(song, 3000));
     if (!song.id) {
       // If this is a new song, then get and store the
@@ -99,4 +95,17 @@ function SongSender(token) {
   };
 }
 
-export default SongSender;
+function prepareAbortControllers(numOfParts) {
+  const partControllers = [];
+
+  for (let i = 0; i < numOfParts; i++) {
+    partControllers.push(new AbortController());
+  }
+
+  return {
+    song: new AbortController(),
+    parts: partControllers
+  }
+}
+
+export { SongSender, prepareAbortControllers };

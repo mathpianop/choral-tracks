@@ -12,7 +12,6 @@ export default function Publisher({song, setPublishResponse, setPublishing}) {
   }
 
   const calculatePublish = function() {
-    console.log(publish === undefined ? song.publish : publish);
     return publish === undefined ? song.publish : publish
   }
 

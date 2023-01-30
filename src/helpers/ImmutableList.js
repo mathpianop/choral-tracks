@@ -56,7 +56,10 @@ function ImmutableList(items, initializer) {
     remove,
     change,
     findIndex,
-    move
+    move,
+    get length() {
+      return items.length
+    }
   });
 }
 

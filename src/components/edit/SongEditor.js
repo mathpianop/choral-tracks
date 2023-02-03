@@ -5,16 +5,8 @@ import CancelButton from "../general/CancelButton";
 import Publisher from "./Publisher";
 import { useState } from "react";
 import PublishStatus from "./PublishStatus";
+import { ListElement } from "../../style/general/list";
 
-const ListElement = styled.li`
-    list-style: none;
-    border: 1px solid lightgray;
-    padding: 5px;
-    margin-bottom: 5px;
-    border-radius: 3px;
-    background-color: white;
-    cursor: pointer;
-  `;
 
 const ButtonWrapper = styled.div`
   float: right;

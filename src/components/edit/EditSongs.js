@@ -6,12 +6,8 @@ import getEditableSongs from "../../network/getEditableSongs.js";
 import styled from "styled-components";
 import removeFromObjectArray from "../../helpers/removeFromObjectArray";
 import { useErrorHandler } from "react-error-boundary";
+import { List } from "../../style/general/list";
 
-const List = styled.ul`
-width: 400px;
-padding: 50px;
-background-color: rgb(241, 236, 236);
-`;
 const AddButton = styled.li`
   list-style: none;
   border: 1px solid lightgray;

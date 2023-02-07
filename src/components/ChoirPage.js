@@ -3,7 +3,7 @@ import { Route, Switch, useParams } from "react-router-dom";
 import { useState } from "react";
 import Home from "./choir/Home";
 import AdminFilter from "./AdminFilter.js";
-import EditSongs from "./edit/EditSongs";
+import EditChoir from "./edit/EditChoir";
 import ChoirIdContext from "./ChoirIdContext";
 
 
@@ -33,7 +33,7 @@ function ChoirPage() {
           <Route exact path="/choir/:choirId" component={Home} />
           <Route path="/choir/:choirId/edit" render={(props) => 
               <AdminFilter {...props} token={token} setToken={setToken} targetPath={`./choir/${choirId}/edit`}>
-                <EditSongs choirId={choirId} />
+                <EditChoir choirId={choirId} />
               </AdminFilter>
             }/>
         </Switch>

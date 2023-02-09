@@ -1,5 +1,5 @@
 
---Move choir data fetch up to editChoir (data passed to editSongs and editChoirDetails)
+--Hook up network for saving choir details, including another API endpoint
 
 1. Welcome page
 

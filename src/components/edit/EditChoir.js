@@ -6,13 +6,14 @@ import getEditableChoir from "../../network/getEditableChoir";
 import { useErrorHandler } from "react-error-boundary";
 import { useContext } from "react";
 import TokenContext from "../TokenContext";
+import { Link } from "react-router-dom";
 
 
 
 export default function EditChoir({ choirId }) {
   //editMode can be "Choir Details" or "Songs"
   const [editMode, setEditMode] = useState("Choir Details");
-  const [choir, setChoir] = useState({songs: [], choir_details: {}});
+  const [choir, setChoir] = useState();
   const handleError = useErrorHandler();
   const token = useContext(TokenContext);
 
@@ -20,7 +21,6 @@ export default function EditChoir({ choirId }) {
     let choir;
     try {
       choir = await getEditableChoir(choirId, token, abortController.signal);
-      console.log("But Here". choir);
       setChoir(choir);
     } catch (e) {
       handleError(e);
@@ -29,10 +29,9 @@ export default function EditChoir({ choirId }) {
 
   const editor = function() {
     if (editMode === "Choir Details") {
-      console.log("Hi", choir);
-      return <ChoirDetails choirDetails={choir.choir_details}/>
+      return choir && <ChoirDetails choirDetails={choir.choir_details}/>
     } else {
-      return <EditSongs initialSongs={choir.songs} loadChoir={loadChoir} />
+      return choir && <EditSongs initialSongs={choir.songs} loadChoir={loadChoir} />
     }
   }
 
@@ -48,6 +47,9 @@ export default function EditChoir({ choirId }) {
 
   return (
     <div id="EditChoir">
+      <Link to=".">
+          <button className="nav-btn">Home</button>
+        </Link>
       <TabList names={["Choir Details", "Songs"]} onSelect={setEditMode} defaultName="Choir Details"/>
       {editor()}
     </div>

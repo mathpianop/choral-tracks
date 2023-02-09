@@ -1,5 +1,5 @@
 
-
+--Move choir data fetch up to editChoir (data passed to editSongs and editChoirDetails)
 
 1. Welcome page
 
@@ -11,6 +11,10 @@
   - Logout
 
 2. Dashboard
+
+
+
+
 
 * List of choirs (edit view)
 * Add a new choir

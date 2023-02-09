@@ -1,11 +1,8 @@
-import { useState, useEffect, useContext } from "react";
-import TokenContext from "../TokenContext";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import SongEditor from "./SongEditor";
-import getEditableSongs from "../../network/getEditableSongs.js";
 import styled from "styled-components";
 import removeFromObjectArray from "../../helpers/removeFromObjectArray";
-import { useErrorHandler } from "react-error-boundary";
 import { List } from "../../style/general/list";
 
 const AddButton = styled.li`
@@ -21,26 +18,14 @@ const AddButton = styled.li`
   `;
 
 
-function EditSongs({ choirId}) {
-  
-  const [songs, setSongs] = useState([]);
+function EditSongs({initialSongs, loadChoir}) {
+
+  const [songs, setSongs] = useState(initialSongs);
+
   const [selectedSongId, setSelectedSongId] = useState(null);
-  const handleError = useErrorHandler();
-  const token = useContext(TokenContext);
+  
 
-  const loadSongs = async function(abortController) {
-    let songs;
-    try {
-      songs = await getEditableSongs(choirId, token, abortController.signal);
-      setSongs(songs);
-      setSelectedSongId(null);
-    } catch (e) {
-      handleError(e);
-    }
-
-    
-    
-  }
+  
 
   const handleAdd = function() {
     const newSong = {id: "new"}
@@ -63,15 +48,7 @@ function EditSongs({ choirId}) {
 
 
 
-  //Execute when component mounts
-  useEffect(() => {
-    const abortController = new AbortController();
-    loadSongs(abortController);
-    return () => abortController.abort();
-    // eslint-disable-next-line
-  }, []);
-
-  //Remove unsubmitted songs when they are closed
+  
 
     return (
       <div className="EditSongs">
@@ -86,7 +63,7 @@ function EditSongs({ choirId}) {
               key={song.id}
               isOpen={isOpen}
               openCloseSwitch={openCloseSwitch}
-              loadSongs={loadSongs}
+              loadSongs={loadChoir}
             />
             )
           })}

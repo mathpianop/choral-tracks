@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import sendChoir from "../../network/sendChoirDetails";
+import sendChoir from "../../network/sendChoir";
+import TokenContext from "../TokenContext";
 
 const DetailsForm = styled.form`
   width: 300px;
@@ -23,22 +24,41 @@ const MessageBox = styled.textarea`
   font-family: Geneva, Verdana, sans-serif;
 `;
 
-export default function ChoirDetails({choirDetails}) {
+export default function EditChoirDetails({choirDetails}) {
   const [choirName, setChoirName] = useState(choirDetails.name);
   const [message, setMessage] = useState(choirDetails.message);
+  const [save, setSave] = useState(false);
+  const token = useContext(TokenContext);
 
   const handleChange = function(e, setter) {
     setter(e.target.value);
   }
 
-  const saveDetails = function(form) {
-    sendChoir();
+  const saveDetails = function(abortSignal) {
+    const data = new FormData();
+    data.append("name", choirName);
+    data.append("message", message);
+    sendChoir(data, token, {
+      abortSignal: abortSignal,
+      timeout: 8000
+    });
   }
 
   const handleSave = function(e) {
     e.preventDefault();
-    saveDetails(e.target);
+    setSave(true);
   }
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    if (save) {
+      saveDetails(abortController.signal);
+      setSave(false);
+    }
+
+    return () => abortController.abort();
+    // eslint-disable-next-line
+  }, [save]);
   
   return (
     <DetailsForm onSubmit={handleSave}>

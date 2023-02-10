@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import SongEditor from "./SongEditor";
 import styled from "styled-components";
 import removeFromObjectArray from "../../helpers/removeFromObjectArray";
@@ -52,9 +51,6 @@ function EditSongs({initialSongs, loadChoir}) {
 
     return (
       <div className="EditSongs">
-        <Link to=".">
-          <button className="nav-btn">Home</button>
-        </Link>
         <List>
           {songs.map(song => {
             return (

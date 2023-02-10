@@ -1,6 +1,6 @@
 import EditSongs from "./EditSongs";
 import { useState, useEffect } from "react";
-import ChoirDetails from "./ChoirDetails";
+import EditChoirDetails from "./EditChoirDetails";
 import TabList from "../general/TabList";
 import getEditableChoir from "../../network/getEditableChoir";
 import { useErrorHandler } from "react-error-boundary";
@@ -29,7 +29,7 @@ export default function EditChoir({ choirId }) {
 
   const editor = function() {
     if (editMode === "Choir Details") {
-      return choir && <ChoirDetails choirDetails={choir.choir_details}/>
+      return choir && <EditChoirDetails choirDetails={choir.choir_details}/>
     } else {
       return choir && <EditSongs initialSongs={choir.songs} loadChoir={loadChoir} />
     }

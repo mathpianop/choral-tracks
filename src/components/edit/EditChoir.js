@@ -29,7 +29,7 @@ export default function EditChoir({ choirId }) {
 
   const editor = function() {
     if (editMode === "Choir Details") {
-      return choir && <EditChoirDetails choirDetails={choir.choir_details}/>
+      return choir && <EditChoirDetails choirDetails={choir.choir_details} choirId={choirId}/>
     } else {
       return choir && <EditSongs initialSongs={choir.songs} loadChoir={loadChoir} />
     }

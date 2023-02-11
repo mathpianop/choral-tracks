@@ -24,10 +24,11 @@ const MessageBox = styled.textarea`
   font-family: Geneva, Verdana, sans-serif;
 `;
 
-export default function EditChoirDetails({choirDetails}) {
+export default function EditChoirDetails({choirDetails, choirId}) {
   const [choirName, setChoirName] = useState(choirDetails.name);
   const [message, setMessage] = useState(choirDetails.message);
   const [save, setSave] = useState(false);
+  const [abortController, setAbortController] = useState(new AbortController());
   const token = useContext(TokenContext);
 
   const handleChange = function(e, setter) {
@@ -39,6 +40,7 @@ export default function EditChoirDetails({choirDetails}) {
     data.append("name", choirName);
     data.append("message", message);
     sendChoir(data, token, {
+      choirId: choirId,
       abortSignal: abortSignal,
       timeout: 8000
     });
@@ -50,15 +52,16 @@ export default function EditChoirDetails({choirDetails}) {
   }
 
   useEffect(() => {
-    const abortController = new AbortController();
+    const freshAbortController = new AbortController();
     if (save) {
-      saveDetails(abortController.signal);
+      saveDetails(freshAbortController.signal);
+      setAbortController(freshAbortController);
       setSave(false);
     }
-
-    return () => abortController.abort();
     // eslint-disable-next-line
   }, [save]);
+
+  useEffect(() => () => abortController.abort());
   
   return (
     <DetailsForm onSubmit={handleSave}>

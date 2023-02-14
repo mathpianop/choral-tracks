@@ -1,4 +1,4 @@
---Cleanup SavingReport (including creating a simpleStatusInfo object)
+--ChoirEditor: either model off of SongEditor, or abstractify (tempting)
 
 1. Welcome page
 

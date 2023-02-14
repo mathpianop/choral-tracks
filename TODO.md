@@ -1,5 +1,4 @@
-
---Hook up network for saving choir details, including another API endpoint
+--Cleanup SavingReport (including creating a simpleStatusInfo object)
 
 1. Welcome page
 

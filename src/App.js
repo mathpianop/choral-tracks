@@ -4,10 +4,12 @@ import ChoirPage from "./components/ChoirPage.js";
 import Login from "./components/Login";
 import Dashboard from "./components/dashboard/Dashboard.js";
 
-
 import "./App.css"
 
 function App() {
+
+  
+
   return (
     <HashRouter>
       <Switch>

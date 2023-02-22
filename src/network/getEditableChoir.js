@@ -9,7 +9,7 @@ async function getEditableChoir(choirId, token, abortSignal) {
       signal: abortSignal
     });
 
-    return choirEdit
+    return choirEdit;
 }
 
 export default getEditableChoir;

@@ -5,20 +5,11 @@ import Home from "./choir/Home";
 import AdminFilter from "./AdminFilter.js";
 import EditChoir from "./edit/EditChoir";
 import ChoirIdContext from "./ChoirIdContext";
+import findLocalToken from "../helpers/findLocalToken";
 
 
 function ChoirPage() {
 
-  const findLocalToken = function() {
-    try {
-      //Try to return token from localStorage
-      return localStorage.getItem("token");
-    } catch (err) {
-      console.log("Couldn't find token");
-      //If not permitted (becuase of Chrome Incognito 3rd-party, etc.), return null
-      return null;
-    }
-  }
 
   const [token, setToken] = useState(findLocalToken());
   const { choirId } = useParams(); 

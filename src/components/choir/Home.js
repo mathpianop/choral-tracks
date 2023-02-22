@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import SongPlayer from "./SongPlayer.js";
 import SongBtn from "./SongBtn.js";
 import { AudioContext } from 'standardized-audio-context';
-import stripTrailingSlash from "../../helpers/stripTrailingSlash.js";
 import ChoirIdContext from "../ChoirIdContext.js";
 import getChoir from "../../network/getChoir.js";
 
@@ -67,7 +66,7 @@ function Home(props) {
   
   return (
     <div className="Home">
-      <Link to={`${stripTrailingSlash(props.match.url)}/edit`}>
+      <Link to={`../admin/${choir.choir_details && choir.choir_details.admin_id}`}>
         <button className="nav-btn">Edit</button>
       </Link>
       <h1>{choirName()}</h1>

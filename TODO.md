@@ -1,4 +1,5 @@
---ChoirEditor: either model off of SongEditor, or abstractify (tempting)
+--debug getAdmin API call
+--Hook up choir selector in dashboard
 
 1. Welcome page
 
@@ -12,12 +13,10 @@
 2. Dashboard
 
 
-
-
-
-* List of choirs (edit view)
-* Add a new choir
-  - Choir form
+* Sidebar list of choirs (edit view)
+  - Click choir to see edit page in dashboard
+  - Click add button to load a choir details form component in dashboard
+* Analytics or sumpin' as placeholder in dashboard
 
 3. Edit 
 

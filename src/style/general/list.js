@@ -13,9 +13,9 @@ const ListElement = styled.li`
   `;
 
   const List = styled.ul`
-width: 400px;
-padding: 50px;
-background-color: rgb(241, 236, 236);
+    padding: 20px;
+    background-color: rgb(241, 236, 236);
+    height: 100%;
 `;
 
   export { ListElement, List}

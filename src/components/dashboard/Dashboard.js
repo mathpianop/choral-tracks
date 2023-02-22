@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import ChoirsList from "./ChoirsList";
 import styled from "styled-components";
 import getAdmin from "../../network/getAdmin";
 import findLocalToken from "../../helpers/findLocalToken";
 import AdminFilter from "../AdminFilter";
 import Display from "./Display";
+
 
 const Layout = styled.div`
   display: grid;
@@ -18,12 +19,27 @@ export default function Dashboard() {
   const { adminId } = useParams();
   const [choirs, setChoirs] = useState([]);
   const [selectedChoir, setSelectedChoir] = useState();
-  const [token, setToken] = useState(findLocalToken())
+  const [token, setToken] = useState(findLocalToken());
+  const location = useLocation();
+  console.log(location);
+  // Define if linked to from choir page
+  const selectedChoirId = location.state && parseInt(location.state.selectedChoirId);
 
 
   const loadAdmin = async function(abortSignal) {
     const loadedAdmin = await getAdmin(adminId, token, abortSignal)
     setChoirs(loadedAdmin.choirs);
+    console.log(loadedAdmin.choirs)
+    if (selectedChoirId) {
+      setSelectedChoir(getChoirById(loadedAdmin.choirs, selectedChoirId))
+    }
+  }
+
+  const getChoirById = function(choirs, id) {
+    return choirs.find(choir => {
+      console.log(choir.choir_details.id, id);
+      return choir.choir_details.id === id
+    })
   }
 
   useEffect(() => {

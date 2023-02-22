@@ -22,6 +22,8 @@ function Home(props) {
     }
   }
 
+
+
   const songContent = function(song) {
     if (song.id === selectedSong) {
       return (
@@ -66,7 +68,14 @@ function Home(props) {
   
   return (
     <div className="Home">
-      <Link to={`../admin/${choir.choir_details && choir.choir_details.admin_id}`}>
+      <Link 
+        to={{
+          pathname: `../../admin/${choir.choir_details && choir.choir_details.admin_id}`,
+          state: {
+            selectedChoirId: choirId
+          },
+        }}
+      >
         <button className="nav-btn">Edit</button>
       </Link>
       <h1>{choirName()}</h1>

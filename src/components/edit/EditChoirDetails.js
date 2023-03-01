@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import sendChoir from "../../network/sendChoir";
 import TokenContext from "../TokenContext";
@@ -32,6 +33,7 @@ export default function EditChoirDetails({choirDetails, choirId}) {
   const [abortController, setAbortController] = useState(new AbortController());
   const [savingStatus, setSavingStatus] = useState("");
   const token = useContext(TokenContext);
+  const { adminId } = useParams()
 
   const handleChange = function(e, setter) {
     setter(e.target.value);
@@ -41,6 +43,7 @@ export default function EditChoirDetails({choirDetails, choirId}) {
     const data = new FormData();
     data.append("name", choirName);
     data.append("message", message);
+    data.append("admin_id", adminId);
 
     setSavingStatus("saving");
 

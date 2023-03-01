@@ -1,5 +1,4 @@
---debug getAdmin API call
---Hook up choir selector in dashboard
+--Create Choir Model
 
 1. Welcome page
 

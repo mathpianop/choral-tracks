@@ -28,6 +28,7 @@ export default function Dashboard() {
 
   const loadAdmin = async function(abortSignal) {
     const loadedAdmin = await getAdmin(adminId, token, abortSignal)
+    // Convert choir records to Choir model before setting
     setChoirs(loadedAdmin.choirs);
     console.log(loadedAdmin.choirs)
     if (selectedChoirId) {

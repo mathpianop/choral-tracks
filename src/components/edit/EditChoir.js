@@ -40,6 +40,15 @@ export default function EditChoir({ choirId, providedChoir }) {
     }
   }
 
+  const tablist = function() {
+    console.log(choirId)
+    if (choirId === "new") {
+      return
+    } else {
+      return  <TabList names={["Choir Details", "Songs"]} onSelect={setEditMode} defaultName="Choir Details"/>
+    }
+  }
+
   
 //Execute when component mounts
   useEffect(() => {
@@ -55,7 +64,7 @@ export default function EditChoir({ choirId, providedChoir }) {
       <Link to={`../choir/${choirId}`}>
           <button className="nav-btn">Home</button>
         </Link>
-      <TabList names={["Choir Details", "Songs"]} onSelect={setEditMode} defaultName="Choir Details"/>
+      {tablist()}
       {editor()}
     </div>
   );

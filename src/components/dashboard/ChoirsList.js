@@ -1,5 +1,6 @@
 import { List, ListElement } from "../../style/general/list";
 import styled from "styled-components";
+import Choir from "../../models/Choir";
 
 const LeftNav = styled.div`
   width: 264px;
@@ -7,6 +8,11 @@ const LeftNav = styled.div`
 `
 
 export default function ChoirsList({choirs, setSelectedChoir}) {
+  
+  const handleAdd = function() {
+    setSelectedChoir(Choir());
+  }
+
   return (
     <LeftNav>
       <List>
@@ -21,7 +27,11 @@ export default function ChoirsList({choirs, setSelectedChoir}) {
               </ListElement>
           )
         })}
+        <ListElement>
+          <div onClick={handleAdd}>+</div>
+        </ListElement>
       </List>
     </LeftNav>
+   
   )
 }

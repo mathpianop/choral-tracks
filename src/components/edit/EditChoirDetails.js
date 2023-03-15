@@ -26,14 +26,19 @@ const MessageBox = styled.textarea`
   font-family: Geneva, Verdana, sans-serif;
 `;
 
-export default function EditChoirDetails({choirDetails, choirId}) {
-  const [choirName, setChoirName] = useState(choirDetails.name);
-  const [message, setMessage] = useState(choirDetails.message);
+export default function EditChoirDetails({updateChoirs, choirDetails}) {
+  const [choirName, setChoirName] = useState("");
+  const [message, setMessage] = useState("");
   const [save, setSave] = useState(false);
   const [abortController, setAbortController] = useState(new AbortController());
   const [savingStatus, setSavingStatus] = useState("");
   const token = useContext(TokenContext);
   const { adminId } = useParams()
+
+  const setInitialValues = function() {
+    setChoirName(choirDetails.name);
+    setMessage(choirDetails.message);
+  }
 
   const handleChange = function(e, setter) {
     setter(e.target.value);
@@ -49,7 +54,7 @@ export default function EditChoirDetails({choirDetails, choirId}) {
 
     try {
       await sendChoir(data, token, {
-        choirId: choirId,
+        choirId: choirDetails.id,
         abortSignal: abortSignal,
         timeout: 8000
       });
@@ -76,10 +81,19 @@ export default function EditChoirDetails({choirDetails, choirId}) {
       setAbortController(freshAbortController);
       setSave(false);
     }
+
+    if (savingStatus === "saved") {
+      updateChoirs(freshAbortController.signal);
+    }
     // eslint-disable-next-line
-  }, [save]);
+  }, [save, savingStatus]);
 
   useEffect(() => () => abortController.abort());
+
+  useEffect(() => {
+    setInitialValues()
+  // eslint-disable-next-line
+  }, [choirDetails])
   
   return (
     <DetailsForm onSubmit={handleSave}>

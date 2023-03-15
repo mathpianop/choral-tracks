@@ -1,16 +1,26 @@
 import { List, ListElement } from "../../style/general/list";
 import styled from "styled-components";
-import Choir from "../../models/Choir";
+import ChoirTab from "./ChoirTab";
 
 const LeftNav = styled.div`
   width: 264px;
   height: 100%;
 `
 
-export default function ChoirsList({choirs, setSelectedChoir}) {
+export default function ChoirsList({choirs, setSelectedChoirId, selectedChoirId}) {
   
   const handleAdd = function() {
-    setSelectedChoir(Choir());
+    setSelectedChoirId("new");
+  }
+
+  const addBtn = function() {
+    if (selectedChoirId !== "new") {
+      return (
+        <ListElement>
+        <div onClick={handleAdd}>+</div>
+      </ListElement>
+      )
+    }
   }
 
   return (
@@ -19,17 +29,14 @@ export default function ChoirsList({choirs, setSelectedChoir}) {
         {choirs.map(choir => {
 
           return (
-              <ListElement 
-                key={choir.choir_details.id}
-                onClick={() => setSelectedChoir(choir)}
-              >
-                {choir.choir_details.name}
-              </ListElement>
-          )
+          <ChoirTab 
+            key={choir.choir_details.id}
+            choirDetails={choir.choir_details}
+            setSelectedChoirId={setSelectedChoirId}
+            selectedChoirId={selectedChoirId}
+          />)
         })}
-        <ListElement>
-          <div onClick={handleAdd}>+</div>
-        </ListElement>
+       {addBtn()}
       </List>
     </LeftNav>
    

@@ -1,9 +1,13 @@
---Create Choir Model
+--Fix errors in getting selected choir to be highlighted
+--Updating choirs after delete is behind one cycle, and doesn't get rid of choir forms display
+--Make deleting songs dependent on deleting choir
+--Add status message for delete btn
+--Make tablist appear after first creating the choir
 
 1. Welcome page
 
 * Explanation
-* Big choir search bar (search for choir and admin)
+* Big choir search bar (search for choir and admin (?))
 * Menu
   - Dashboard
   - Create an Account

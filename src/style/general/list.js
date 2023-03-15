@@ -12,10 +12,14 @@ const ListElement = styled.li`
     cursor: pointer;
   `;
 
+  const HighlightedListElement = styled(ListElement)`
+    border: 3px solid green;
+  `
+
   const List = styled.ul`
     padding: 20px;
     background-color: rgb(241, 236, 236);
     height: 100%;
 `;
 
-  export { ListElement, List}
+  export { ListElement, List, HighlightedListElement}

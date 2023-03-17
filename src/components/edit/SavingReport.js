@@ -1,4 +1,6 @@
+
 export default function SavingReport({savingStatus}) {
+  
   switch (savingStatus) {
     case "saving":
       return "Saving"
@@ -9,4 +11,5 @@ export default function SavingReport({savingStatus}) {
     default:
       return "";
   }
+  
 }

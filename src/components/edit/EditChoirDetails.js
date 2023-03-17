@@ -31,7 +31,7 @@ export default function EditChoirDetails({updateChoirs, choirDetails}) {
   const [message, setMessage] = useState("");
   const [save, setSave] = useState(false);
   const [abortController, setAbortController] = useState(new AbortController());
-  const [savingStatus, setSavingStatus] = useState("");
+  const [savingStatus, setSavingStatus] = useState(null);
   const token = useContext(TokenContext);
   const { adminId } = useParams()
 
@@ -81,6 +81,12 @@ export default function EditChoirDetails({updateChoirs, choirDetails}) {
       saveDetails(freshAbortController.signal);
       setAbortController(freshAbortController);
       setSave(false);
+    }
+
+    if (savingStatus === "failedToSave" || savingStatus === "saved") {
+      setTimeout(() => {
+        setSavingStatus(null);
+      }, 3000)
     }
 
 

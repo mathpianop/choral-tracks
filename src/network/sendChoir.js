@@ -12,7 +12,6 @@ export default async function sendChoir(choirData, authToken, options = {}) {
   }
 
   const method = options.choirId === "new" ? "POST" : "PATCH";
-  console.log(options.choirId, method);
   const url = method === "PATCH" ? `${apiUrl}/choirs/${options.choirId}` : `${apiUrl}/choirs`;
 
   return await makeRequest(url, "json", {

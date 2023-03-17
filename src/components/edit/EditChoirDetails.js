@@ -52,21 +52,22 @@ export default function EditChoirDetails({updateChoirs, choirDetails}) {
 
     setSavingStatus("saving");
 
+    let newChoirDetails;
+
     try {
-      await sendChoir(data, token, {
+      newChoirDetails = await sendChoir(data, token, {
         choirId: choirDetails.id,
         abortSignal: abortSignal,
         timeout: 8000
       });
 
-      setSavingStatus("saved")
+      setSavingStatus("saved");
 
     } catch (e) {
       setSavingStatus("failedToSave");
     }
 
-    
-    
+    updateChoirs(newChoirDetails.id);
   }
 
   const handleSave = function(e) {
@@ -82,9 +83,7 @@ export default function EditChoirDetails({updateChoirs, choirDetails}) {
       setSave(false);
     }
 
-    if (savingStatus === "saved") {
-      updateChoirs(freshAbortController.signal);
-    }
+
     // eslint-disable-next-line
   }, [save, savingStatus]);
 

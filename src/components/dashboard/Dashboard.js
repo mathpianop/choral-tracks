@@ -22,17 +22,21 @@ export default function Dashboard() {
   const [token, setToken] = useState(findLocalToken());
   const location = useLocation();
   const [selectedChoirId, setSelectedChoirId] = useState(location.state && parseInt(location.state.selectedChoirId));
-  // Define if linked to from choir page
+  const [abortController] = useState(new AbortController())
 
 
   const loadAdmin = async function(abortSignal) {
     const loadedAdmin = await getAdmin(adminId, token, abortSignal)
-    // Convert choir records to Choir model before setting
     setChoirs(loadedAdmin.choirs);
-    // if (selectedChoirId) {
-    //   setSelectedChoirId(getChoirById(loadedAdmin.choirs, selectedChoirId))
-    // }
   }
+
+  const updateChoirs = async function(newId) {
+    await loadAdmin(abortController.signal);
+    if (newId) {
+      setSelectedChoirId(newId);
+    }
+  }
+
   const getChoirById = function(id) {
     if (id === "new") {
       return Choir()
@@ -43,8 +47,8 @@ export default function Dashboard() {
     }
   }
 
+
   useEffect(() => {
-    const abortController = new AbortController();
     loadAdmin(abortController.signal);
     return () => abortController.abort();
     // eslint-disable-next-line 
@@ -60,7 +64,7 @@ export default function Dashboard() {
             selectedChoirId={selectedChoirId}
           />
           <Display 
-            updateChoirs={loadAdmin} 
+            updateChoirs={updateChoirs} 
             adminId={adminId} 
             selectedChoir={getChoirById(selectedChoirId)}
           />

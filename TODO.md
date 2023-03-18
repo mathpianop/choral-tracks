@@ -1,4 +1,3 @@
---Updating choirs after delete is behind one cycle, and doesn't get rid of choir forms display
 --Make deleting songs dependent on deleting choir
 --Add status message for delete btn
 --Make ChoirDetails pop up when tab selected

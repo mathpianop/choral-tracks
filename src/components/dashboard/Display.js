@@ -11,10 +11,12 @@ export default function Display({updateChoirs, adminId, selectedChoir}) {
 
   const content = function() {
     if (selectedChoir) {
-      return <EditChoir 
-                choir={selectedChoir}
-                updateChoirs={updateChoirs}
-              />
+      return (
+        <EditChoir 
+          choir={selectedChoir}
+          updateChoirs={updateChoirs}
+        />
+      )
     } else {
       return `This is the dashboard for Admin #${adminId}`
     }

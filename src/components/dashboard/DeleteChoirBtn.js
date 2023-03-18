@@ -14,13 +14,16 @@ export default function DeleteChoirBtn({choirId, updateChoirs}) {
   const token = useContext(TokenContext);
   
   const deleteChoir = async function() {
-    try {
-      await destroyChoir(choirId, token);
-    } catch(e) {
-      // Do something
+    if(window.confirm("Are you sure you want to delete this choir? This action cannot be undone...")) {
+      try {
+        await destroyChoir(choirId, token);
+      } catch(e) {
+        // Do something
+      }
+  
+      updateChoirs()
     }
-
-    updateChoirs()
+    
    
   }
 

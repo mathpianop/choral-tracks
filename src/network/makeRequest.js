@@ -38,7 +38,7 @@ async function makeRequest(resource, parser, options = {}) {
     //For all other non-2xx responses, throw error and log response to console for debugging
   } else {
     response.bodyContent = body;
-    console.log(response);
+    
     throw new Error("Software Bug");
   }
 

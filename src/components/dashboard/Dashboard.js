@@ -26,15 +26,18 @@ export default function Dashboard() {
 
 
   const loadAdmin = async function(abortSignal) {
-    const loadedAdmin = await getAdmin(adminId, token, abortSignal)
+    const loadedAdmin = await getAdmin(adminId, token, abortSignal);
     setChoirs(loadedAdmin.choirs);
   }
 
   const updateChoirs = async function(newId) {
     await loadAdmin(abortController.signal);
+    
     if (newId) {
       setSelectedChoirId(newId);
     }
+
+
   }
 
   const getChoirById = function(id) {

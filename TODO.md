@@ -1,7 +1,8 @@
 --Updating choirs after delete is behind one cycle, and doesn't get rid of choir forms display
 --Make deleting songs dependent on deleting choir
 --Add status message for delete btn
---Make tablist appear after first creating the choir
+--Make ChoirDetails pop up when tab selected
+--Make song form appear automatically if choir has no songs
 
 1. Welcome page
 

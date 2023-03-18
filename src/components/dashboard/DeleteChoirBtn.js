@@ -5,7 +5,6 @@ import destroyChoir from "../../network/destroyChoir";
 
 const SimpleBtn = styled.button`
   background-color: white;
-  float: right;
   border: 1px solid gray;
 `;
 
@@ -14,21 +13,20 @@ export default function DeleteChoirBtn({choirId, updateChoirs}) {
 
   const token = useContext(TokenContext);
   
-  const deleteChoir = function() {
+  const deleteChoir = async function() {
     try {
-      destroyChoir(choirId, token);
+      await destroyChoir(choirId, token);
     } catch(e) {
       // Do something
     }
 
-    console.log("hello");
     updateChoirs()
    
   }
 
   return (
     <SimpleBtn onClick={() => deleteChoir(choirId)}>
-      X
+      Delete Choir
     </SimpleBtn>
   )
 }

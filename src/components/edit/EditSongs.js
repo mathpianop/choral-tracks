@@ -19,9 +19,11 @@ const AddButton = styled.li`
 
 function EditSongs({initialSongs, loadChoir}) {
 
+  console.log(initialSongs);
+
   const initialSelected = function() {
     //If this is a new choir, load component with single blank song opened
-    if (initialSongs.length === 1 && initialSongs[0].id === "new") {
+    if (initialSongs.length === 0) {
       return "new"
     } else {
       return null
@@ -33,7 +35,6 @@ function EditSongs({initialSongs, loadChoir}) {
   const [selectedSongId, setSelectedSongId] = useState(initialSelected);
   
 
-  
   
 
   const handleAdd = function() {

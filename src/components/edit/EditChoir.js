@@ -4,6 +4,7 @@ import EditChoirDetails from "./EditChoirDetails";
 import TabList from "../general/TabList";
 import { Link } from "react-router-dom";
 import DeleteChoirBtn from "../dashboard/DeleteChoirBtn";
+import ChoirIdContext from "../ChoirIdContext";
 
 
 
@@ -47,12 +48,14 @@ export default function EditChoir({ choir, updateChoirs }) {
   
 
   return (
-    <div id="EditChoir">
-      {choirHomeBtn()}
-      {tablist()}
-      {editor()}
-      <DeleteChoirBtn choirId={choirId()} updateChoirs={updateChoirs}/>
-    </div>
+    <ChoirIdContext.Provider value={choir.choir_details.id}>
+      <div id="EditChoir">
+        {choirHomeBtn()}
+        {tablist()}
+        {editor()}
+        <DeleteChoirBtn choirId={choirId()} updateChoirs={updateChoirs}/>
+      </div>
+    </ChoirIdContext.Provider>
   );
 
 

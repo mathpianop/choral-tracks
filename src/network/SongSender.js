@@ -23,7 +23,7 @@ function SongSender(token) {
   }
 
   function songUrl() {
-    return (song.id ? `${apiUrl}/songs/${song.id}` : `${apiUrl}/songs`);
+    return (song.id === "new" ? `${apiUrl}/songs` : `${apiUrl}/songs/${song.id}`);
   }
 
   function partUrl(part) {
@@ -31,7 +31,7 @@ function SongSender(token) {
   }
 
   function method(id) {
-    return (id ? "PATCH" : "POST");
+    return (id === "new" || !id ? "POST" : "PATCH");
   }
 
   function recordOptions(record, timeout) {
@@ -52,7 +52,7 @@ function SongSender(token) {
     }
 
     const songResponse = await makeRequest(songUrl(), "json", recordOptions(song, 3000));
-    if (!song.id) {
+    if (song.id === "new") {
       // If this is a new song, then get and store the
       // newly created song id to use for the parts requests
       song.id = songResponse.id;
@@ -79,6 +79,7 @@ function SongSender(token) {
     const nextPart = unsentParts[0];
     nextPart.sent = true;
 
+    console.log("Hello", nextPart)
     
     return await makeRequest(partUrl(nextPart), "json", recordOptions(nextPart, 15000));
   }

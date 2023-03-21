@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import SongPlayer from "./SongPlayer.js";
 import SongBtn from "./SongBtn.js";
 import { AudioContext } from 'standardized-audio-context';
@@ -11,7 +11,7 @@ function Home(props) {
   const [choir, setChoir] = useState({})
   const [selectedSong, setSelectedSong] = useState(null);
   const [audioContext] = useState(new AudioContext());
-  const [choirId] = useContext(ChoirIdContext)
+  const { choirId } = useParams()
 
   const loadChoir = async function(abortController) {
     try {

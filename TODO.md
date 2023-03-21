@@ -1,5 +1,7 @@
+--Figure out how to deal with song id of "new"
 --Make deleting songs dependent on deleting choir
---Add status message for delete btn
+--Add cancel button for new choir form
+--Add status message for delete btn (same component for saved message?)
 --Make ChoirDetails pop up when tab selected
 --Make song form appear automatically if choir has no songs
 

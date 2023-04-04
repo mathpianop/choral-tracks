@@ -50,6 +50,12 @@ export default function Dashboard() {
     }
   }
 
+  const cancelNewChoir = function() {
+    if (selectedChoirId === "new") {
+      setSelectedChoirId(null);
+    }
+  }
+
 
   useEffect(() => {
     loadAdmin(abortController.signal);
@@ -70,6 +76,7 @@ export default function Dashboard() {
             updateChoirs={updateChoirs} 
             adminId={adminId} 
             selectedChoir={getChoirById(selectedChoirId)}
+            cancelNewChoir={cancelNewChoir}
           />
         </Layout>
       </div>

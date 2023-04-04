@@ -5,10 +5,27 @@ import TabList from "../general/TabList";
 import { Link } from "react-router-dom";
 import DeleteChoirBtn from "../dashboard/DeleteChoirBtn";
 import ChoirIdContext from "../ChoirIdContext";
+import styled from "styled-components";
+import CancelButton from "../general/CancelButton";
 
 
+const NewBanner = styled.div`
+  display: flex;
+  padding: 5px;
+  justify-content: space-between;
+`
 
-export default function EditChoir({ choir, updateChoirs }) {
+const NewTitle = styled.h3`
+  font-weight: 700;
+  font-size: 20px;
+`
+
+const ChoirEditor = styled.div`
+  width: 300px;
+  margin: 10px;
+`
+
+export default function EditChoir({ choir, updateChoirs, cancelNewChoir }) {
   //editMode can be "Choir Details" or "Songs"
   const [editMode, setEditMode] = useState("Choir Details");
 
@@ -43,18 +60,36 @@ export default function EditChoir({ choir, updateChoirs }) {
     }
   }
 
-  
+  const deleteChoirBtn = function() {
+    if (choir.choir_details.id !== "new") {
+      return (
+        <DeleteChoirBtn choirId={choirId()} updateChoirs={updateChoirs}/>
+      )
+    }
+  }
 
+  
+  const newBanner = function() {
+    if(choir.choir_details.id === "new") {
+      return (
+        <NewBanner>
+          <NewTitle>New Choir</NewTitle>
+          <CancelButton onClick={cancelNewChoir}/>
+        </NewBanner>
+        )
+    }
+  }
   
 
   return (
     <ChoirIdContext.Provider value={choir.choir_details.id}>
-      <div id="EditChoir">
+      <ChoirEditor id="EditChoir">
+        {newBanner()}
         {choirHomeBtn()}
         {tablist()}
         {editor()}
-        <DeleteChoirBtn choirId={choirId()} updateChoirs={updateChoirs}/>
-      </div>
+        {deleteChoirBtn()}
+      </ChoirEditor>
     </ChoirIdContext.Provider>
   );
 

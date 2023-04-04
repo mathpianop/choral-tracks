@@ -2,6 +2,7 @@ import CancelIcon from "@material-ui/icons/Close";
 import styled from "styled-components";
 
 const Button = styled.button`
+  display: inline-block;
   padding: 0;
   width: 24px;
   height: 24px;

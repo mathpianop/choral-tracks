@@ -5,10 +5,7 @@ import sendChoir from "../../network/sendChoir";
 import TokenContext from "../TokenContext";
 import SavingReport from "./SavingReport";
 
-const DetailsForm = styled.form`
-  width: 300px;
-  margin: 10px;
-`
+
 
 const Label = styled.label`
   display: block;
@@ -33,7 +30,7 @@ export default function EditChoirDetails({updateChoirs, choirDetails}) {
   const [abortController, setAbortController] = useState(new AbortController());
   const [savingStatus, setSavingStatus] = useState(null);
   const token = useContext(TokenContext);
-  const { adminId } = useParams()
+  const { adminId } = useParams();
 
   const setInitialValues = function() {
     setChoirName(choirDetails.name);
@@ -101,7 +98,7 @@ export default function EditChoirDetails({updateChoirs, choirDetails}) {
   }, [choirDetails])
   
   return (
-    <DetailsForm onSubmit={handleSave}>
+    <form onSubmit={handleSave}>
       <Label htmlFor="choirName">Give your choir a name:</Label>
       <NameBox name="choirName" type="text" value={choirName} onChange={e => handleChange(e, setChoirName)}/>
       <Label htmlFor="message">Include a message or description at the top the choir page: </Label>
@@ -111,7 +108,7 @@ export default function EditChoirDetails({updateChoirs, choirDetails}) {
         <span><SavingReport savingStatus={savingStatus}/></span>
       </div>
       
-    </DetailsForm>
+    </form>
   )
 
 }

@@ -1,12 +1,11 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom";
 import SongPlayer from "./SongPlayer.js";
 import SongBtn from "./SongBtn.js";
 import { AudioContext } from 'standardized-audio-context';
-import ChoirIdContext from "../ChoirIdContext.js";
 import getChoir from "../../network/getChoir.js";
 
-function Home(props) {
+function Home() {
   //Store id of selected song
   const [choir, setChoir] = useState({})
   const [selectedSong, setSelectedSong] = useState(null);

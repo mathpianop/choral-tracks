@@ -19,7 +19,6 @@ const AddButton = styled.li`
 
 function EditSongs({initialSongs, loadChoir}) {
 
-  console.log(initialSongs);
 
   const initialSelected = function() {
     //If this is a new choir, load component with single blank song opened

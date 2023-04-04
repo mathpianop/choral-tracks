@@ -1,5 +1,5 @@
 import EditSongs from "./EditSongs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditChoirDetails from "./EditChoirDetails";
 import TabList from "../general/TabList";
 import { Link } from "react-router-dom";
@@ -30,9 +30,9 @@ export default function EditChoir({ choir, updateChoirs, cancelNewChoir }) {
   const [editMode, setEditMode] = useState("Choir Details");
 
   
-
   const loadChoir = () => "c";
   const choirId = () => choir.choir_details.id
+  const newChoir = () => choirId() === "new"
 
   const editor = function() {
     if (editMode === "Choir Details") {
@@ -43,7 +43,7 @@ export default function EditChoir({ choir, updateChoirs, cancelNewChoir }) {
   }
 
   const tablist = function() {
-    if (choirId() === "new") {
+    if (newChoir()) {
       return
     } else {
       return  <TabList names={["Choir Details", "Songs"]} onSelect={setEditMode} defaultName="Choir Details"/>
@@ -51,7 +51,7 @@ export default function EditChoir({ choir, updateChoirs, cancelNewChoir }) {
   }
 
   const choirHomeBtn = function() {
-    if (choir.choir_details.id !== "new") {
+    if (!newChoir()) {
       return (
         <Link to={`../choir/${choirId()}`}>
         <button className="nav-btn">Home</button>
@@ -61,7 +61,7 @@ export default function EditChoir({ choir, updateChoirs, cancelNewChoir }) {
   }
 
   const deleteChoirBtn = function() {
-    if (choir.choir_details.id !== "new") {
+    if (!newChoir()) {
       return (
         <DeleteChoirBtn choirId={choirId()} updateChoirs={updateChoirs}/>
       )
@@ -70,7 +70,7 @@ export default function EditChoir({ choir, updateChoirs, cancelNewChoir }) {
 
   
   const newBanner = function() {
-    if(choir.choir_details.id === "new") {
+    if(newChoir()) {
       return (
         <NewBanner>
           <NewTitle>New Choir</NewTitle>
@@ -79,6 +79,14 @@ export default function EditChoir({ choir, updateChoirs, cancelNewChoir }) {
         )
     }
   }
+
+  useEffect(() => {
+    // Ensure that we don't try to display songEditor for a new choir (with no songs)
+    console.log(newChoir());
+    if(newChoir()) {
+      setEditMode("Choir Details")
+    }
+  }, [choir])
   
 
   return (

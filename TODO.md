@@ -1,6 +1,7 @@
---Add cancel button for new choir form
+--Make songEditor main display be flexbox
+--Fix EditSong spillage (add button, part formlets)
 --Add status message for delete btn (same component for saved message?)
---Make ChoirDetails pop up when tab selected
+--Make ChoirDetails pop up when tab selected (just modify the useEffect)
 --Make song form appear automatically if choir has no songs
 
 1. Welcome page

@@ -12,6 +12,11 @@ const ButtonWrapper = styled.div`
   float: right;
 `
 
+const FlexListElement = styled(ListElement)`
+  display: flex;
+  justify-content: space-between;
+`
+
 
 function SongEditor({ 
   song, 
@@ -77,12 +82,12 @@ function SongEditor({
   
 
   return (
-    <ListElement className="SongEditor" onClick={handleClick}>
+    <FlexListElement className="SongEditor" onClick={handleClick}>
           {closeButton()}
           {content()}
           {publishStatus()}
           {publisher()}
-    </ListElement>
+    </FlexListElement>
   )
 }
 

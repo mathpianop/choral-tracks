@@ -4,15 +4,19 @@ import styled from "styled-components";
 import removeFromObjectArray from "../../helpers/removeFromObjectArray";
 import { List } from "../../style/general/list";
 
+const FlexList = styled(List)`
+  display: flex;
+  flex-direction: column;
+`;
+
 const AddButton = styled.li`
   list-style: none;
   border: 1px solid lightgray;
   padding: 5px;
-  margin-bottom: 5px;
   border-radius: 3px;
   background-color: white;
   width: 15px;
-  float: right;
+  align-self: flex-end;
   cursor: pointer;
   `;
 
@@ -61,7 +65,7 @@ function EditSongs({initialSongs, loadChoir}) {
 
     return (
       <div className="EditSongs">
-        <List>
+        <FlexList>
           {songs.map(song => {
             return (
             <SongEditor 
@@ -74,7 +78,7 @@ function EditSongs({initialSongs, loadChoir}) {
             )
           })}
           <AddButton onClick={handleAdd}>+</AddButton>
-        </List>
+        </FlexList>
       </div>
     )
 }

@@ -6,6 +6,7 @@ import destroyChoir from "../../network/destroyChoir";
 const SimpleBtn = styled.button`
   background-color: white;
   border: 1px solid gray;
+  margin-top: 5px;
 `;
 
 

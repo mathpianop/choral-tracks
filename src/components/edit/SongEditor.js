@@ -83,10 +83,10 @@ function SongEditor({
 
   return (
     <FlexListElement className="SongEditor" onClick={handleClick}>
-          {closeButton()}
           {content()}
           {publishStatus()}
           {publisher()}
+          {closeButton()}
     </FlexListElement>
   )
 }

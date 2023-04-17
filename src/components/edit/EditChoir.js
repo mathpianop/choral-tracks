@@ -21,7 +21,7 @@ const NewTitle = styled.h3`
 `
 
 const ChoirEditor = styled.div`
-  width: 300px;
+  width: 500px;
   margin: 10px;
 `
 

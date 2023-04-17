@@ -1,4 +1,3 @@
---Make songEditor main display be flexbox
 --Fix EditSong spillage (add button, part formlets)
 --Add status message for delete btn (same component for saved message?)
 --Make ChoirDetails pop up when tab selected (just modify the useEffect)

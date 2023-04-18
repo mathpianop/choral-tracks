@@ -1,5 +1,5 @@
---Make ChoirDetails pop up when tab selected (just modify the useEffect)
 --Make song form appear automatically if choir has no songs
+--Switch to songs edit mode automatically after saving a new choir
 
 1. Welcome page
 

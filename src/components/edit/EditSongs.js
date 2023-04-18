@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SongEditor from "./SongEditor";
 import styled from "styled-components";
 import removeFromObjectArray from "../../helpers/removeFromObjectArray";
@@ -26,16 +26,12 @@ function EditSongs({initialSongs, loadChoir}) {
 
   const initialSelected = function() {
     //If this is a new choir, load component with single blank song opened
-    if (initialSongs.length === 0) {
-      return "new"
-    } else {
-      return null
-    }
+    return (initialSongs.length === 0 ? "new" : null);
   }
 
   const [songs, setSongs] = useState(initialSongs);
 
-  const [selectedSongId, setSelectedSongId] = useState(initialSelected);
+  const [selectedSongId, setSelectedSongId] = useState();
   
 
   
@@ -61,7 +57,12 @@ function EditSongs({initialSongs, loadChoir}) {
 
 
 
-  
+  useEffect(() => {
+    if (initialSongs.length === 0) {
+      handleAdd();
+    }
+    
+  }, [])
 
     return (
       <div className="EditSongs">

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import EditChoirDetails from "./EditChoirDetails";
 import TabList from "../general/TabList";
 import { Link } from "react-router-dom";
-import DeleteChoirBtn from "../dashboard/DeleteChoirBtn";
+import DeleteChoirBtn from "./DeleteChoirBtn";
 import ChoirIdContext from "../ChoirIdContext";
 import styled from "styled-components";
 import CancelButton from "../general/CancelButton";
@@ -46,7 +46,7 @@ export default function EditChoir({ choir, updateChoirs, cancelNewChoir }) {
     if (newChoir()) {
       return
     } else {
-      return  <TabList names={["Choir Details", "Songs"]} onSelect={setEditMode} defaultName="Choir Details"/>
+      return  <TabList names={["Choir Details", "Songs"]} onSelect={setEditMode} currentName={editMode}/>
     }
   }
 
@@ -83,9 +83,8 @@ export default function EditChoir({ choir, updateChoirs, cancelNewChoir }) {
   useEffect(() => {
     // Ensure that we don't try to display songEditor for a new choir (with no songs)
     console.log(newChoir());
-    if(newChoir()) {
-      setEditMode("Choir Details")
-    }
+    setEditMode("Choir Details")
+    // eslint-disable-next-line
   }, [choir])
   
 

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { useState } from "react";
 
 const TabListEl = styled.div`
   display: flex;
@@ -19,16 +18,15 @@ const SelectedTab = styled.div`
   cursor: pointer;
 `
 
-export default function TabList({names, onSelect, defaultName}) {
-  const [selected, setSelected] = useState(defaultName);
+export default function TabList({names, onSelect, currentName}) {
+
 
   const selectSelf = function(e) {
-    setSelected(e.target.dataset.name);
     onSelect(e.target.dataset.name);
   }
 
   const tab = function(name) {
-    if (name === selected) {
+    if (name === currentName) {
       return (
         <SelectedTab className="tab" key={name} data-name={name} onClick={selectSelf}>
           {name}

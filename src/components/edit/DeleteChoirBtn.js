@@ -10,7 +10,7 @@ const SimpleBtn = styled.button`
 `;
 
 
-export default function DeleteChoirBtn({choirId, updateChoirs}) {
+export default function DeleteChoirBtn({choirId, updateChoirs, reportFailure}) {
 
   const token = useContext(TokenContext);
   
@@ -19,7 +19,7 @@ export default function DeleteChoirBtn({choirId, updateChoirs}) {
       try {
         await destroyChoir(choirId, token);
       } catch(e) {
-        // Do something
+        reportFailure();
       }
   
       updateChoirs()

@@ -60,6 +60,8 @@ export default function EditChoir({ choir, updateChoirs, cancelNewChoir }) {
     }
   }
 
+  
+
   const deleteChoirBtn = function() {
     if (!newChoir()) {
       return (
